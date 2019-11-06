@@ -1,0 +1,27 @@
+{
+  "name": "grrr-amsterdam/simply-static-deploy",
+  "description": "Deploy static sites easily to an AWS S3 bucket",
+  "type": "wordpress-plugin",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Koen Schaft",
+      "email": "koen@grrr.nl"
+    },
+    {
+      "name": "Harmen Janssen",
+      "email": "harmen@grrr.nl"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "aws/aws-sdk-php": "^3.87",
+    "grrr-amsterdam/amazon-s3-and-cloudfront": "^2.2",
+    "grrr-amsterdam/garp-functional": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Grrr\\": "includes/classes/"
+    }
+  }
+}
