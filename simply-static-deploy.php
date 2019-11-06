@@ -6,26 +6,25 @@
  * Version:     0.1.0
  * Author:      GRRR
  * Author URI:  https://grrr.nl
- *
- * @package Grrr
  */
+use Grrr\SimplyStaticDeploy\{Admin, Api, Scheduler};
 
 // Useful global constants.
+// TODO Is this necessary?
 define('SIMPLY_STATIC_DEPLOY_VERSION', '0.1.0');
 define('SIMPLY_STATIC_DEPLOY_URL', plugin_dir_url(__FILE__));
 define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
 
-// Include files.
-require_once SIMPLY_STATIC_DEPLOY_PATH . '/includes/functions/core.php';
+
+// Require Composer autoloader.
+require_once SIMPLY_STATIC_DEPLOY_PATH . '/vendor/autoload.php';
 
 // Activation/Deactivation.
-register_activation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\activate' );
-register_deactivation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\deactivate' );
+// TODO Do we need this?
+//register_activation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\activate' );
+//register_deactivation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\deactivate' );
 
-// Bootstrap.
-Grrr\SimplyStaticDeploy\Core\setup();
-
-// Require Composer autoloader if it exists.
-if (file_exists(SIMPLY_STATIC_DEPLOY_PATH . '/vendor/autoload.php')) {
-	require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
-}
+// Bootstrap components.
+(new Admin)->register(SIMPLY_STATIC_DEPLOY_PATH);
+(new Api)->register();
+(new Scheduler)->register();

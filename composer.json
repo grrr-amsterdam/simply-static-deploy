@@ -21,7 +21,22 @@
   },
   "autoload": {
     "psr-4": {
-      "Grrr\\": "includes/classes/"
+      "Grrr\\": "includes/Grrr"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type":"package",
+      "package": {
+        "name": "grrr-amsterdam/amazon-s3-and-cloudfront",
+        "version": "2.2.2",
+        "type": "wordpress-plugin",
+        "source": {
+          "url": "https://github.com/grrr-amsterdam/wp-amazon-s3-and-cloudfront.git",
+          "type": "git",
+          "reference": "master"
+        }
+      }
+    }
+  ]
 }

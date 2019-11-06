@@ -1,0 +1,63 @@
+/**
+ * Deploy status
+ */
+.deploy-status {
+    /* */
+}
+.deploy-status span.is-unscheduled {
+    opacity: 0.5;
+}
+.deploy-status span.is-sheduled {
+    /* */
+}
+.deploy-status span.is-current {
+    color: #e14d43;
+}
+.deploy-status span.is-done {
+    color: green;
+}
+
+/**
+ * Deploy status
+ */
+.deploy-time {
+    margin: 15px 0;
+}
+.deploy-time span.is-in-progress {
+    color: #e14d43;
+}
+
+/**
+ * Deploy error
+ */
+.deploy-error {
+    margin: 15px 0 20px; padding-left: 15px;
+    border-left: 4px solid #e14d43; color: #e14d43;
+}
+.deploy-error[aria-hidden="true"] {
+    display: none;
+}
+.deploy-error h4 {
+    margin-bottom: 5px;
+}
+.deploy-error p {
+    margin-top: 5px;
+    overflow-wrap: break-word; word-wrap: break-word;
+}
+
+/**
+ * Deploy tasks
+ */
+.deploy-tasks[aria-hidden="true"] {
+    display: none;
+}
+.deploy-tasks form {
+    margin-bottom: 10px;
+}
+.deploy-tasks form > strong,
+.deploy-tasks form > button {
+    display: inline-block; vertical-align: middle !important;
+}
+.deploy-tasks form > strong {
+    min-width: 20px;
+}
