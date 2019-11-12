@@ -33,7 +33,7 @@ class Scheduler {
             return;
         }
 
-        $sync = (new Syncer)->sync(Generator::get_directory());
+        $sync = (new Syncer)->sync(Archive::get_directory());
         if ($sync instanceof WP_Error) {
             return;
         }

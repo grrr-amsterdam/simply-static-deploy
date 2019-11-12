@@ -28,24 +28,6 @@ class Generator {
     }
 
     /**
-     * Return the configured output directory for the static site.
-     *
-     * @return string
-     */
-    public static function get_directory(): string {
-        return Archive::get_directory() ?: '';
-    }
-
-    /**
-     * Check wether Simply Static has completed its archive task list.
-     *
-     * @return bool
-     */
-    public static function is_completed(): bool {
-        return Archive::is_completed();
-    }
-
-    /**
      * Return the last archive generation time.
      *
      * @return string
