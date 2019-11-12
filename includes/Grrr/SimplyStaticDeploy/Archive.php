@@ -74,15 +74,14 @@ class Archive {
     }
 
     /**
-     * Check wether Simply Static has completed its archive task list.
+     * Check whether Simply Static is in progress.
+     * This is defined by there being a start_time stored but not an end_time.
      *
      * @return bool
      */
-    public static function is_completed(): bool {
-        if (!Simply_Static\Options::instance()->get('archive_start_time')) {
-            return true;
-        }
-        return (bool)Simply_Static\Options::instance()->get('archive_end_time');
+    public static function is_in_progress(): bool {
+        return Simply_Static\Options::instance()->get('archive_start_time')
+            && !Simply_Static\Options::instance()->get('archive_end_time');
     }
 
     /**

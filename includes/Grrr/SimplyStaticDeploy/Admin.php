@@ -61,7 +61,7 @@ class Admin {
                     'sync' => $this->get_last_time(Syncer::get_last_time()),
                     'invalidate' => $this->get_last_time(Invalidator::get_last_time()),
                 ],
-                'in_progress' => !Generator::is_completed(),
+                'in_progress' => Archive::is_in_progress(),
             ]
         );
         $renderer->render();
