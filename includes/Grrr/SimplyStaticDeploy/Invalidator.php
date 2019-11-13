@@ -7,16 +7,22 @@ class Invalidator {
 
     const OPTION_TIMESTAMP_KEY = 'grrr_static_site_invalidated_at';
 
+    private $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
+
     /**
      * Invalidate full CloudFront distribution.
      *
      * @return WP_Error|bool
      */
     public function invalidate() {
-        $clientProvider = new Aws\ClientProvider(AWS_SITE);
+        $clientProvider = new Aws\ClientProvider($this->config);
         $invalidation = new Aws\CloudFront\Invalidation(
             $clientProvider->getCloudFrontClient(),
-            f\prop('distribution', AWS_SITE)
+            $this->config->distribution
         );
         $result = $invalidation->invalidate(['/*']);
 

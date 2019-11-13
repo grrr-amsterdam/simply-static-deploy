@@ -9,6 +9,11 @@ class Admin {
     const JS_GLOBAL = 'GRRR_STATIC_SITE';
 
     private $basePath;
+    private $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
 
     public function register(string $basePath) {
         $this->basePath = $basePath;
@@ -45,7 +50,7 @@ class Admin {
                 'nonce' => wp_create_nonce('wp_rest'),
                 'endpoints' => $this->get_endpoints(),
             ],
-            'website' => trim(f\prop('url', AWS_SITE), '/') . '/',
+            'website' => trim($this->config->url, '/') . '/',
         ]);
     }
 

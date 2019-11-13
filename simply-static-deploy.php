@@ -7,7 +7,13 @@
  * Author:      GRRR
  * Author URI:  https://grrr.nl
  */
-use Grrr\SimplyStaticDeploy\{Admin, Api, Scheduler};
+use Grrr\SimplyStaticDeploy\{
+    Admin,
+    Api,
+    Config,
+    Exception,
+    Scheduler
+};
 
 // Useful global constants.
 // TODO Is this necessary?
@@ -24,7 +30,12 @@ require_once SIMPLY_STATIC_DEPLOY_PATH . '/vendor/autoload.php';
 //register_activation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\activate' );
 //register_deactivation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\deactivate' );
 
+if (!defined('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS')) {
+    throw new Exception('Missing required constant SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS.');
+}
+$config = new Config(SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS);
+
 // Bootstrap components.
-(new Admin)->register(SIMPLY_STATIC_DEPLOY_PATH);
-(new Api)->register();
-(new Scheduler)->register();
+(new Admin($config))->register(SIMPLY_STATIC_DEPLOY_PATH);
+(new Api($config))->register();
+(new Scheduler($config))->register();

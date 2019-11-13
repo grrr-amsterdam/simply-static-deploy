@@ -8,6 +8,12 @@ class Syncer {
 
     const OPTION_TIMESTAMP_KEY = 'grrr_static_site_synced_at';
 
+    private $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
+
     /**
      * Sync files to S3.
      *
@@ -20,11 +26,11 @@ class Syncer {
             ]);
         }
 
-        $clientProvider = new Aws\ClientProvider(AWS_SITE);
+        $clientProvider = new Aws\ClientProvider($this->config);
         $transferManager = new Aws\S3\TransferManager(
             $clientProvider->getS3Client(),
-            f\prop('bucket', AWS_SITE),
-            f\prop('bucket_acl', AWS_SITE),
+            $this->config->bucket,
+            $this->config->bucket_acl,
             $path
         );
         $result = $transferManager->transfer();

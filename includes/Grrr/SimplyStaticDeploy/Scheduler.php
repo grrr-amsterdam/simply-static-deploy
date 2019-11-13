@@ -15,6 +15,12 @@ class Scheduler {
 
     const EVENT = 'grrr_static_site_deploy_event';
 
+    private $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
+
     public function register() {
         if (!wp_next_scheduled(self::EVENT)) {
             $datetime = new DateTime(
@@ -28,17 +34,20 @@ class Scheduler {
     }
 
     public function deploy() {
-        $generate = (new Generator)->generate();
+        $generator = new Generator();
+        $generate = $generator->generate();
         if ($generate instanceof WP_Error) {
             return;
         }
 
-        $sync = (new Syncer)->sync(Archive::get_directory());
+        $syncer = new Syncer($this->config);
+        $sync = $syncer->sync(Archive::get_directory());
         if ($sync instanceof WP_Error) {
             return;
         }
 
-        $invalidate = (new Invalidator)->invalidate();
+        $invalidator = new Invalidator($this->config);
+        $invalidate = $invalidator->invalidate();
     }
 
     public function clear() {

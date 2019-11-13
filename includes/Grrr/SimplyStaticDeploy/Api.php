@@ -9,10 +9,16 @@ class Api {
     const ENPOINT_BASE = 'static-site';
 
     const ENDPOINT_MAPPER = [
-        'generate'            => 'generate_bundle',
-        'sync'                => 'sync_to_s3',
-        'invalidate'          => 'invalidate_cloudfront',
+        'generate'   => 'generate_bundle',
+        'sync'       => 'sync_to_s3',
+        'invalidate' => 'invalidate_cloudfront',
     ];
+
+    private $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
 
     public function register() {
         add_action('rest_api_init', [$this, 'register_api_endpoints']);
@@ -49,7 +55,8 @@ class Api {
      */
     public function sync_to_s3(WP_REST_Request $params) {
         $path = Archive::get_directory();
-        $response = (new Syncer)->sync($path);
+        $syncer = new Syncer($this->config);
+        $response = $syncer->sync($path);
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('Synced to S3.', 200);
@@ -61,7 +68,8 @@ class Api {
      * @return WP_Error|WP_REST_Response
      */
     public function invalidate_cloudfront(WP_REST_Request $params) {
-        $response = (new Invalidator)->invalidate();
+        $invalidator = new Invalidator($this->config);
+        $response = $invalidator->invalidate();
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('CloudFront invalidated.', 200);

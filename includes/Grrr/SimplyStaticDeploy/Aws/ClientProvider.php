@@ -2,24 +2,18 @@
 
 use Aws\Sdk;
 use Aws\S3\S3Client;
+use Grrr\SimplyStaticDeploy\Config;
 use Aws\CloudFront\CloudFrontClient;
-use Garp\Functional as f;
 
 class ClientProvider {
 
     protected $_sdk;
 
-    public function __construct(array $config) {
-        $key = f\prop('key', $config);
-        $secret = f\prop('secret', $config);
-
-        $credentials = $key && $secret
-            ? (new CredentialsProvider($key, $secret))->getCredentials()
-            : null;
-
+    public function __construct(Config $config) {
+        $credentials = (new CredentialsProvider($config->key, $config->secret))->getCredentials();
         $this->_sdk = new Sdk([
             'credentials' => $credentials,
-            'region' => f\prop('region', $config),
+            'region' => $config->region,
             'version' => 'latest',
             'http' => [
                 'timeout' => 30,
