@@ -1,8 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
 use WP_Error;
-use Grrr\Aws;
-use Grrr\Aws\CloudFront;
 use Garp\Functional as f;
 
 class Invalidator {
@@ -16,7 +14,7 @@ class Invalidator {
      */
     public function invalidate() {
         $clientProvider = new Aws\ClientProvider(AWS_SITE);
-        $invalidation = new CloudFront\Invalidation(
+        $invalidation = new Aws\CloudFront\Invalidation(
             $clientProvider->getCloudFrontClient(),
             f\prop('distribution', AWS_SITE)
         );

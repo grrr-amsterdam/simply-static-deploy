@@ -1,8 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
 use WP_Error;
-use Grrr\Aws;
-use Grrr\Aws\S3;
 use FileSystemIterator;
 use Garp\Functional as f;
 
@@ -23,7 +21,7 @@ class Syncer {
         }
 
         $clientProvider = new Aws\ClientProvider(AWS_SITE);
-        $transferManager = new S3\TransferManager(
+        $transferManager = new Aws\S3\TransferManager(
             $clientProvider->getS3Client(),
             f\prop('bucket', AWS_SITE),
             f\prop('bucket_acl', AWS_SITE),
