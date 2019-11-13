@@ -15,3 +15,8 @@ Built with ❤️ by [GRRR](https://grrr.tech).
 ## Documentation
 
 [View the documentation](https://github.com/grrr-amsterdam/simply-static-deploy/tree/master/docs) for all available functions.
+
+
+### Available actions
+
+`grrr_simply_static_deploy_error`: Receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it.

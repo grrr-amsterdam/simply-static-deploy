@@ -1,5 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
+use WP_Error;
 use Grrr\Aws;
 use Grrr\Aws\CloudFront;
 use Garp\Functional as f;
@@ -21,7 +22,7 @@ class Invalidator {
         );
         $result = $invalidation->invalidate(['/*']);
 
-        if (!$result instanceof \WP_Error) {
+        if (!$result instanceof WP_Error) {
             update_option(self::OPTION_TIMESTAMP_KEY, time());
         }
 

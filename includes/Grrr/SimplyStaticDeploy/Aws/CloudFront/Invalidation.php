@@ -1,9 +1,10 @@
 <?php namespace Grrr\SimplyStaticDeploy\Aws\CloudFront;
 
-use Sentry;
+use WP_Error;
+use Exception;
+use Aws\Exception\AwsException;
 use Aws\CloudFront\CloudFrontClient;
 use Aws\CloudFront\Exception\CloudFrontException;
-use Aws\Exception\AwsException;
 
 class Invalidation {
 
@@ -33,22 +34,19 @@ class Invalidation {
                 ],
             ]);
             return true;
-        } catch (CloudFrontException $error) {
-            Sentry\captureException($error);
-            $message = $error->getMessage();
         } catch (AwsException $error) {
-            Sentry\captureException($error);
             $message = $error->getAwsRequestId() . PHP_EOL;
             $message .= $error->getAwsErrorType() . PHP_EOL;
             $message .= $error->getAwsErrorCode() . PHP_EOL;
-        } catch (\Exception $error) {
-            Sentry\captureException($error);
-            $message = $error;
+        } catch (CloudFrontException | Exception $error) {
+            $message = $error->getMessage();
         }
 
-        return new \WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'grrr'), $message), [
+        $error = new WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'grrr'), $message), [
             'status' => 400,
         ]);
+        do_action('grrr_simply_static_deploy_error', $error);
+        return $error;
     }
 }
 

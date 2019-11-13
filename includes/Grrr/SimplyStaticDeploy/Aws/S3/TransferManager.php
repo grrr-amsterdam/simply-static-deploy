@@ -1,6 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy\Aws\S3;
 
-use Sentry;
+use WP_Error;
 use Aws\Command;
 use Aws\S3\S3Client;
 use Aws\S3\Transfer;
@@ -86,22 +86,19 @@ class TransferManager {
         try {
             $this->_manager->transfer();
             return true;
-        } catch (S3Exception $error) {
-            Sentry\captureException($error);
-            $message = $error->getMessage();
         } catch (AwsException $error) {
-            Sentry\captureException($error);
             $message = $error->getAwsRequestId() . PHP_EOL;
             $message .= $error->getAwsErrorType() . PHP_EOL;
             $message .= $error->getAwsErrorCode() . PHP_EOL;
-        } catch (\Exception $error) {
-            Sentry\captureException($error);
-            $message = $error;
+        } catch (S3Exception | Exception $error) {
+            $message = $error->getMessage();
         }
 
-        return new \WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'grrr'), $message), [
+        $error = new WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'grrr'), $message), [
             'status' => 400,
         ]);
+        do_action('grrr_simply_static_deploy_error', $error);
+        return $error;
     }
 
     protected function _get_ttl(string $extension): array {

@@ -1,6 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-use Sentry;
+use WP_Error;
 use Simply_Static;
 use Garp\Functional as f;
 
@@ -29,7 +29,6 @@ class Archive {
      * @return WP_Error|bool
      */
     public function start() {
-
         // Run all preparation and configuration tasks.
         $this->_set_start_options();
         $this->_clear_directory(static::get_directory());
@@ -42,18 +41,19 @@ class Archive {
         // Run all static site generation tasks.
         foreach ($this->_tasks as $task) {
             $result = $this->_perform_task($task);
-            if ($result instanceof \WP_Error) {
+            if ($result instanceof WP_Error) {
                 $this->_set_end_options();
-                Sentry\captureMessage($result->get_error_message());
+                do_action('grrr_simply_static_deploy_error', $result);
                 return $result;
             }
             if (!$result) {
                 $this->_set_end_options();
                 $message = 'Something went wrong in Simply Static: ' . get_class($task);
-                Sentry\captureMessage($message);
-                return new \WP_Error('simply_static_error', $message, [
+                $error = new WP_Error('simply_static_error', $message, [
                     'status' => 403,
                 ]);
+                do_action('grrr_simply_static_deploy_error', $error);
+                return $error;
             }
         }
 

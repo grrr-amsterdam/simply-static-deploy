@@ -31,7 +31,7 @@ class Syncer {
         );
         $result = $transferManager->transfer();
 
-        if (!$result instanceof \WP_Error) {
+        if (!$result instanceof WP_Error) {
             update_option(self::OPTION_TIMESTAMP_KEY, time());
         }
 
