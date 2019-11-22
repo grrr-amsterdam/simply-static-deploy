@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "782da0a3e0e5eb8f73f815daff060580",
+    "content-hash": "04fb8015fd7d8a979fa55fd9b03de2af",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.113.0",
+            "version": "3.121.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "09998bf4d47195d5c4afa0ffd30e28921ce75f92"
+                "reference": "7c89b0f455d7b2b36e09080adf72861888725ba5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/09998bf4d47195d5c4afa0ffd30e28921ce75f92",
-                "reference": "09998bf4d47195d5c4afa0ffd30e28921ce75f92",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7c89b0f455d7b2b36e09080adf72861888725ba5",
+                "reference": "7c89b0f455d7b2b36e09080adf72861888725ba5",
                 "shasum": ""
             },
             "require": {
@@ -87,17 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-11-05T19:13:36+00:00"
-        },
-        {
-            "name": "grrr-amsterdam/amazon-s3-and-cloudfront",
-            "version": "2.2.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/grrr-amsterdam/wp-amazon-s3-and-cloudfront.git",
-                "reference": "master"
-            },
-            "type": "wordpress-plugin"
+            "time": "2019-11-21T19:10:15+00:00"
         },
         {
             "name": "grrr-amsterdam/garp-functional",
@@ -568,7 +558,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.1"
