@@ -8,12 +8,12 @@ use Aws\CloudFront\Exception\CloudFrontException;
 
 class Invalidation {
 
-    protected $_region;
-    protected $_distributionId;
+    protected $region;
+    protected $distributionId;
 
     public function __construct(CloudFrontClient $client, string $distributionId) {
-        $this->_client = $client;
-        $this->_distributionId = $distributionId;
+        $this->client = $client;
+        $this->distributionId = $distributionId;
     }
 
     /**
@@ -23,10 +23,10 @@ class Invalidation {
      */
     public function invalidate(array $items) {
         try {
-            $this->_client->createInvalidation([
-                'DistributionId' => $this->_distributionId,
+            $this->client->createInvalidation([
+                'DistributionId' => $this->distributionId,
                 'InvalidationBatch' => [
-                    'CallerReference' => $this->_distributionId . ' ' . time(),
+                    'CallerReference' => $this->distributionId . ' ' . time(),
                     'Paths' => [
                         'Items' => $items,
                         'Quantity' => count($items),
@@ -49,4 +49,3 @@ class Invalidation {
         return $error;
     }
 }
-

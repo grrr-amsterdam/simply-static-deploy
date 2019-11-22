@@ -7,11 +7,11 @@ use Aws\CloudFront\CloudFrontClient;
 
 class ClientProvider {
 
-    protected $_sdk;
+    protected $sdk;
 
     public function __construct(Config $config) {
         $credentials = (new CredentialsProvider($config->key, $config->secret))->getCredentials();
-        $this->_sdk = new Sdk([
+        $this->sdk = new Sdk([
             'credentials' => $credentials,
             'region' => $config->region,
             'version' => 'latest',
@@ -22,12 +22,11 @@ class ClientProvider {
     }
 
     public function getS3Client(): S3Client {
-        return $this->_sdk->createS3();
+        return $this->sdk->createS3();
     }
 
     public function getCloudFrontClient(): CloudFrontClient {
-        return $this->_sdk->createCloudFront();
+        return $this->sdk->createCloudFront();
     }
 
 }
-

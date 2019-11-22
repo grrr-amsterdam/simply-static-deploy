@@ -15,7 +15,7 @@
                     <strong>1. Generate: </strong>
                     <span data-type="generate">
                         <span class="is-unscheduled">
-                            Not scheduled,
+                            Not running,
                             <?php if ($this->times['generate']): ?>
                                 last at <?= $this->times['generate'] ?>.
                             <?php else: ?>
@@ -28,7 +28,7 @@
                     <strong>2. Sync: </strong>
                     <span data-type="sync">
                         <span class="is-unscheduled">
-                            Not scheduled,
+                            Not running,
                             <?php if ($this->times['sync']): ?>
                                 last at <?= $this->times['sync'] ?>.
                             <?php else: ?>
@@ -41,7 +41,7 @@
                     <strong>3. Invalidate: </strong>
                     <span data-type="invalidate">
                         <span class="is-unscheduled">
-                            Not scheduled,
+                            Not running,
                             <?php if ($this->times['invalidate']): ?>
                                 last at <?= $this->times['invalidate'] ?>.
                             <?php else: ?>

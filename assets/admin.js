@@ -1,5 +1,6 @@
 /**
  * @TODO Transpile or refactor ES201x syntax?
+ * @TODO Add proper commments.
  */
 
 const Deployer = $ => {

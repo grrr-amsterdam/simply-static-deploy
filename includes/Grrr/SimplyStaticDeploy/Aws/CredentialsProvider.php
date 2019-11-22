@@ -5,18 +5,18 @@ use Aws\Credentials\Credentials;
 
 class CredentialsProvider {
 
-    protected $_key;
-    protected $_secret;
+    protected $key;
+    protected $secret;
 
     public function __construct(string $key, string $secret) {
-        $this->_key = $key;
-        $this->_secret = $secret;
+        $this->key = $key;
+        $this->secret = $secret;
     }
 
     public function getCredentials(): callable {
         return function () {
             return Promise\promise_for(
-                new Credentials($this->_key, $this->_secret)
+                new Credentials($this->key, $this->secret)
             );
         };
     }
