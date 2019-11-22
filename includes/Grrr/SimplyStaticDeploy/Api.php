@@ -6,8 +6,6 @@ use WP_REST_Response;
 
 class Api {
 
-    const ENPOINT_BASE = 'static-site';
-
     const ENDPOINT_MAPPER = [
         'generate'   => 'generate_bundle',
         'sync'       => 'sync_to_s3',
@@ -26,7 +24,7 @@ class Api {
 
     public function register_api_endpoints() {
         foreach (self::ENDPOINT_MAPPER as $endpoint => $callback) {
-            register_rest_route('grrr/v1', static::ENPOINT_BASE . '/' . $endpoint, [
+            register_rest_route(RestRoutes::NAMESPACE, RestRoutes::get($endpoint), [
                 'methods' => 'POST',
                 'callback' => [$this, $callback],
                 'permission_callback' => function() {

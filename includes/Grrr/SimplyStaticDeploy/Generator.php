@@ -4,7 +4,7 @@ use WP_Error;
 
 class Generator {
 
-    const OPTION_TIMESTAMP_KEY = 'grrr_static_site_generated_at';
+    const OPTION_TIMESTAMP_KEY = 'grrr_simply_static_deploy_generated_at';
 
     /**
      * Start the Simply Static archive process tasks and return the result.
@@ -13,7 +13,7 @@ class Generator {
      */
     public function generate() {
         if (Archive::is_in_progress()) {
-            return new WP_Error('simply_static_error', 'Bundle generation already in progress. Someone else might\'ve started a deploy without your knowledge.', [
+            return new WP_Error('grrr_simply_static_deploy_generator', 'Bundle generation already in progress. Someone else might\'ve started a deploy without your knowledge.', [
                 'status' => 403,
             ]);
         }

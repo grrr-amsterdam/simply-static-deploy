@@ -13,7 +13,7 @@ class Scheduler {
 
     const INTERVAL = 'daily';
 
-    const EVENT = 'grrr_static_site_deploy_event';
+    const EVENT = 'grrr_simply_static_deploy_scheduler_event';
 
     private $config;
 

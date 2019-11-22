@@ -5,7 +5,7 @@ use Garp\Functional as f;
 
 class Invalidator {
 
-    const OPTION_TIMESTAMP_KEY = 'grrr_static_site_invalidated_at';
+    const OPTION_TIMESTAMP_KEY = 'grrr_simply_static_deploy_invalidated_at';
 
     private $config;
 

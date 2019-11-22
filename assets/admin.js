@@ -1,3 +1,7 @@
+/**
+ * @TODO Transpile or refactor ES201x syntax?
+ */
+
 const Deployer = $ => {
 
   const PAGE_SELECTOR = '.js-grrr-static-site';
@@ -8,7 +12,7 @@ const Deployer = $ => {
   const ERROR_CONTAINER_SELECTOR = '.js-error-container';
   const ERROR_MESSAGE_SELECTOR = '.js-error-message';
 
-  const VARS = window.GRRR_STATIC_SITE;
+  const VARS = window.GRRR_SIMPLY_STATIC_DEPLOY;
   const API_VARS = VARS.api;
   const ENDPOINTS = API_VARS.endpoints;
   const NONCE = API_VARS.nonce;

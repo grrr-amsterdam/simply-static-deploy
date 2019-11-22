@@ -5,8 +5,8 @@ use Grrr\SimplyStaticDeploy\Utils\Renderer;
 
 class Admin {
 
-    const SLUG = 'grrr-static-site';
-    const JS_GLOBAL = 'GRRR_STATIC_SITE';
+    const SLUG = 'grrr-simply-static-deploy';
+    const JS_GLOBAL = 'GRRR_SIMPLY_STATIC_DEPLOY';
 
     private $basePath;
     private $config;
@@ -94,8 +94,7 @@ class Admin {
     public function get_endpoints() {
         $out = [];
         foreach (Api::ENDPOINT_MAPPER as $endpoint => $callback) {
-            $name = preg_replace('/[\-\/]/', '_', $endpoint);
-            $out[$name] = get_rest_url(null, '/grrr/v1/' . Api::ENPOINT_BASE . '/' . $endpoint);
+            $out[$endpoint] = RestRoutes::url($endpoint);
         }
         return $out;
     }

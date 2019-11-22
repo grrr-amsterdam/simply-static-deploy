@@ -4,6 +4,10 @@ use WP_Error;
 use Simply_Static;
 use Garp\Functional as f;
 
+/**
+ * @TODO Refactor syntax.
+ * @TODO Make everything configurable via hooks and actions.
+ */
 class Archive {
 
     protected $_tasks = [];

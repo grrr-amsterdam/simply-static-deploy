@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Simply Static Deploy
- * Plugin URI:
+ * Plugin URI:  https://github.com/grrr-amsterdam/simply-static-deploy/
  * Description: Deploy static sites easily to an AWS S3 bucket.
  * Version:     0.1.0
  * Author:      GRRR
