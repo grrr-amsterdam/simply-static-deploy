@@ -9,9 +9,9 @@ class Config {
         'secret',
         'region',
         'bucket',
-        'bucket_acl',
-        'distribution',
-        'url',
+        // 'bucket_acl', // @TODO rethink this...
+        // 'distribution', // @TODO we shouldn't force CloudFront, so rethink this...
+        'url', // @TODO maybe incorporate this with enforce Simply Static settings?
     ];
 
     private $data;
