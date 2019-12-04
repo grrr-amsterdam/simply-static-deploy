@@ -12,11 +12,45 @@ Built with ❤️ by [GRRR](https://grrr.tech).
 
 ## Installation
 
+Install via Composer:
+
+```sh
+$ composer require grrr-amsterdam/simply-static-deploy
+```
+
+This will install it in the plugin directory, assuming you have the right installer path configured in your `composer.json`:
+
+```json
+"extra": {
+  "installer-paths": {
+    "web/app/plugins/{$name}/": ["type:wordpress-plugin"]
+  }
+}
+```
+
+## Configuration
+
+Define this...
+
+```php
+define('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS', [
+    'key'           => env('AWS_SITE_ACCESS_KEY_ID'),
+    'secret'        => env('AWS_SITE_SECRET_ACCESS_KEY'),
+    'region'        => env('AWS_SITE_REGION'),
+    'bucket'        => env('AWS_SITE_S3_BUCKET'),
+    'bucket_acl'    => env('AWS_SITE_S3_BUCKET_ACL'), // optional
+    'distribution'  => env('AWS_SITE_CF_DISTRIBUTION_ID'), // optional
+    'url'           => env('AWS_SITE_WEBSITE_URL'),
+]);
+```
+
 ## Usage
+
+...
 
 ## Documentation
 
-[View the documentation](https://github.com/grrr-amsterdam/simply-static-deploy/tree/master/docs) for all available functions.
+[View the documentation](https://github.com/grrr-amsterdam/simply-static-deploy/tree/master/docs) for ...
 
 ### Available filters
 
