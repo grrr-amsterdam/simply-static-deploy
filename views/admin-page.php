@@ -1,8 +1,19 @@
+<?php
+
+use Garp\Functional as f;
+
+$invalidate = f\contains('invalidate', $this->tasks);
+
+?>
 <div class="wrap js-grrr-static-site">
     <div class="card">
         <section>
             <h1><?= get_admin_page_title() ?></h1>
-            <p>Generate a static version of the website, sync it to the static hosting environment, and invalidate the cache.</p>
+            <?php if ($invalidate): ?>
+                <p>Generate a static version of the website, sync it to the static hosting environment, and invalidate the cache.</p>
+            <?php else: ?>
+                <p>Generate a static version of the website and sync it to the static hosting environment.</p>
+            <?php endif; ?>
             <div class="wp-clearfix" style="margin-bottom: 15px;">
                 <form class="alignleft" data-type="all" style="margin-right: 10px;">
                     <button class="button button-primary button-large js-trigger-button" type="submit">Generate &amp; deploy</button>
@@ -37,6 +48,7 @@
                         </span>
                     </span>
                 </li>
+                <?php if ($invalidate): ?>
                 <li>
                     <strong>3. Invalidate: </strong>
                     <span data-type="invalidate">
@@ -50,6 +62,7 @@
                         </span>
                     </span>
                 </li>
+                <?php endif; ?>
             </ul>
             <div class="deploy-error js-error-container" role="alert" aria-hidden="true">
                 <h4>An error occurred</h4>
@@ -69,7 +82,11 @@
 
         <section class="deploy-tasks" id="grrr-static-site-tasks" aria-hidden="true">
             <hr/>
-            <p>Individual tasks to generate, sync and invalidate the website. These tasks are normally executed in the given order.</p>
+            <?php if ($invalidate): ?>
+                <p>Individual tasks to generate, sync and invalidate the website. These tasks are normally executed in the given order.</p>
+            <?php else: ?>
+                <p>Individual tasks to generate and sync the website. These tasks are normally executed in the given order.</p>
+            <?php endif; ?>
 
             <form action="<?= $this->endpoints['generate'] ?>"
                 method="post"
@@ -83,11 +100,13 @@
                 <button class="button js-trigger-button" type="submit">Sync to S3</button>
             </form>
 
-            <form action="<?= $this->endpoints['invalidate'] ?>"
-                method="post"
-                data-type="invalidate">
-                <button class="button js-trigger-button" type="submit">Invalidate CloudFront</button>
-            </form>
+            <?php if ($invalidate): ?>
+                <form action="<?= $this->endpoints['invalidate'] ?>"
+                    method="post"
+                    data-type="invalidate">
+                    <button class="button js-trigger-button" type="submit">Invalidate CloudFront</button>
+                </form>
+            <?php endif; ?>
         </section>
     </div>
 </div>

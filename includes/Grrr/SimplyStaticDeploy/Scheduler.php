@@ -48,8 +48,10 @@ class Scheduler {
             return;
         }
 
-        $invalidator = new Invalidator($this->config);
-        $invalidate = $invalidator->invalidate();
+        if ($this->config->distribution) {
+            $invalidator = new Invalidator($this->config);
+            $invalidate = $invalidator->invalidate();
+        }
     }
 
     public function clear() {

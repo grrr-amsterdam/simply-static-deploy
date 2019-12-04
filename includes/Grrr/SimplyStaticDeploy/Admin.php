@@ -50,6 +50,7 @@ class Admin {
                 'nonce' => wp_create_nonce('wp_rest'),
                 'endpoints' => $this->get_endpoints(),
             ],
+            'tasks' => $this->get_tasks(),
             'website' => trim($this->config->url, '/') . '/',
         ]);
     }
@@ -61,18 +62,34 @@ class Admin {
             $this->basePath . 'views/admin-page.php',
             [
                 'endpoints' => $this->get_endpoints(),
-                'times' => [
-                    'generate' => $this->get_last_time(Generator::get_last_time()),
-                    'sync' => $this->get_last_time(Syncer::get_last_time()),
-                    'invalidate' => $this->get_last_time(Invalidator::get_last_time()),
-                ],
+                'tasks' => $this->get_tasks(),
+                'times' => $this->get_times(),
                 'in_progress' => Archive::is_in_progress(),
             ]
         );
         $renderer->render();
     }
 
-    public function get_last_time($timestamp): string {
+    private function get_tasks(): array {
+        $tasks = ['generate', 'sync'];
+        if ($this->config->distribution) {
+            $tasks[] = 'invalidate';
+        }
+        return $tasks;
+    }
+
+    private function get_times(): array {
+        $times = [
+            'generate' => $this->get_last_time(Generator::get_last_time()),
+            'sync' => $this->get_last_time(Syncer::get_last_time()),
+        ];
+        if ($this->config->distribution) {
+            $times['invalidate'] = $this->get_last_time(Invalidator::get_last_time());
+        }
+        return $times;
+    }
+
+    private function get_last_time($timestamp): string {
         $tz = get_option('timezone_string') ?: date_default_timezone_get();
         date_default_timezone_set($tz);
         return $timestamp
@@ -80,18 +97,18 @@ class Admin {
             : '';
     }
 
-    public function get_asset_url(string $filename): string {
+    private function get_asset_url(string $filename): string {
         return SIMPLY_STATIC_DEPLOY_URL . 'assets/' . $filename;
         $relative_assets_dir = substr($this->basePath, strlen(get_theme_file_path())) . '/assets';
         return get_theme_file_uri($relative_assets_dir . '/' . $filename);
     }
 
-    public function get_icon(string $filename): string {
+    private function get_icon(string $filename): string {
         $icon = $this->basePath . 'assets/' .$filename;
         return 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($icon));
     }
 
-    public function get_endpoints() {
+    private function get_endpoints() {
         $out = [];
         foreach (Api::ENDPOINT_MAPPER as $endpoint => $callback) {
             $out[$endpoint] = RestRoutes::url($endpoint);

@@ -14,11 +14,11 @@ const Deployer = $ => {
   const ERROR_MESSAGE_SELECTOR = '.js-error-message';
 
   const VARS = window.GRRR_SIMPLY_STATIC_DEPLOY;
+  const TASKS = VARS.tasks;
   const API_VARS = VARS.api;
   const ENDPOINTS = API_VARS.endpoints;
   const NONCE = API_VARS.nonce;
 
-  const TASKS = ['generate', 'sync', 'invalidate'];
   const QUEUED_TASKS = [];
   const PREVIOUSLY_QUEUED_TASKS = [];
 
