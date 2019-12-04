@@ -6,6 +6,8 @@ use DateTimeZone;
 
 /**
  * Add scheduled generation and deploy of static site.
+ *
+ * @TODO make this registrable instead of enforcing it.
  */
 class Scheduler {
 

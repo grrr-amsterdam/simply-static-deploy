@@ -13,7 +13,7 @@ class Generator {
      */
     public function generate() {
         if (Archive::is_in_progress()) {
-            return new WP_Error('grrr_simply_static_deploy_generator', 'Bundle generation already in progress. Someone else might\'ve started a deploy without your knowledge.', [
+            return new WP_Error('grrr_simply_static_deploy_generator', __("Bundle generation already in progress. Someone else might've started a deploy without your knowledge.", 'grrr'), [
                 'status' => 403,
             ]);
         }

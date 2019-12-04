@@ -21,7 +21,7 @@ class Syncer {
      */
     public function sync(string $path) {
         if (!file_exists($path) || !(new FilesystemIterator($path))->valid()) {
-            return new WP_Error('grrr_simply_static_deploy_syncer', "No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", [
+            return new WP_Error('grrr_simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'grrr'), [
                 'status' => 400,
             ]);
         }
@@ -30,7 +30,7 @@ class Syncer {
         $transferManager = new Aws\S3\TransferManager(
             $clientProvider->getS3Client(),
             $this->config->bucket,
-            $this->config->bucket_acl,
+            $this->config->bucket_acl ?: 'public-read',
             $path
         );
         $result = $transferManager->transfer();
