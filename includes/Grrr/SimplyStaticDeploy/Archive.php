@@ -119,7 +119,7 @@ class Archive {
      */
     protected function _clear_directory(string $dir): void {
         $name = f\last(f\split('/', trim($dir, '/')));
-        if (!$dir || $name !== 'static') {
+        if (!$dir || !file_exists($dir) || $name !== 'static') {
             return;
         }
 
