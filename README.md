@@ -77,6 +77,7 @@ TimeOut 600
 
 - [grrr_simply_static_deploy_error](#grrr_simply_static_deploy_error)
 - [grrr_simply_static_deploy_modify_generated_files](#grrr_simply_static_deploy_modify_generated_files)
+- [grrr_simply_static_deploy_schedule](#grrr_simply_static_deploy_schedule)
 
 #### grrr_simply_static_deploy_error
 
@@ -96,4 +97,30 @@ Called when Simply Static is done generating the static site. This allows you to
 add_action('grrr_simply_static_deploy_modify_generated_files', function (string $directory) {
     # Modify generated files, like renaming or moving them.
 });
+
+#### grrr_simply_static_deploy_schedule
+
+Schedule a deploy event. 
+
+Arguments:
+
+- **Time**: should be a simple time string, it is automatically converted to a UNIX timestamp in the configured WordPress timezone.
+- **Interval**: accepted values are `hourly`, `twicedaily` and `daily`. Can be extended via [cron_schedules](https://developer.wordpress.org/reference/hooks/cron_schedules).
+
+```php
+do_action('grrr_simply_static_deploy_schedule', '12:00', 'daily');
+```
+
+Note: it is important that [WP-Cron](https://developer.wordpress.org/plugins/cron/) is called regularly. You could do so by disabling the default WP-Cron mechanism and switch to calling it via a dedicated [cronjob](https://en.wikipedia.org/wiki/Cronjob).
+
+To disable the default WP–Cron (which is normally called when a user visits pages), add the following to your WordPress configuration:
+ 
+```php
+define('DISABLE_WP_CRON', true);
+```
+
+Create a cronjob calling the WordPres WP-Cron. Setting it to _every 5 minutes_ would be a good default. For example via  `crontab -e` on a Linux machine:
+
+```cron
+*/5 * * * * curl https://example.com/wp/wp-cron.php?doing-cron > /dev/null 2>&1
 ```
