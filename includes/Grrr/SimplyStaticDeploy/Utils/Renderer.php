@@ -2,37 +2,37 @@
 
 class Renderer {
 
-    private $_file;
-    private $_args;
+    private $file;
+    private $args;
 
     public function __get($name) {
-        if (isset($this->_args[$name])) {
-            return $this->_args[$name];
+        if (isset($this->args[$name])) {
+            return $this->args[$name];
         }
     }
 
     public function __isset($name): bool {
-        return isset($this->_args[$name]);
+        return isset($this->args[$name]);
     }
 
     public function __construct(string $file, array $args = []) {
         if (strpos($file, '.php') === false) {
             $file .= '.php';
         }
-        $this->_file = $file;
-        $this->_args = $args;
+        $this->file = $file;
+        $this->args = $args;
     }
 
     public function render() {
         switch (true):
-            case locate_template($this->_file):
-                include(locate_template($this->_file));
+            case locate_template($this->file):
+                include(locate_template($this->file));
                 break;
-            case locate_template('templates/' . $this->_file):
-                include(locate_template('templates/' . $this->_file));
+            case locate_template('templates/' . $this->file):
+                include(locate_template('templates/' . $this->file));
                 break;
             default:
-                include($this->_file);
+                include($this->file);
         endswitch;
     }
 
@@ -45,4 +45,3 @@ class Renderer {
     }
 
 }
-
