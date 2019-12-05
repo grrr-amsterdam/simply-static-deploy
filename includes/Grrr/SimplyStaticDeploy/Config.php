@@ -9,9 +9,12 @@ class Config {
         'secret',
         'region',
         'bucket',
-        // 'bucket_acl', // @TODO rethink this...
-        // 'distribution', // @TODO we shouldn't force CloudFront, so rethink this...
-        'url', // @TODO maybe incorporate this with enforce Simply Static settings?
+        'url', // @TODO maybe incorporate this with enforced Simply Static settings?
+    ];
+
+    const OPTIONAL_FIELDS = [
+        'bucket_acl',
+        'distribution',
     ];
 
     private $data;
