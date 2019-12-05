@@ -3,19 +3,17 @@
 use WP_Error;
 use DateTime;
 use DateTimeZone;
+use Garp\Functional as f;
 
 /**
- * Add scheduled generation and deploy of static site.
+ * Schedule deploys via WP-Cron.
  *
- * @TODO make this registrable instead of enforcing it.
+ * @author Koen Schaft <koen@grrr.nl>
  */
 class Scheduler {
 
-    const START_TIME = '12:00:00'; // Half an hour after daily imports
-
-    const INTERVAL = 'daily';
-
-    const EVENT = 'grrr_simply_static_deploy_scheduler_event';
+    const SCHEDULE_ACTION = 'grrr_simply_static_deploy_schedule';
+    const EVENT_BASE = 'grrr_simply_static_deploy_event';
 
     private $config;
 
@@ -23,19 +21,21 @@ class Scheduler {
         $this->config = $config;
     }
 
-    public function register() {
-        if (!wp_next_scheduled(self::EVENT)) {
-            $datetime = new DateTime(
-                self::START_TIME,
-                new DateTimeZone(get_option('timezone_string'))
-            );
-            wp_schedule_event($datetime->getTimestamp(), self::INTERVAL, self::EVENT);
-        }
-
-        add_action(self::EVENT, [$this, 'deploy']);
+    public function register(): void {
+        add_action(static::SCHEDULE_ACTION, [$this, 'schedule'], 10, 3);
     }
 
-    public function deploy() {
+    public function schedule(string $time, string $interval): void {
+        $datetime = new DateTime($time, new DateTimeZone(get_option('timezone_string')));
+        $event = $this->generate_event_name($datetime, $interval);
+        if (!wp_next_scheduled($event)) {
+            wp_schedule_event($datetime->getTimestamp(), $interval, $event);
+        }
+
+        add_action($event, [$this, 'deploy']);
+    }
+
+    public function deploy(): void {
         $generator = new Generator();
         $generate = $generator->generate();
         if ($generate instanceof WP_Error) {
@@ -54,8 +54,13 @@ class Scheduler {
         }
     }
 
-    public function clear() {
-        wp_clear_scheduled_hook(self::EVENT);
+    private function generate_event_name(DateTime $datetime, string $interval): string {
+        return f\join('_', [
+            static::EVENT_BASE,
+            $interval,
+            $datetime->format('H'),
+            $datetime->format('i'),
+        ]);
     }
 
 }
