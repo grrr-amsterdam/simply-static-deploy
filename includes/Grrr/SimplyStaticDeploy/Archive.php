@@ -10,7 +10,8 @@ use Garp\Functional as f;
 class Archive {
 
     private $tasks = [];
-    private $additionalFilesOption = '';
+    private $filesOption = '';
+    private $urlsOption = '';
 
     public function __construct() {
         // Increase max execution time for this class.
@@ -24,10 +25,11 @@ class Archive {
             new Simply_Static\Wrapup_Task(),
         ];
 
-        // Store original additional_files option, so we can restore it later.
-        // We do so, because we need to update the option with resolved symbolic links.
-        $this->additionalFilesOption = Simply_Static\Options::instance()
-            ->get('additional_files');
+        // Store original additional_files and `additional_urls` options, so we can
+        // restore them later. We do so, because we need to update the options to
+        // resolve symbolic links and add 'hidden' posts.
+        $this->filesOption = Simply_Static\Options::instance()->get('additional_files');
+        $this->urlsOption = Simply_Static\Options::instance()->get('additional_urls');
     }
 
     /**
@@ -41,7 +43,6 @@ class Archive {
         $this->enforce_additional_files([
             rtrim(get_template_directory(), '/') . '/assets/build',
         ]);
-        $this->add_hidden_posts();
 
         $result = $this->run_tasks($this->tasks);
         $this->set_end_options();
@@ -112,7 +113,8 @@ class Archive {
     private function set_start_options(): void {
         Simply_Static\Options::instance()
             ->set('archive_status_messages', [])
-            ->set('additional_files', $this->resolve_additional_files($this->additionalFilesOption))
+            ->set('additional_files', $this->resolve_additional_files($this->filesOption))
+            ->set('additional_urls', $this->enrich_additional_urls($this->urlsOption))
             ->set('archive_start_time', Simply_Static\Util::formatted_datetime())
             ->set('archive_end_time', '')
             ->save();
@@ -123,7 +125,8 @@ class Archive {
      */
     private function set_end_options(): void {
         Simply_Static\Options::instance()
-            ->set('additional_files', $this->additionalFilesOption)
+            ->set('additional_files', $this->filesOption)
+            ->set('additional_urls', $this->urlsOption)
             ->set('archive_end_time', Simply_Static\Util::formatted_datetime())
             ->save();
     }
@@ -187,6 +190,46 @@ class Archive {
     }
 
     /**
+     * Pages or posts which aren't linked to and which are unavailable in the
+     * sitemap will not be fetched, since Simply Static can't find them.
+     * We'll have to fetch them manually and append them to the `additional_urls`
+     * option during the archive tasks.
+     */
+    private function enrich_additional_urls(string $option): string {
+        $urls = Simply_Static\Util::string_to_array($option);
+        return f\join(PHP_EOL, f\unique(f\concat(
+            $urls,
+            $this->fetch_password_protected_posts(),
+            $this->fetch_yoast_noindex_posts()
+        )));
+    }
+
+    /**
+     * Fetch password protected posts.
+     */
+    private function fetch_password_protected_posts(): array {
+        $query = new \WP_Query([
+            'post_type' => 'any',
+            'has_password' => true,
+            'posts_per_page' => -1,
+        ]);
+        return f\map(f\compose('get_permalink', f\prop('ID')), $query->posts);
+    }
+
+    /**
+     * Fetch posts which are set to `noindex` by Yoast SEO.
+     */
+    private function fetch_yoast_noindex_posts(): array {
+        $query = new \WP_Query([
+            'post_type' => 'any',
+            'meta_key' => '_yoast_wpseo_meta-robots-noindex',
+            'meta_value_num' => 1,
+            'posts_per_page' => -1,
+        ]);
+        return f\map(f\compose('get_permalink', f\prop('ID')), $query->posts);
+    }
+
+    /**
      * Fix some generated files since we'll be hosting them statically.
      */
     private function modify_generated_files(): void {
@@ -207,43 +250,4 @@ class Archive {
             rename($cwd . '/feed/atom/index.xml', $cwd . '/feed/atom/index.html');
         }
     }
-
-    /**
-     * Pages or posts which aren't linked to and which are unavailable in the
-     * sitemap will not be fetched, and are therefore not built by Simply Static.
-     * We'll have to fetch them manually and append them to the `additional_urls`
-     * option ourselves.
-     */
-    private function add_hidden_posts(): void {
-        $option = Simply_Static\Options::instance()->get('additional_urls');
-        $existing_urls = Simply_Static\Util::string_to_array($option);
-        Simply_Static\Options::instance()->set(
-            'additional_urls',
-            f\join(PHP_EOL, f\unique(f\concat(
-                $existing_urls,
-                $this->fetch_password_protected_posts(),
-                $this->fetch_yoast_noindex_posts()
-            )))
-        );
-    }
-
-    private function fetch_password_protected_posts(): array {
-        $query = new \WP_Query([
-            'post_type' => 'any',
-            'has_password' => true,
-            'posts_per_page' => -1,
-        ]);
-        return f\map(f\compose('get_permalink', f\prop('ID')), $query->posts);
-    }
-
-    private function fetch_yoast_noindex_posts(): array {
-        $query = new \WP_Query([
-            'post_type' => 'any',
-            'meta_key' => '_yoast_wpseo_meta-robots-noindex',
-            'meta_value_num' => 1,
-            'posts_per_page' => -1,
-        ]);
-        return f\map(f\compose('get_permalink', f\prop('ID')), $query->posts);
-    }
-
 }
