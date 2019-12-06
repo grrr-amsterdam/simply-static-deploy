@@ -1,46 +1,32 @@
-<?php namespace Grrr\SimplyStaticDeploy\SimplyStatic;
+<?php namespace Grrr\SimplyStaticDeploy;
 
 use Simply_Static;
 use Garp\Functional as f;
 
-class Settings {
+class SettingsEnforcer {
 
-    public static function enforce() {
-        $url = f\prop('url', AWS_SITE);
-        $host = preg_replace('(^https?://)', '', $url);
+    const SETTINGS_FILTER = 'grrr_simply_static_deploy_settings';
 
-        $outputPath = rtrim(ABSPATH, '/') . '/../app/static/';
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+    private $settings = [];
+
+    public function __construct() {
+        if (!has_filter(static::SETTINGS_FILTER)) {
+            return;
         }
+        $this->settings = apply_filters(
+            static::SETTINGS_FILTER,
+            Simply_Static\Options::instance()->get_as_array()
+        );
+    }
 
-        $tempPath = rtrim(ABSPATH, '/') . '/../app/static-temp/';
-        if (!file_exists($tempPath)) {
-            mkdir($tempPath, 0755, true);
+    public function enforce() {
+        if (!$this->settings) {
+            return;
         }
-
-        Simply_Static\Options::instance()
-            ->set('destination_url_type', 'absolute')
-            ->set('destination_scheme', 'https://')
-            ->set('destination_host', rtrim($host, '/'))
-            ->set('delivery_method', 'local')
-            ->set('local_dir', rtrim(realpath($outputPath), '/') . '/')
-            ->set('temp_files_dir', rtrim(realpath($tempPath), '/') . '/')
-            ->set('delete_temp_files', '1')
-            ->set('additional_urls',
-                rtrim(get_home_url(), '/') . '/sitemap.xml' . PHP_EOL
-            )
-            ->set('additional_files',
-                rtrim(get_template_directory(), '/') . '/assets/build/' . PHP_EOL
-            )
-            ->set('urls_to_exclude', [
-                [
-                    'url' => '/app/uploads',
-                    'do_not_save' => '1',
-                    'do_not_follow' => '1',
-                ],
-            ])
-            ->save();
+        foreach ($this->settings as $key => $value) {
+            Simply_Static\Options::instance()->set($key, $value);
+        }
+        Simply_Static\Options::instance()->save();
     }
 
 }

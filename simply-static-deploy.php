@@ -12,7 +12,8 @@ use Grrr\SimplyStaticDeploy\{
     Api,
     Config,
     Exception,
-    Scheduler
+    Scheduler,
+    SettingsEnforcer
 };
 
 // Useful global constants.
@@ -39,3 +40,9 @@ $config = new Config(SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS);
 (new Admin($config))->register(SIMPLY_STATIC_DEPLOY_PATH);
 (new Api($config))->register();
 (new Scheduler($config))->register();
+
+// Bootstrap components after theme is loaded, because of `add_filter` execution.
+add_action('after_setup_theme', function() {
+    $settingsEnforcer = new SettingsEnforcer();
+    $settingsEnforcer->enforce();
+});
