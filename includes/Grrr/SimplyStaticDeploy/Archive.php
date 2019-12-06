@@ -23,6 +23,11 @@ class Archive {
             new Simply_Static\Transfer_Files_Locally_Task(),
             new Simply_Static\Wrapup_Task(),
         ];
+
+        // Store original additional_files option, so we can restore it later.
+        // We do so, because we need to update the option with resolved symbolic links.
+        $this->additionalFilesOption = Simply_Static\Options::instance()
+            ->get('additional_files');
     }
 
     /**
@@ -34,7 +39,6 @@ class Archive {
         // Run all preparation and configuration tasks.
         $this->set_start_options();
         $this->clear_directory(static::get_directory());
-        $this->resolve_additional_files();
         $this->enforce_additional_files([
             rtrim(get_template_directory(), '/') . '/assets/build',
         ]);
@@ -96,14 +100,21 @@ class Archive {
         return $result ?: $this->perform_task($task);
     }
 
+    /**
+     * Set and store Simply Static start options.
+     */
     private function set_start_options(): void {
         Simply_Static\Options::instance()
             ->set('archive_status_messages', [])
+            ->set('additional_files', $this->resolve_additional_files($this->additionalFilesOption))
             ->set('archive_start_time', Simply_Static\Util::formatted_datetime())
             ->set('archive_end_time', '')
             ->save();
     }
 
+    /**
+     * Set and store Simply Static end options.
+     */
     private function set_end_options(): void {
         Simply_Static\Options::instance()
             ->set('additional_files', $this->additionalFilesOption)
@@ -146,16 +157,9 @@ class Archive {
      * We're fixing this by temporarily resolving all `additional_files` paths
      * to absolute URLs with resolved symlinks, and restoring them after completion.
      */
-    private function resolve_additional_files(): void {
-        $option = Simply_Static\Options::instance()->get('additional_files');
-        $this->additionalFilesOption = $option;
-
+    private function resolve_additional_files(string $option): string {
         $paths = Simply_Static\Util::string_to_array($option);
-
-        Simply_Static\Options::instance()->set(
-            'additional_files',
-            f\join(PHP_EOL, f\unique(f\map('realpath', $paths)))
-        );
+        return f\join(PHP_EOL, f\unique(f\map('realpath', $paths)));
     }
 
     /**
