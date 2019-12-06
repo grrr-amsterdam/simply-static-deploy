@@ -12,14 +12,14 @@ class Generator {
      * @return WP_Error|bool
      */
     public function generate() {
-        if (Archive::is_in_progress()) {
+        if (Archiver::is_in_progress()) {
             return new WP_Error('grrr_simply_static_deploy_generator', __("Bundle generation already in progress. Someone else might've started a deploy without your knowledge.", 'grrr'), [
                 'status' => 403,
             ]);
         }
 
-        $archive = new Archive();
-        $result = $archive->start();
+        $archiver = new Archiver();
+        $result = $archiver->start();
         if (!$result instanceof WP_Error) {
             update_option(self::OPTION_TIMESTAMP_KEY, time());
         }

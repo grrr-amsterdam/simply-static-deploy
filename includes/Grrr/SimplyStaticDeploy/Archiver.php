@@ -7,7 +7,7 @@ use Garp\Functional as f;
 /**
  * @TODO Make everything configurable via hooks and actions.
  */
-class Archive {
+class Archiver {
 
     private $tasks = [];
     private $filesOption = '';
