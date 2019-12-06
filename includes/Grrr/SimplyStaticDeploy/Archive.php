@@ -13,11 +13,13 @@ use Garp\Functional as f;
 class Archive {
 
     const MODIFY_ACTION = 'grrr_simply_static_deploy_modify_generated_files';
+    const FILES_FILTER = 'grrr_simply_static_deploy_additional_files';
     const PHP_FILTER = 'grrr_simply_static_deploy_php_execution_time';
+    const URLS_FILTER = 'grrr_simply_static_deploy_additional_urls';
 
     private $tasks = [];
-    private $filesOption = '';
-    private $urlsOption = '';
+    private $files = [];
+    private $urls = [];
 
     public function __construct() {
         // Increase max execution time for this class, since a larger website can
@@ -36,8 +38,12 @@ class Archive {
         // Store original additional_files and `additional_urls` options, so we can
         // restore them later. We do so, because we need to update the options to
         // resolve symbolic links and add 'hidden' posts.
-        $this->filesOption = Simply_Static\Options::instance()->get('additional_files');
-        $this->urlsOption = Simply_Static\Options::instance()->get('additional_urls');
+        $this->files = static::option_string_to_array(
+            Simply_Static\Options::instance()->get('additional_files')
+        );
+        $this->urls = static::option_string_to_array(
+            Simply_Static\Options::instance()->get('additional_urls')
+        );
     }
 
     /**
@@ -63,26 +69,6 @@ class Archive {
             }
             return true;
         }
-    }
-
-    /**
-     * Return the configured output directory for the static site.
-     *
-     * @return string
-     */
-    public static function get_directory(): string {
-        return Simply_Static\Options::instance()->get('local_dir') ?: '';
-    }
-
-    /**
-     * Check whether Simply Static is in progress.
-     * This is defined by there being a start_time stored but not an end_time.
-     *
-     * @return bool
-     */
-    public static function is_in_progress(): bool {
-        return Simply_Static\Options::instance()->get('archive_start_time')
-            && !Simply_Static\Options::instance()->get('archive_end_time');
     }
 
     /**
@@ -120,10 +106,17 @@ class Archive {
      * Set and store Simply Static start options.
      */
     private function set_start_options(): void {
+        $files = has_filter(static::FILES_FILTER)
+            ? apply_filters(static::FILES_FILTER, $this->files)
+            : $this->resolve_additional_files($this->files);
+        $urls = has_filter(static::URLS_FILTER)
+            ? apply_filters(static::URLS_FILTER, $this->urls)
+            : $this->enrich_additional_urls($this->urls);
+
         Simply_Static\Options::instance()
             ->set('archive_status_messages', [])
-            ->set('additional_files', $this->resolve_additional_files($this->filesOption))
-            ->set('additional_urls', $this->enrich_additional_urls($this->urlsOption))
+            ->set('additional_files', static::array_to_option_string($files))
+            ->set('additional_urls', static::array_to_option_string($urls))
             ->set('archive_start_time', Simply_Static\Util::formatted_datetime())
             ->set('archive_end_time', '')
             ->save();
@@ -134,8 +127,8 @@ class Archive {
      */
     private function set_end_options(): void {
         Simply_Static\Options::instance()
-            ->set('additional_files', $this->filesOption)
-            ->set('additional_urls', $this->urlsOption)
+            ->set('additional_files', static::array_to_option_string($this->files))
+            ->set('additional_urls', static::array_to_option_string($this->urls))
             ->set('archive_end_time', Simply_Static\Util::formatted_datetime())
             ->save();
     }
@@ -173,9 +166,8 @@ class Archive {
      * We're fixing this by temporarily resolving all `additional_files` paths
      * to absolute URLs with resolved symlinks, and restoring them after completion.
      */
-    private function resolve_additional_files(string $option): string {
-        $paths = Simply_Static\Util::string_to_array($option);
-        return f\join(PHP_EOL, f\unique(f\map('realpath', $paths)));
+    private function resolve_additional_files(array $files): array {
+        return f\unique(f\map('realpath', $files));
     }
 
     /**
@@ -184,13 +176,12 @@ class Archive {
      * We'll have to fetch them manually and append them to the `additional_urls`
      * option during the archive tasks.
      */
-    private function enrich_additional_urls(string $option): string {
-        $urls = Simply_Static\Util::string_to_array($option);
-        return f\join(PHP_EOL, f\unique(f\concat(
+    private function enrich_additional_urls(array $urls): array {
+        return f\unique(f\concat(
             $urls,
             $this->fetch_password_protected_posts(),
             $this->fetch_yoast_noindex_posts()
-        )));
+        ));
     }
 
     /**
@@ -239,4 +230,39 @@ class Archive {
             rename($cwd . '/feed/atom/index.xml', $cwd . '/feed/atom/index.html');
         }
     }
+
+    /**
+     * Convert Simply Static option string to array.
+     */
+    public static function option_string_to_array(string $option): array {
+        return Simply_Static\Util::string_to_array($option);
+    }
+
+    /**
+     * Convert array to Simply Static option.
+     */
+    public static function array_to_option_string(array $array): string {
+        return f\join(PHP_EOL, $array);
+    }
+
+    /**
+     * Return the configured output directory for the static site.
+     *
+     * @return string
+     */
+    public static function get_directory(): string {
+        return Simply_Static\Options::instance()->get('local_dir') ?: '';
+    }
+
+    /**
+     * Check whether Simply Static is in progress.
+     * This is defined by there being a start_time stored but not an end_time.
+     *
+     * @return bool
+     */
+    public static function is_in_progress(): bool {
+        return Simply_Static\Options::instance()->get('archive_start_time')
+            && !Simply_Static\Options::instance()->get('archive_end_time');
+    }
+
 }
