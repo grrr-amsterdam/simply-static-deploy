@@ -52,7 +52,7 @@ class Api {
      * @return WP_Error|WP_REST_Response
      */
     public function sync_to_s3(WP_REST_Request $params) {
-        $path = Archive::get_directory();
+        $path = Archiver::get_directory();
         $syncer = new Syncer($this->config);
         $response = $syncer->sync($path);
         return $response instanceof WP_Error

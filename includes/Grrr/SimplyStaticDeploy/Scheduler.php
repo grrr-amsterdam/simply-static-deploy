@@ -43,7 +43,7 @@ class Scheduler {
         }
 
         $syncer = new Syncer($this->config);
-        $sync = $syncer->sync(Archive::get_directory());
+        $sync = $syncer->sync(Archiver::get_directory());
         if ($sync instanceof WP_Error) {
             return;
         }

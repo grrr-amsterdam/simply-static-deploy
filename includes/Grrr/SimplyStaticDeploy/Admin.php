@@ -64,7 +64,7 @@ class Admin {
                 'endpoints' => $this->get_endpoints(),
                 'tasks' => $this->get_tasks(),
                 'times' => $this->get_times(),
-                'in_progress' => Archive::is_in_progress(),
+                'in_progress' => Archiver::is_in_progress(),
             ]
         );
         $renderer->render();
