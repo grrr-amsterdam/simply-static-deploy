@@ -54,7 +54,24 @@ define('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS', [
 
 ### Available filters
 
-- ...
+- [grrr_simply_static_deploy_php_time](#grrr_simply_static_deploy_php_time)
+
+#### grrr_simply_static_deploy_php_time
+
+Adjust the [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) for the static site generation.
+
+```php
+add_filter('grrr_simply_static_deploy_php_execution_time', function (int $time) {
+    return 600;
+});
+```
+
+Note: although this will increase the `max_execution_time`, it will not increase the execution time of your webserver. 
+For Apache, you might have to increase the [TimeOut Directive](http://httpd.apache.org/docs/2.0/mod/core.html#timeout):
+
+```conf
+TimeOut 600
+```
 
 ### Available actions
 
