@@ -33,17 +33,14 @@ class Archive {
     }
 
     /**
-     * Perform tasks in a 'synchronous' way instead of with `Archive_Creation_Job`.
+     * Start the archive process and return result.
      *
      * @return WP_Error|bool
      */
     public function start() {
-        $this->set_start_options();
         $this->clear_directory(static::get_directory());
-        $this->enforce_additional_files([
-            rtrim(get_template_directory(), '/') . '/assets/build',
-        ]);
 
+        $this->set_start_options();
         $result = $this->run_tasks($this->tasks);
         $this->set_end_options();
 
@@ -140,12 +137,10 @@ class Archive {
         if (!$dir || !file_exists($dir) || $name !== 'static') {
             return;
         }
-
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
-
         foreach ($files as $fileinfo) {
             $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
             $todo($fileinfo->getRealPath());
@@ -169,24 +164,6 @@ class Archive {
     private function resolve_additional_files(string $option): string {
         $paths = Simply_Static\Util::string_to_array($option);
         return f\join(PHP_EOL, f\unique(f\map('realpath', $paths)));
-    }
-
-    /**
-     * Temporarily add paths to the `additional_files` option to ensure they're
-     * built if anything goes wrong with restoring the original option (eg. saving
-     * the resolved paths so they can't be resolved in the next release).
-     */
-    private function enforce_additional_files(array $paths): void {
-        $option = Simply_Static\Options::instance()->get('additional_files');
-        $paths = f\concat(
-            Simply_Static\Util::string_to_array($option),
-            $paths
-        );
-
-        Simply_Static\Options::instance()->set(
-            'additional_files',
-            f\join(PHP_EOL, f\unique($paths))
-        );
     }
 
     /**
@@ -230,7 +207,7 @@ class Archive {
     }
 
     /**
-     * Fix some generated files since we'll be hosting them statically.
+     * Modify generated files since they will be hosted statically.
      */
     private function modify_generated_files(): void {
         $cwd = rtrim(static::get_directory(), '/');
