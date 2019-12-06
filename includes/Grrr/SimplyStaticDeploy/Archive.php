@@ -5,16 +5,23 @@ use Simply_Static;
 use Garp\Functional as f;
 
 /**
- * @TODO Make everything configurable via hooks and actions.
+ * Archive wrapper for Simply_Static archive tasks.
+ * Invokes tasks synchronously, and circumvents usage of WP_Background_Process.
+ *
+ * @author Koen Schaft <koen@grrr.nl>
  */
 class Archive {
+
+    const PHP_FILTER = 'grrr_simply_static_deploy_php_execution_time';
 
     private $tasks = [];
     private $additionalFilesOption = '';
 
     public function __construct() {
-        // Increase max execution time for this class.
-        ini_set('max_execution_time', 600);
+        // Increase max execution time for this class, since a larger website can
+        // take quite a while for it to be fully scraped and 'archived'.
+        $executionTime = apply_filters(static::PHP_FILTER, 600);
+        ini_set('max_execution_time', $executionTime);
 
         // Add all tasks in the right order.
         $this->tasks = [
