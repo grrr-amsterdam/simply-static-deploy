@@ -36,7 +36,6 @@ class Archive {
      * @return WP_Error|bool
      */
     public function start() {
-        // Run all preparation and configuration tasks.
         $this->set_start_options();
         $this->clear_directory(static::get_directory());
         $this->enforce_additional_files([
@@ -44,30 +43,16 @@ class Archive {
         ]);
         $this->add_hidden_posts();
 
-        // Run all static site generation tasks.
-        foreach ($this->tasks as $task) {
-            $result = $this->perform_task($task);
-            if ($result instanceof WP_Error) {
-                $this->set_end_options();
-                do_action('grrr_simply_static_deploy_error', $result);
-                return $result;
-            }
-            if (!$result) {
-                $this->set_end_options();
-                $message = 'Something went wrong in Simply Static: ' . get_class($task);
-                $error = new WP_Error('simply_static_error', $message, [
-                    'status' => 403,
-                ]);
-                do_action('grrr_simply_static_deploy_error', $error);
-                return $error;
-            }
-        }
-
-        // Run all file modification and end tasks.
-        $this->modify_generated_files();
+        $result = $this->run_tasks($this->tasks);
         $this->set_end_options();
 
-        return true;
+        if ($result instanceof WP_Error) {
+            do_action('grrr_simply_static_deploy_error', $result);
+            return $result;
+        } else {
+            $this->modify_generated_files();
+            return true;
+        }
     }
 
     /**
@@ -88,6 +73,27 @@ class Archive {
     public static function is_in_progress(): bool {
         return Simply_Static\Options::instance()->get('archive_start_time')
             && !Simply_Static\Options::instance()->get('archive_end_time');
+    }
+
+    /**
+     * Run all tasks.
+     *
+     * @return WP_Error|bool
+     */
+    private function run_tasks(array $tasks) {
+        foreach ($tasks as $task) {
+            $result = $this->perform_task($task);
+            if ($result instanceof WP_Error) {
+                return $result;
+            }
+            if (!$result) {
+                $message = 'Something went wrong in Simply Static: ' . get_class($task);
+                return new WP_Error('simply_static_error', $message, [
+                    'status' => 403,
+                ]);
+            }
+        }
+        return true;
     }
 
     /**
