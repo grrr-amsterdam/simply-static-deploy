@@ -75,4 +75,25 @@ TimeOut 600
 
 ### Available actions
 
-- `grrr_simply_static_deploy_error`: Receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
+- [grrr_simply_static_deploy_error](#grrr_simply_static_deploy_error)
+- [grrr_simply_static_deploy_modify_generated_files](#grrr_simply_static_deploy_modify_generated_files)
+
+#### grrr_simply_static_deploy_error
+
+Called from the plugin, and receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
+
+```php
+add_action('grrr_simply_static_deploy_error', function (\WP_Error $error) {
+    # Handle the error.
+});
+```
+
+#### grrr_simply_static_deploy_modify_generated_files
+
+Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
+
+```php
+add_action('grrr_simply_static_deploy_modify_generated_files', function (string $directory) {
+    # Modify generated files, like renaming or moving them.
+});
+```
