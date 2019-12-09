@@ -2,13 +2,11 @@
 
 class SimplyStaticDeploy
 {
-    public function init()
-    {
-        add_action('admin_init', [$this, 'admin_init']);
+    public function init() {
+        add_action('plugins_loaded', [$this, 'plugins_loaded']);
     }
 
-    public function admin_init()
-    {
+    public function plugins_loaded() {
         $requirements = new DependencyList;
         $requirements->add_dependency(new Dependencies\SimplyStaticDependency);
         $requirements->add_dependency(new Dependencies\DeployDependency);
@@ -24,5 +22,4 @@ class SimplyStaticDeploy
         (new Api($config))->register();
         (new Scheduler($config))->register();
     }
-
 }
