@@ -27,6 +27,9 @@
     }
   ],
   "config": {
+    "platform": {
+      "php": "7.1"
+    },
     "preferred-install": "dist",
     "sort-packages": true
   },
