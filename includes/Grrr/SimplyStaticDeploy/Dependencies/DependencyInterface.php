@@ -1,7 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
-interface DependencyInterface
-{
+interface DependencyInterface {
     /**
      * Check whether this dependency is met.
      *

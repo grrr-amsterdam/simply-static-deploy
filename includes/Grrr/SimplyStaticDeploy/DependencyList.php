@@ -7,27 +7,23 @@ class DependencyList
 {
     protected $dependencies = [];
 
-    public function add_dependency(DependencyInterface $dependency)
-    {
+    public function add_dependency(DependencyInterface $dependency) {
         $this->dependencies[] = $dependency;
     }
 
-    public function are_met(): bool
-    {
-        $can_manage_plugins = current_user_can('activate_plugins');
-
-        $all_are_met = f\reduce(
-            function ($previous_are_met, $dependency) use ($can_manage_plugins) {
-                $is_met = $dependency->is_met();
-                if (!$is_met && $can_manage_plugins ) {
+    public function are_met(): bool {
+        $allAreMet = f\reduce(
+            function ($previousAreMet, $dependency) {
+                $isMet = $dependency->is_met();
+                if (!$isMet) {
                     $dependency->register_notifications();
                 }
-                return $previous_are_met && $is_met;
+                return $previousAreMet && $isMet;
             },
             true,
             $this->dependencies
         );
 
-        return $all_are_met;
+        return $allAreMet;
     }
 }
