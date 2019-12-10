@@ -48,11 +48,19 @@ Then configure the Simply Static plugin via the admin interface, and hit `Genera
 
 ## Documentation
 
-### Available filters
+Available filters to modify settings and data passed to the plugin:
 
 - [Adjust additional files](#adjust-additional-files)
 - [Adjust additional URLs](#adjust-additional-urls)
 - [Adjust PHP max execution time](#adjust-php-max-execution-time)
+
+Available actions to invoke or act upon:
+
+- [Handle errors](#handle-errors)
+- [Modify generated files](#modify-generated-files)
+- [Schedule deploys](#schedule-deploys)
+
+### Available filters
 
 #### Adjust additional files
 
@@ -98,10 +106,6 @@ TimeOut 600
 ```
 
 ### Available actions
-
-- [Handle errors](#handle-errors)
-- [Modify generated files](#modify-generated-files)
-- [Schedule deploys](#schedule-deploys)
 
 #### Handle errors
 
