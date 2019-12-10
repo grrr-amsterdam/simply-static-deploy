@@ -19,7 +19,7 @@ class Invalidator {
      * @return WP_Error|bool
      */
     public function invalidate() {
-        if (!$this->config->distribution) {
+        if (!$this->config->aws->distribution) {
             $error = new WP_Error('cloudfront_invalidation_error', __("No CloudFront distribution ID is specified.", 'grrr'), [
                 'status' => 400,
             ]);
@@ -30,7 +30,7 @@ class Invalidator {
         $clientProvider = new Aws\ClientProvider($this->config);
         $invalidation = new Aws\CloudFront\Invalidation(
             $clientProvider->getCloudFrontClient(),
-            $this->config->distribution
+            $this->config->aws->distribution
         );
         $result = $invalidation->invalidate(['/*']);
 

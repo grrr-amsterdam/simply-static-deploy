@@ -5,16 +5,20 @@ use Garp\Functional as f;
 class Config {
 
     const REQUIRED_FIELDS = [
-        'key',
-        'secret',
-        'region',
-        'bucket',
-        'url', // @TODO maybe incorporate this with enforced Simply Static settings?
+        'aws' => [
+            'key',
+            'secret',
+            'region',
+            'bucket',
+        ],
+        'url',
     ];
 
     const OPTIONAL_FIELDS = [
-        'bucket_acl',
-        'distribution',
+        'aws' => [
+            'bucket_acl',
+            'distribution',
+        ],
     ];
 
     private $data;

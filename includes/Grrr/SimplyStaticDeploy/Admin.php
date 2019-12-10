@@ -72,7 +72,7 @@ class Admin {
 
     private function get_tasks(): array {
         $tasks = ['generate', 'sync'];
-        if ($this->config->distribution) {
+        if ($this->config->aws->distribution) {
             $tasks[] = 'invalidate';
         }
         return $tasks;
@@ -83,7 +83,7 @@ class Admin {
             'generate' => $this->get_last_time(Generator::get_last_time()),
             'sync' => $this->get_last_time(Syncer::get_last_time()),
         ];
-        if ($this->config->distribution) {
+        if ($this->config->aws->distribution) {
             $times['invalidate'] = $this->get_last_time(Invalidator::get_last_time());
         }
         return $times;

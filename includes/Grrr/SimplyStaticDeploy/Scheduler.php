@@ -48,7 +48,7 @@ class Scheduler {
             return;
         }
 
-        if ($this->config->distribution) {
+        if ($this->config->aws->distribution) {
             $invalidator = new Invalidator($this->config);
             $invalidate = $invalidator->invalidate();
         }
