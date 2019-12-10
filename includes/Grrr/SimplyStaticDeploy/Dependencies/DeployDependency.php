@@ -3,7 +3,7 @@
 class DeployDependency implements DependencyInterface {
 
     public function is_met(): bool {
-        return defined('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS');
+        return defined('SIMPLY_STATIC_DEPLOY_CONFIG');
     }
 
     public function register_notifications() {
@@ -11,7 +11,7 @@ class DeployDependency implements DependencyInterface {
     }
 
     public function message_plugin_not_activated() {
-        $message = "Simply Static Deploy is missing the constant SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS.";
+        $message = "Simply Static Deploy is missing the constant SIMPLY_STATIC_DEPLOY_CONFIG.";
 
         printf('<div class="error"><p>%s</p></div>', $message);
     }

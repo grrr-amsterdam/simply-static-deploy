@@ -30,17 +30,19 @@ This will install it in the plugin directory, assuming you have the right instal
 
 ## Usage
 
-First define `SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS` in your WordPress configuration:
+First define `SIMPLY_STATIC_DEPLOY_CONFIG` in your WordPress configuration:
 
 ```php
-define('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS', [
-    'key'           => '...', # AWS access key
-    'secret'        => '...', # AWS secret key
-    'region'        => '...', # AWS region
-    'bucket'        => '...', # S3 bucket
-    'bucket_acl'    => '...', # S3 bucket ACL (optional, defaults to `public-read`)
-    'distribution'  => '...', # CloudFront distribution ID (optional, step is skipped when empty)
-    'url'           => '...', # Website url (used for displaying url after deploy is finished)
+define('SIMPLY_STATIC_DEPLOY_CONFIG', [
+    'aws' => [
+        'key'           => '...', # AWS access key
+        'secret'        => '...', # AWS secret key
+        'region'        => '...', # AWS region
+        'bucket'        => '...', # S3 bucket
+        'bucket_acl'    => '...', # S3 bucket ACL (optional, defaults to `public-read`)
+        'distribution'  => '...', # CloudFront distribution ID (optional, step is skipped when empty)
+    ],
+    'url' => '...', # Website url (used for displaying url after deploy is finished)
 ]);
 ```
 
