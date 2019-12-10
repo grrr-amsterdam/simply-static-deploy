@@ -50,7 +50,35 @@ Then configure the Simply Static plugin via the admin interface, and hit `Genera
 
 ### Available filters
 
+- [Adjust additional files](#adjust-additional-files)
+- [Adjust additional URLs](#adjust-additional-urls)
 - [Adjust PHP max execution time](#adjust-php-max-execution-time)
+
+#### Adjust additional files
+
+Modify entries from the 'Additional Files and Directories' option. By default all paths are temporarily resolved to absolute paths via [realpath](https://www.php.net/manual/en/function.realpath.php), to ensure symbolic links are resolved. An array of unmodified files from the options is passed as an argument.
+
+```php
+add_filter('grrr_simply_static_deploy_additional_files', function (array $files) {
+    # Modify files, and possibly resolve paths with `realpath`.
+    return $files;
+});
+```
+
+Note: during generation of the static site, the `additional_files` setting is updated. It is restored when finished.
+
+#### Adjust additional URLs
+
+Modify entries from the 'Additional URLs' option. This can be useful to add pages that can't be found by Simply Static (not in the sitemap, are excluded by a password, have `noindex`, etc...). An array of unmodified URLs from the options is passed as an argument.
+
+```php
+add_filter('grrr_simply_static_deploy_additional_urls', function (array $urls) {
+    # Modify urls, for example by adding missing pages.
+    return $urls;
+});
+```
+
+Note: during generation of the static site, the `additional_urls` setting is updated. It is restored when finished.
 
 #### Adjust PHP max execution time
 
