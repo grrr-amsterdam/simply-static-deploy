@@ -28,35 +28,31 @@ This will install it in the plugin directory, assuming you have the right instal
 }
 ```
 
-## Configuration
+## Usage
 
-Define this...
+First define `SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS` in your WordPress configuration:
 
 ```php
 define('SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS', [
-    'key'           => env('AWS_SITE_ACCESS_KEY_ID'),
-    'secret'        => env('AWS_SITE_SECRET_ACCESS_KEY'),
-    'region'        => env('AWS_SITE_REGION'),
-    'bucket'        => env('AWS_SITE_S3_BUCKET'),
-    'bucket_acl'    => env('AWS_SITE_S3_BUCKET_ACL'), // optional
-    'distribution'  => env('AWS_SITE_CF_DISTRIBUTION_ID'), // optional
-    'url'           => env('AWS_SITE_WEBSITE_URL'),
+    'key'           => '...', # AWS access key
+    'secret'        => '...', # AWS secret key
+    'region'        => '...', # AWS region
+    'bucket'        => '...', # S3 bucket
+    'bucket_acl'    => '...', # S3 bucket ACL (optional, defaults to `public-read`)
+    'distribution'  => '...', # CloudFront distribution ID (optional, step is skipped when empty)
+    'url'           => '...', # Website url (used for displaying url after deploy is finished)
 ]);
 ```
 
-## Usage
-
-...
+Then configure the Simply Static plugin via the admin interface, and hit `Generate & Deploy` in the `Deploy` tab. 
 
 ## Documentation
 
-[View the documentation](https://github.com/grrr-amsterdam/simply-static-deploy/tree/master/docs) for ...
-
 ### Available filters
 
-- [grrr_simply_static_deploy_php_time](#grrr_simply_static_deploy_php_time)
+- [Adjust PHP max execution time](#adjust-php-max-execution-time)
 
-#### grrr_simply_static_deploy_php_time
+#### Adjust PHP max execution time
 
 Adjust the [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) for the static site generation.
 
@@ -75,11 +71,11 @@ TimeOut 600
 
 ### Available actions
 
-- [grrr_simply_static_deploy_error](#grrr_simply_static_deploy_error)
-- [grrr_simply_static_deploy_modify_generated_files](#grrr_simply_static_deploy_modify_generated_files)
-- [grrr_simply_static_deploy_schedule](#grrr_simply_static_deploy_schedule)
+- [Handle errors](#handle-errors)
+- [Modify generated files](#modify-generated-files)
+- [Schedule deploys](#schedule-deploys)
 
-#### grrr_simply_static_deploy_error
+#### Handle errors
 
 Called from the plugin, and receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
 
@@ -89,7 +85,7 @@ add_action('grrr_simply_static_deploy_error', function (\WP_Error $error) {
 });
 ```
 
-#### grrr_simply_static_deploy_modify_generated_files
+#### Modify generated files
 
 Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
 
@@ -97,8 +93,9 @@ Called when Simply Static is done generating the static site. This allows you to
 add_action('grrr_simply_static_deploy_modify_generated_files', function (string $directory) {
     # Modify generated files, like renaming or moving them.
 });
+```
 
-#### grrr_simply_static_deploy_schedule
+#### Schedule deploys
 
 Schedule a deploy event. 
 
