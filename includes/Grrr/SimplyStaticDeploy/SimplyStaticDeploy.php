@@ -1,7 +1,7 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-class SimplyStaticDeploy
-{
+class SimplyStaticDeploy {
+
     public function init() {
         add_action('plugins_loaded', [$this, 'plugins_loaded']);
     }
@@ -9,7 +9,7 @@ class SimplyStaticDeploy
     public function plugins_loaded() {
         $requirements = new DependencyList;
         $requirements->add_dependency(new Dependencies\SimplyStaticDependency);
-        $requirements->add_dependency(new Dependencies\DeployDependency);
+        $requirements->add_dependency(new Dependencies\ConfigDependency);
 
         if (!$requirements->are_met()) {
             return;
@@ -22,4 +22,5 @@ class SimplyStaticDeploy
         (new Api($config))->register();
         (new Scheduler($config))->register();
     }
+
 }

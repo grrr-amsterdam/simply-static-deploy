@@ -1,8 +1,9 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
 use Simply_Static;
-class SimplyStaticDependency implements DependencyInterface
-{
+
+class SimplyStaticDependency implements DependencyInterface {
+
     public function is_met(): bool {
         return class_exists(Simply_Static\Plugin::class);
     }
@@ -16,4 +17,5 @@ class SimplyStaticDependency implements DependencyInterface
 
         printf('<div class="error"><p>%s</p></div>', $message);
     }
+
 }

@@ -3,8 +3,8 @@
 use Grrr\SimplyStaticDeploy\Dependencies\DependencyInterface;
 use Garp\Functional as f;
 
-class DependencyList
-{
+class DependencyList {
+
     protected $dependencies = [];
 
     public function add_dependency(DependencyInterface $dependency) {
@@ -26,4 +26,5 @@ class DependencyList
 
         return $allAreMet;
     }
+
 }
