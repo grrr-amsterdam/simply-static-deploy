@@ -15,7 +15,7 @@ class SimplyStaticDeploy {
             return;
         }
 
-        $config = new Config(SIMPLY_STATIC_DEPLOY_AWS_CREDENTIALS);
+        $config = new Config(SIMPLY_STATIC_DEPLOY_CONFIG);
 
         // Bootstrap components.
         (new Admin($config))->register(SIMPLY_STATIC_DEPLOY_PATH);

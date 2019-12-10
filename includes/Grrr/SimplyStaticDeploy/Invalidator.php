@@ -30,7 +30,7 @@ class Invalidator {
         $clientProvider = new Aws\ClientProvider($this->config);
         $invalidation = new Aws\CloudFront\Invalidation(
             $clientProvider->getCloudFrontClient(),
-            $this->config->distribution
+            $this->config->aws->distribution
         );
         $result = $invalidation->invalidate(['/*']);
 
