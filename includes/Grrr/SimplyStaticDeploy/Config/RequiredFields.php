@@ -29,7 +29,7 @@ final class RequiredFields {
         );
     }
 
-    public static function toArray(): array {
+    public static function to_array(): array {
         return static::REQUIRED_FIELDS;
     }
 
