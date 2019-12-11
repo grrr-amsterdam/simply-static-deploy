@@ -18,4 +18,4 @@ define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
 require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 
 // Initialize the plugin.
-(new SimplyStaticDeploy)->init();
+(new SimplyStaticDeploy(SIMPLY_STATIC_DEPLOY_PATH))->init();
