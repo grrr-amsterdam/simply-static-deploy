@@ -1,6 +1,8 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
-class ConfigDependency implements DependencyInterface {
+use Grrr\SimplyStaticDeploy\Config\RequiredFields;
+
+class ConfigStructureDependency implements DependencyInterface {
 
     private $constName;
 
@@ -9,7 +11,7 @@ class ConfigDependency implements DependencyInterface {
     }
 
     public function is_met(): bool {
-        return defined($this->constName);
+        return empty(RequiredFields::getMissingOptions(constant($this->constName)));
     }
 
     public function register_notifications() {
@@ -17,7 +19,10 @@ class ConfigDependency implements DependencyInterface {
     }
 
     public function message_config_undefined() {
-        $message = "Simply Static Deploy is missing the constant {$this->constName}.";
+        $message = sprintf(
+            "Simply Static Deploy is missing the following configuration options: %s.",
+            implode(', ', RequiredFields::getMissingOptions(constant($this->constName)))
+        );
 
         printf('<div class="error"><p>%s</p></div>', $message);
     }
