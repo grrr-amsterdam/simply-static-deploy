@@ -21,4 +21,4 @@ require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 register_activation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\activate' );
 register_deactivation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\deactivate' );
 
-(new SimplyStaticDeploy)->init();
+(new SimplyStaticDeploy(SIMPLY_STATIC_DEPLOY_PATH))->init();
