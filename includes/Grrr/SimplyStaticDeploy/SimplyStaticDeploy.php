@@ -20,12 +20,13 @@ class SimplyStaticDeploy {
         $requirements = new DependencyList;
         $requirements->add_dependency(new Dependencies\SimplyStaticDependency());
         $requirements->add_dependency(new Dependencies\ConfigDependency(self::CONFIG_CONST));
+        $requirements->add_dependency(new Dependencies\ConfigStructureDependency(self::CONFIG_CONST));
 
         if (!$requirements->are_met()) {
             return;
         }
 
-        $config = new Config(constant(self::CONFIG_CONST), RequiredFields::toArray());
+        $config = new Config(constant(self::CONFIG_CONST));
 
         // Bootstrap components.
         (new Admin($config))->register($this->basePath);
