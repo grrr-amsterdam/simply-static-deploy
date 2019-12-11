@@ -11,7 +11,7 @@ class ConfigStructureDependency implements DependencyInterface {
     }
 
     public function is_met(): bool {
-        return empty(RequiredFields::getMissingOptions(
+        return empty(RequiredFields::get_missing_options(
             defined($this->constName) ? constant($this->constName) : []
         ));
     }
@@ -23,7 +23,7 @@ class ConfigStructureDependency implements DependencyInterface {
     public function message_config_undefined() {
         $message = sprintf(
             "Simply Static Deploy is missing the following configuration options: %s.",
-            implode(', ', RequiredFields::getMissingOptions(constant($this->constName)))
+            implode(', ', RequiredFields::get_missing_options(constant($this->constName)))
         );
 
         printf('<div class="error"><p>%s</p></div>', $message);
