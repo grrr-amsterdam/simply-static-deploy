@@ -1,5 +1,7 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
+use Grrr\SimplyStaticDeploy\Config\RequiredFields;
+
 class SimplyStaticDeploy {
 
     const CONFIG_CONST = 'SIMPLY_STATIC_DEPLOY_CONFIG';
@@ -23,7 +25,7 @@ class SimplyStaticDeploy {
             return;
         }
 
-        $config = new Config(constant(self::CONFIG_CONST));
+        $config = new Config(constant(self::CONFIG_CONST), RequiredFields::toArray());
 
         // Bootstrap components.
         (new Admin($config))->register($this->basePath);
