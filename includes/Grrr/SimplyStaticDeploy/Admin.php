@@ -43,8 +43,8 @@ class Admin {
     }
 
     public function register_assets() {
-        wp_register_style(static::SLUG, $this->get_asset_url('admin.css'), [], APPLICATION_VERSION);
-        wp_register_script(static::SLUG, $this->get_asset_url('admin.js'), ['jquery'], APPLICATION_VERSION);
+        wp_register_style(static::SLUG, $this->get_asset_url('admin.css'), [], SIMPLY_STATIC_DEPLOY_VERSION);
+        wp_register_script(static::SLUG, $this->get_asset_url('admin.js'), ['jquery'], SIMPLY_STATIC_DEPLOY_VERSION);
         wp_localize_script(static::SLUG, static::JS_GLOBAL, [
             'api' => [
                 'nonce' => wp_create_nonce('wp_rest'),

@@ -1,7 +1,7 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-class SimplyStaticDeploy
-{
+class SimplyStaticDeploy {
+
     public function init() {
         add_action('plugins_loaded', [$this, 'plugins_loaded']);
     }
@@ -22,4 +22,5 @@ class SimplyStaticDeploy
         (new Api($config))->register();
         (new Scheduler($config))->register();
     }
+
 }
