@@ -21,7 +21,7 @@ class Syncer {
      */
     public function sync(string $path) {
         if (!file_exists($path) || !(new FilesystemIterator($path))->valid()) {
-            return new WP_Error('grrr_simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'grrr'), [
+            return new WP_Error('grrr_simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'simply_static_deploy'), [
                 'status' => 400,
             ]);
         }

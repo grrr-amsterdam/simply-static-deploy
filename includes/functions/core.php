@@ -1,5 +1,4 @@
-<?php
-namespace Grrr\SimplyStaticDeploy\Core;
+<?php namespace Grrr\SimplyStaticDeploy\Core;
 
 /**
  * Activation hook.

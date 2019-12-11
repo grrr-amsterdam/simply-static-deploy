@@ -42,7 +42,7 @@ class Invalidation {
             $message = $error->getMessage();
         }
 
-        $error = new WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'grrr'), $message), [
+        $error = new WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'simply_static_deploy'), $message), [
             'status' => 400,
         ]);
         do_action('grrr_simply_static_deploy_error', $error);

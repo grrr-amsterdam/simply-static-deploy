@@ -83,7 +83,7 @@ class Archive {
                 return $result;
             }
             if (!$result) {
-                $message = 'Something went wrong in Simply Static: ' . get_class($task);
+                $message = __('Something went wrong in Simply Static: ' . get_class($task), 'simply_static_deploy');
                 return new WP_Error('simply_static_error', $message, [
                     'status' => 403,
                 ]);

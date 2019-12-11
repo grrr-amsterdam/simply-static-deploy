@@ -75,7 +75,7 @@ class TransferManager {
             $message = $error->getMessage();
         }
 
-        $error = new WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'grrr'), $message), [
+        $error = new WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'simply_static_deploy'), $message), [
             'status' => 400,
         ]);
         do_action('grrr_simply_static_deploy_error', $error);
