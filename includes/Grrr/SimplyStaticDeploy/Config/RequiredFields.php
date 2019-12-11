@@ -14,11 +14,11 @@ final class RequiredFields {
         'url',
     ];
 
-    public static function getMissingOptions(array $data, array $requiredFields = self::REQUIRED_FIELDS, string $prefix = ''): array {
+    public static function get_missing_options(array $data, array $requiredFields = self::REQUIRED_FIELDS, string $prefix = ''): array {
         return f\reduce_assoc(
             function (array $missing, $value, $key) use ($data, $prefix): array {
                 if (is_array($value)) {
-                    return f\concat($missing, static::getMissingOptions($data[$key] ?? [], $value, "{$key}."));
+                    return f\concat($missing, static::get_missing_options($data[$key] ?? [], $value, "{$key}."));
                 }
                 return !isset($data[$value])
                     ? f\concat($missing, [$prefix . $value])
