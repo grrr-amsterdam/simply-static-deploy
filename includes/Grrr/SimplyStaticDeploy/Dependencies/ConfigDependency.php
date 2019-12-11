@@ -1,5 +1,7 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
+use Grrr\SimplyStaticDeploy\Config;
+
 class ConfigDependency implements DependencyInterface {
 
     private $constName;
