@@ -11,7 +11,9 @@ class ConfigStructureDependency implements DependencyInterface {
     }
 
     public function is_met(): bool {
-        return empty(RequiredFields::getMissingOptions(constant($this->constName)));
+        return empty(RequiredFields::getMissingOptions(
+            defined($this->constName) ? constant($this->constName) : []
+        ));
     }
 
     public function register_notifications() {
