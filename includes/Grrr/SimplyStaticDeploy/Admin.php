@@ -9,14 +9,20 @@ class Admin {
     const JS_GLOBAL = 'GRRR_SIMPLY_STATIC_DEPLOY';
 
     private $basePath;
+    private $baseUrl;
+    private $version;
     private $config;
 
-    public function __construct(Config $config) {
+    public function __construct(
+        Config $config, string $basePath, string $baseUrl, string $version
+    ) {
         $this->config = $config;
+        $this->basePath = $basePath;
+        $this->baseUrl = $baseUrl;
+        $this->version = $version;
     }
 
-    public function register(string $basePath) {
-        $this->basePath = $basePath;
+    public function register() {
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
         add_action('wp_before_admin_bar_render', [$this, 'admin_bar']);
@@ -43,8 +49,8 @@ class Admin {
     }
 
     public function register_assets() {
-        wp_register_style(static::SLUG, $this->get_asset_url('admin.css'), [], SIMPLY_STATIC_DEPLOY_VERSION);
-        wp_register_script(static::SLUG, $this->get_asset_url('admin.js'), ['jquery'], SIMPLY_STATIC_DEPLOY_VERSION);
+        wp_register_style(static::SLUG, $this->get_asset_url('admin.css'), [], $this->version);
+        wp_register_script(static::SLUG, $this->get_asset_url('admin.js'), ['jquery'], $this->version);
         wp_localize_script(static::SLUG, static::JS_GLOBAL, [
             'api' => [
                 'nonce' => wp_create_nonce('wp_rest'),
@@ -98,7 +104,7 @@ class Admin {
     }
 
     private function get_asset_url(string $filename): string {
-        return SIMPLY_STATIC_DEPLOY_URL . 'assets/' . $filename;
+        return rtrim($this->baseUrl, '/') . '/assets/' . $filename;
         $relative_assets_dir = substr($this->basePath, strlen(get_theme_file_path())) . '/assets';
         return get_theme_file_uri($relative_assets_dir . '/' . $filename);
     }
