@@ -10,10 +10,10 @@ class ClientProvider {
     protected $sdk;
 
     public function __construct(Config $config) {
-        $credentials = (new CredentialsProvider($config->aws->key, $config->aws->secret))->getCredentials();
+        $credentials = (new CredentialsProvider($config->key, $config->secret))->getCredentials();
         $this->sdk = new Sdk([
             'credentials' => $credentials,
-            'region' => $config->aws->region,
+            'region' => $config->region,
             'version' => 'latest',
             'http' => [
                 'timeout' => 30,

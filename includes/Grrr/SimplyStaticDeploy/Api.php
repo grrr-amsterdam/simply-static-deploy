@@ -53,7 +53,7 @@ class Api {
      */
     public function sync_to_s3(WP_REST_Request $params) {
         $path = Archive::get_directory();
-        $syncer = new Syncer($this->config);
+        $syncer = new Syncer($this->config->aws);
         $response = $syncer->sync($path);
         return $response instanceof WP_Error
             ? $response
@@ -66,7 +66,7 @@ class Api {
      * @return WP_Error|WP_REST_Response
      */
     public function invalidate_cloudfront(WP_REST_Request $params) {
-        $invalidator = new Invalidator($this->config);
+        $invalidator = new Invalidator($this->config->aws);
         $response = $invalidator->invalidate();
         return $response instanceof WP_Error
             ? $response
