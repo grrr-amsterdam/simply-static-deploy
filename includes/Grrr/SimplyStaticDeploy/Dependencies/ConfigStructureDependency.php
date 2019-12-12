@@ -21,9 +21,10 @@ class ConfigStructureDependency implements DependencyInterface {
     }
 
     public function message_config_undefined() {
+        $configValue = defined($this->constName) ? constant($this->constName) : [];
         $message = sprintf(
             "Simply Static Deploy is missing the following configuration options: %s.",
-            implode(', ', RequiredFields::get_missing_options(constant($this->constName)))
+            implode(', ', RequiredFields::get_missing_options($configValue))
         );
 
         printf('<div class="error"><p>%s</p></div>', $message);
