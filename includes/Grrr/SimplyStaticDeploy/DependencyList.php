@@ -17,8 +17,9 @@ class DependencyList {
                 $isMet = $dependency->is_met();
                 if (!$isMet) {
                     $dependency->register_notifications();
+                    return f\reduced(false);
                 }
-                return $previousAreMet && $isMet;
+                return true;
             },
             true,
             $this->dependencies
