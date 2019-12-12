@@ -42,7 +42,6 @@
   "autoload": {
     "psr-4": {
       "Grrr\\": "includes/Grrr"
-    },
-    "files": ["includes/functions/core.php"]
+    }
   }
 }

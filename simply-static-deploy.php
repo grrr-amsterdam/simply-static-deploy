@@ -17,9 +17,5 @@ define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
 // Require Composer autoloader.
 require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 
-// Activation/Deactivation hooks.
-register_activation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\activate');
-register_deactivation_hook(__FILE__, '\Grrr\SimplyStaticDeploy\Core\deactivate');
-
 // Initialize the plugin.
 (new SimplyStaticDeploy)->init();
