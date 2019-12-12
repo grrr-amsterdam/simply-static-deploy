@@ -11,11 +11,15 @@ use Grrr\SimplyStaticDeploy\SimplyStaticDeploy;
 
 // Global constants.
 define('SIMPLY_STATIC_DEPLOY_VERSION', '0.1.0');
-define('SIMPLY_STATIC_DEPLOY_URL', plugin_dir_url(__FILE__));
 define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
+define('SIMPLY_STATIC_DEPLOY_URL', plugin_dir_url(__FILE__));
 
 // Require Composer autoloader.
 require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
 
 // Initialize the plugin.
-(new SimplyStaticDeploy(SIMPLY_STATIC_DEPLOY_PATH))->init();
+(new SimplyStaticDeploy(
+    SIMPLY_STATIC_DEPLOY_PATH,
+    SIMPLY_STATIC_DEPLOY_URL,
+    SIMPLY_STATIC_DEPLOY_VERSION
+))->init();
