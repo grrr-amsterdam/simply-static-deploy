@@ -42,14 +42,14 @@ class Scheduler {
             return;
         }
 
-        $syncer = new Syncer($this->config);
+        $syncer = new Syncer($this->config->aws);
         $sync = $syncer->sync(Archive::get_directory());
         if ($sync instanceof WP_Error) {
             return;
         }
 
         if ($this->config->aws->distribution) {
-            $invalidator = new Invalidator($this->config);
+            $invalidator = new Invalidator($this->config->aws);
             $invalidate = $invalidator->invalidate();
         }
     }
