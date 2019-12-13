@@ -12,10 +12,12 @@ use Garp\Functional as f;
  */
 class Archive {
 
-    const MODIFY_ACTION = 'grrr_simply_static_deploy_modify_generated_files';
+    const CLEAR_FILTER = 'grrr_simply_static_deploy_clear_directory';
     const FILES_FILTER = 'grrr_simply_static_deploy_additional_files';
     const PHP_FILTER = 'grrr_simply_static_deploy_php_execution_time';
     const URLS_FILTER = 'grrr_simply_static_deploy_additional_urls';
+
+    const MODIFY_ACTION = 'grrr_simply_static_deploy_modify_generated_files';
 
     private $tasks = [];
     private $files = [];
@@ -138,8 +140,8 @@ class Archive {
      * are not deployed again, and potentialy overwriting redirects.
      */
     private function clear_directory(string $dir): void {
-        $name = f\last(f\split('/', trim($dir, '/')));
-        if (!$dir || !file_exists($dir) || $name !== 'static') {
+        $clear = apply_filters(static::CLEAR_FILTER, false);
+        if (!$clear || !$dir || !file_exists($dir)) {
             return;
         }
         $files = new \RecursiveIteratorIterator(
