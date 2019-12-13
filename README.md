@@ -53,6 +53,7 @@ Available filters to modify settings and data passed to the plugin:
 - [Adjust additional files](#adjust-additional-files)
 - [Adjust additional URLs](#adjust-additional-urls)
 - [Adjust PHP max execution time](#adjust-php-max-execution-time)
+- [Enable static directory clearing](#enable-static-directory-clearing)
 
 Available actions to invoke or act upon:
 
@@ -104,6 +105,17 @@ For Apache, you might have to increase the [TimeOut Directive](http://httpd.apac
 ```conf
 TimeOut 600
 ```
+#### Enable static directory clearing
+
+Clear the static folder before a new version is generated. Simply Static only allows you to delete the temporary files, but in some cases you might want to start with a clean slate (e.g. items deleted from the CMS, and a redirect being added in its place).
+
+```php
+add_filter('grrr_simply_static_deploy_clear_directory', function (bool $value) {
+    return true;
+});
+```
+
+Note: this setting is explicitly set by a filter, since it will completely delete any folder set as the `Local Directory`.
 
 ### Available actions
 
