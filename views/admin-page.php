@@ -6,6 +6,10 @@ $invalidate = f\contains('invalidate', $this->tasks);
 
 ?>
 <div class="wrap js-grrr-static-site">
+
+    <!-- see https://wordpress.stackexchange.com/a/220735 -->
+    <h2 style="display: none;"></h2>
+
     <div class="card">
         <section>
             <h1><?= get_admin_page_title() ?></h1>
@@ -109,4 +113,5 @@ $invalidate = f\contains('invalidate', $this->tasks);
             <?php endif; ?>
         </section>
     </div>
+
 </div>
