@@ -13,7 +13,7 @@ const Deployer = $ => {
   const ERROR_CONTAINER_SELECTOR = '.js-error-container';
   const ERROR_MESSAGE_SELECTOR = '.js-error-message';
 
-  const VARS = window.GRRR_SIMPLY_STATIC_DEPLOY;
+  const VARS = window.SIMPLY_STATIC_DEPLOY;
   const TASKS = VARS.tasks;
   const API_VARS = VARS.api;
   const ENDPOINTS = API_VARS.endpoints;

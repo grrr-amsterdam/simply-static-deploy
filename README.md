@@ -70,7 +70,7 @@ Available actions to invoke or act upon:
 Modify entries from the 'Additional Files and Directories' option. By default all paths are temporarily resolved to absolute paths via [realpath](https://www.php.net/manual/en/function.realpath.php), to ensure symbolic links are resolved. An array of unmodified files from the options is passed as an argument.
 
 ```php
-add_filter('grrr_simply_static_deploy_additional_files', function (array $files) {
+add_filter('simply_static_deploy_additional_files', function (array $files) {
     # Modify files, and possibly resolve paths with `realpath`.
     return $files;
 });
@@ -83,7 +83,7 @@ Note: during generation of the static site, the `additional_files` setting is up
 Modify entries from the 'Additional URLs' option. This can be useful to add pages that can't be found by Simply Static (not in the sitemap, are excluded by a password, have `noindex`, etc...). An array of unmodified URLs from the options is passed as an argument.
 
 ```php
-add_filter('grrr_simply_static_deploy_additional_urls', function (array $urls) {
+add_filter('simply_static_deploy_additional_urls', function (array $urls) {
     # Modify urls, for example by adding missing pages.
     return $urls;
 });
@@ -96,7 +96,7 @@ Note: during generation of the static site, the `additional_urls` setting is upd
 Adjust the [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) for the static site generation.
 
 ```php
-add_filter('grrr_simply_static_deploy_php_execution_time', function (int $time) {
+add_filter('simply_static_deploy_php_execution_time', function (int $time) {
     return 600;
 });
 ```
@@ -112,7 +112,7 @@ TimeOut 600
 Clear the static folder before a new version is generated. Simply Static only allows you to delete the temporary files, but in some cases you might want to start with a clean slate (e.g. items deleted from the CMS, and a redirect being added in its place).
 
 ```php
-add_filter('grrr_simply_static_deploy_clear_directory', function (bool $value) {
+add_filter('simply_static_deploy_clear_directory', function (bool $value) {
     return true;
 });
 ```
@@ -126,7 +126,7 @@ Note: this setting is explicitly set by a filter, since it will completely delet
 Called from the plugin, and receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
 
 ```php
-add_action('grrr_simply_static_deploy_error', function (\WP_Error $error) {
+add_action('simply_static_deploy_error', function (\WP_Error $error) {
     # Handle the error.
 });
 ```
@@ -136,7 +136,7 @@ add_action('grrr_simply_static_deploy_error', function (\WP_Error $error) {
 Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
 
 ```php
-add_action('grrr_simply_static_deploy_modify_generated_files', function (string $directory) {
+add_action('simply_static_deploy_modify_generated_files', function (string $directory) {
     # Modify generated files, like renaming or moving them.
 });
 ```
@@ -151,7 +151,7 @@ Arguments:
 - **Interval**: accepted values are `hourly`, `twicedaily` and `daily`. Can be extended via [cron_schedules](https://developer.wordpress.org/reference/hooks/cron_schedules).
 
 ```php
-do_action('grrr_simply_static_deploy_schedule', '12:00', 'daily');
+do_action('simply_static_deploy_schedule', '12:00', 'daily');
 ```
 
 Note: it is important that [WP-Cron](https://developer.wordpress.org/plugins/cron/) is called regularly. You could do so by disabling the default WP-Cron mechanism and switch to calling it via a dedicated [cronjob](https://en.wikipedia.org/wiki/Cronjob).

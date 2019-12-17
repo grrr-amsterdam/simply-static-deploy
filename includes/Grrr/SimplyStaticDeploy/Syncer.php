@@ -6,7 +6,7 @@ use Garp\Functional as f;
 
 class Syncer {
 
-    const OPTION_TIMESTAMP_KEY = 'grrr_simply_static_deploy_synced_at';
+    const OPTION_TIMESTAMP_KEY = 'simply_static_deploy_synced_at';
 
     private $config;
 
@@ -21,7 +21,7 @@ class Syncer {
      */
     public function sync(string $path) {
         if (!file_exists($path) || !(new FilesystemIterator($path))->valid()) {
-            return new WP_Error('grrr_simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'simply_static_deploy'), [
+            return new WP_Error('simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'simply_static_deploy'), [
                 'status' => 400,
             ]);
         }

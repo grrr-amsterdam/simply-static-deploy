@@ -12,8 +12,8 @@ use Garp\Functional as f;
  */
 class Scheduler {
 
-    const SCHEDULE_ACTION = 'grrr_simply_static_deploy_schedule';
-    const EVENT_BASE = 'grrr_simply_static_deploy_event';
+    const SCHEDULE_ACTION = 'simply_static_deploy_schedule';
+    const EVENT_BASE = 'simply_static_deploy_event';
 
     private $config;
 

@@ -12,12 +12,12 @@ use Garp\Functional as f;
  */
 class Archive {
 
-    const CLEAR_FILTER = 'grrr_simply_static_deploy_clear_directory';
-    const FILES_FILTER = 'grrr_simply_static_deploy_additional_files';
-    const PHP_FILTER = 'grrr_simply_static_deploy_php_execution_time';
-    const URLS_FILTER = 'grrr_simply_static_deploy_additional_urls';
+    const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
+    const FILES_FILTER = 'simply_static_deploy_additional_files';
+    const PHP_FILTER = 'simply_static_deploy_php_execution_time';
+    const URLS_FILTER = 'simply_static_deploy_additional_urls';
 
-    const MODIFY_ACTION = 'grrr_simply_static_deploy_modify_generated_files';
+    const MODIFY_ACTION = 'simply_static_deploy_modify_generated_files';
 
     private $tasks = [];
     private $files = [];
@@ -61,7 +61,7 @@ class Archive {
         $this->set_end_options();
 
         if ($result instanceof WP_Error) {
-            do_action('grrr_simply_static_deploy_error', $result);
+            do_action('simply_static_deploy_error', $result);
             return $result;
         } else {
             if (has_action(static::MODIFY_ACTION)) {

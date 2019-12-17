@@ -5,7 +5,7 @@ use Garp\Functional as f;
 
 class Invalidator {
 
-    const OPTION_TIMESTAMP_KEY = 'grrr_simply_static_deploy_invalidated_at';
+    const OPTION_TIMESTAMP_KEY = 'simply_static_deploy_invalidated_at';
 
     private $config;
 
@@ -23,7 +23,7 @@ class Invalidator {
             $error = new WP_Error('cloudfront_invalidation_error', __("No CloudFront distribution ID is specified.", 'simply_static_deploy'), [
                 'status' => 400,
             ]);
-            do_action('grrr_simply_static_deploy_error', $error);
+            do_action('simply_static_deploy_error', $error);
             return $error;
         }
 

@@ -6,7 +6,7 @@ use Grrr\SimplyStaticDeploy\Utils\Renderer;
 class Admin {
 
     const SLUG = 'grrr-simply-static-deploy';
-    const JS_GLOBAL = 'GRRR_SIMPLY_STATIC_DEPLOY';
+    const JS_GLOBAL = 'SIMPLY_STATIC_DEPLOY';
 
     private $basePath;
     private $baseUrl;
