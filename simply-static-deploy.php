@@ -14,8 +14,12 @@ define('SIMPLY_STATIC_DEPLOY_VERSION', '0.1.1');
 define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
 define('SIMPLY_STATIC_DEPLOY_URL', plugin_dir_url(__FILE__));
 
-// Require Composer autoloader.
-require_once SIMPLY_STATIC_DEPLOY_PATH . 'vendor/autoload.php';
+// Require Composer autoloader when it exists.
+// For regular installs it won't exist, for local development it might exist.
+$autoloader = rtrim(SIMPLY_STATIC_DEPLOY_PATH, '/') . '/vendor/autoload.php';
+if (file_exists($autoloader)) {
+    require_once $autoloader;
+}
 
 // Initialize the plugin.
 (new SimplyStaticDeploy(
