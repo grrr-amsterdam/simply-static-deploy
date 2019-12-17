@@ -1,0 +1,12 @@
+on: push
+name: validate commit message action
+jobs:
+  build:
+    name: harmenjanssen/commit-message-validation-action@master
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: harmenjanssen/commit-message-validation-action@master
+      uses: harmenjanssen/commit-message-validation-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
