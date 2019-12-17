@@ -5,7 +5,7 @@ use Garp\Functional as f;
 $invalidate = f\contains('invalidate', $this->tasks);
 
 ?>
-<div class="wrap js-grrr-static-site">
+<div class="wrap js-simply-static-deploy">
 
     <!-- see https://wordpress.stackexchange.com/a/220735 -->
     <h2 style="display: none;"></h2>
@@ -22,7 +22,7 @@ $invalidate = f\contains('invalidate', $this->tasks);
                 <form class="alignleft" data-type="all" style="margin-right: 10px;">
                     <button class="button button-primary button-large js-trigger-button" type="submit">Generate &amp; deploy</button>
                 </form>
-                <button class="button button-large alignleft js-tasks-toggle" aria-controls="grrr-static-site-tasks" aria-expanded="false">Show tasks</button>
+                <button class="button button-large alignleft js-tasks-toggle" aria-controls="simply-static-deploy-tasks" aria-expanded="false">Show tasks</button>
             </div>
             <hr/>
             <ul class="deploy-status js-status">
@@ -84,7 +84,7 @@ $invalidate = f\contains('invalidate', $this->tasks);
             </div>
         </section>
 
-        <section class="deploy-tasks" id="grrr-static-site-tasks" aria-hidden="true">
+        <section class="deploy-tasks" id="simply-static-deploy-tasks" aria-hidden="true">
             <hr/>
             <?php if ($invalidate): ?>
                 <p>Individual tasks to generate, sync and invalidate the website. These tasks are normally executed in the given order.</p>

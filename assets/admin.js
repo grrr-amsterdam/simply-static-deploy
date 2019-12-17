@@ -5,7 +5,7 @@
 
 const Deployer = $ => {
 
-  const PAGE_SELECTOR = '.js-grrr-static-site';
+  const PAGE_SELECTOR = '.js-simply-static-deploy';
   const STATUS_SELECTOR = '.js-status';
   const TRIGGER_BUTTONS_SELECTOR = '.js-trigger-button';
   const DEPLOY_TIME_SELECTOR = '.js-deploy-time';
