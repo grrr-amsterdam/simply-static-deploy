@@ -34,10 +34,10 @@ class Archiver {
         // Store original additional_files and `additional_urls` options, so we can
         // restore them later. We do so, because we need to update the options to
         // resolve symbolic links and add 'hidden' posts.
-        $this->files = static::option_string_to_array(
+        $this->files = Utils::option_string_to_array(
             Simply_Static\Options::instance()->get('additional_files')
         );
-        $this->urls = static::option_string_to_array(
+        $this->urls = Utils::option_string_to_array(
             Simply_Static\Options::instance()->get('additional_urls')
         );
     }
@@ -118,8 +118,8 @@ class Archiver {
 
         Simply_Static\Options::instance()
             ->set('archive_status_messages', [])
-            ->set('additional_files', static::array_to_option_string($files))
-            ->set('additional_urls', static::array_to_option_string($urls))
+            ->set('additional_files', Utils::array_to_option_string($files))
+            ->set('additional_urls', Utils::array_to_option_string($urls))
             ->set('archive_start_time', Simply_Static\Util::formatted_datetime())
             ->set('archive_end_time', '')
             ->save();
@@ -130,8 +130,8 @@ class Archiver {
      */
     private function set_end_options(): void {
         Simply_Static\Options::instance()
-            ->set('additional_files', static::array_to_option_string($this->files))
-            ->set('additional_urls', static::array_to_option_string($this->urls))
+            ->set('additional_files', Utils::array_to_option_string($this->files))
+            ->set('additional_urls', Utils::array_to_option_string($this->urls))
             ->set('archive_end_time', Simply_Static\Util::formatted_datetime())
             ->save();
     }
@@ -232,20 +232,6 @@ class Archiver {
         if (file_exists($cwd . '/feed/atom/index.xml')) {
             rename($cwd . '/feed/atom/index.xml', $cwd . '/feed/atom/index.html');
         }
-    }
-
-    /**
-     * Convert Simply Static option string to array.
-     */
-    public static function option_string_to_array(string $option): array {
-        return Simply_Static\Util::string_to_array($option);
-    }
-
-    /**
-     * Convert array to Simply Static option.
-     */
-    public static function array_to_option_string(array $array): string {
-        return f\join(PHP_EOL, $array);
     }
 
     /**
