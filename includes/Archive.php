@@ -24,12 +24,6 @@ class Archive {
     private $urls = [];
 
     public function __construct() {
-        // Increase max execution time for this class, since a larger website can
-        // take quite a while for it to be fully scraped and 'archived'.
-        $executionTime = apply_filters(static::PHP_FILTER, 600);
-        ini_set('max_execution_time', $executionTime);
-
-        // Add all tasks in the right order.
         $this->tasks = [
             new Simply_Static\Setup_Task(),
             new Simply_Static\Fetch_Urls_Task(),
@@ -54,12 +48,19 @@ class Archive {
      * @return WP_Error|bool
      */
     public function start() {
+        // Increase max execution time for this class, since larger websites can
+        // take quite a while for it to be fully scraped and 'archived'.
+        ini_set('max_execution_time', apply_filters(static::PHP_FILTER, 600));
+
+        // Clear the static directory if needed.
         $this->clear_directory(static::get_directory());
 
+        // Run all tasks.
         $this->set_start_options();
         $result = $this->run_tasks($this->tasks);
         $this->set_end_options();
 
+        // Modify generated files and return result.
         if ($result instanceof WP_Error) {
             do_action('simply_static_deploy_error', $result);
             return $result;
