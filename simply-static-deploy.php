@@ -3,14 +3,14 @@
  * Plugin Name: Simply Static Deploy
  * Plugin URI:  https://github.com/grrr-amsterdam/simply-static-deploy/
  * Description: Deploy static sites easily to an AWS S3 bucket.
- * Version:     0.1.1
+ * Version:     0.1.2
  * Author:      GRRR
  * Author URI:  https://grrr.nl
  */
 use Grrr\SimplyStaticDeploy\SimplyStaticDeploy;
 
 // Global constants.
-define('SIMPLY_STATIC_DEPLOY_VERSION', '0.1.1');
+define('SIMPLY_STATIC_DEPLOY_VERSION', '0.1.2');
 define('SIMPLY_STATIC_DEPLOY_PATH', plugin_dir_path(__FILE__));
 define('SIMPLY_STATIC_DEPLOY_URL', plugin_dir_url(__FILE__));
 
