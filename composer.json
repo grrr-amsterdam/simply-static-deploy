@@ -41,7 +41,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Grrr\\": "includes/Grrr"
+      "Grrr\\SimplyStaticDeploy\\": "includes"
     }
   }
 }
