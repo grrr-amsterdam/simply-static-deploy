@@ -4,11 +4,14 @@
 
 ### Deploy static sites easily to an AWS S3 bucket
 
-- Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin.
-- Adds simple site generation, deployment and invalidation steps.
+- Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin for static site generation.
+- Adds deployment to a S3 bucket and optional CloudFront invalidation steps.
+- Steps can be triggered via a simple user interface or programmatically.
 - Customizable using hooks and actions.
 
 Built with ❤️ by [GRRR](https://grrr.tech).
+
+<img width="557" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1607628/71005872-b173a580-20e4-11ea-88e1-bef666f136cb.png">
 
 ## Installation
 
