@@ -10,7 +10,7 @@ use Garp\Functional as f;
  *
  * @author Koen Schaft <koen@grrr.nl>
  */
-class Archive {
+class Archiver {
 
     const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
     const FILES_FILTER = 'simply_static_deploy_additional_files';
