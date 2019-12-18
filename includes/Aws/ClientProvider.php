@@ -10,7 +10,10 @@ class ClientProvider {
     protected $sdk;
 
     public function __construct(Config $config) {
-        $credentials = (new CredentialsProvider($config->key, $config->secret))->getCredentials();
+        // Allow empty credentials when an IAM role is assigned (e.g. on an EC2 instance).
+        $credentials = $config->key && $config->secret
+            ? (new CredentialsProvider($config->key, $config->secret))->getCredentials()
+            : null;
         $this->sdk = new Sdk([
             'credentials' => $credentials,
             'region' => $config->region,
