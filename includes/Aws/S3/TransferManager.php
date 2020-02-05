@@ -101,6 +101,9 @@ class TransferManager {
         if (strpos($filepath, 'feed/') === 0) {
             return 'application/rss+xml';
         }
+        if (strpos($filepath, 'wp-json/') === 0) {
+            return 'application/json; charset=UTF-8';
+        }
         return f\prop($extension, static::MIME_MAPPER) ?? '';
     }
 
