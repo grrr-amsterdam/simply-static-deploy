@@ -5,7 +5,8 @@
 ### Deploy static sites easily to an AWS S3 bucket
 
 - Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin for static site generation.
-- Adds deployment to a S3 bucket and optional CloudFront invalidation steps.
+- Adds deployment to S3-compatible storage (AWS S3, DigitalOcean Spaces, ...).
+- Adds optional CloudFront CDN invalidation step.
 - Steps can be triggered via a simple user interface or programmatically.
 - Customizable using hooks and actions.
 
@@ -44,6 +45,7 @@ define('SIMPLY_STATIC_DEPLOY_CONFIG', [
         'bucket'        => '...', # S3 bucket
         'bucket_acl'    => '...', # S3 bucket ACL (optional, defaults to `public-read`)
         'distribution'  => '...', # CloudFront distribution ID (optional, step is skipped when empty)
+        'endpoint'      => '...', # For usage with providers other than AWS (optional)
     ],
     'url' => '...', # Website url (used for displaying url after deploy is finished)
 ]);
