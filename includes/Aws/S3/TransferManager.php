@@ -4,8 +4,6 @@ use WP_Error;
 use Aws\Command;
 use Aws\S3\S3Client;
 use Aws\S3\Transfer;
-use Aws\S3\Exception\S3Exception;
-use Aws\Exception\AwsException;
 use Garp\Functional as f;
 
 class TransferManager {
@@ -67,19 +65,13 @@ class TransferManager {
         try {
             $this->_manager->transfer();
             return true;
-        } catch (AwsException $error) {
-            $message = $error->getAwsRequestId() . PHP_EOL;
-            $message .= $error->getAwsErrorType() . PHP_EOL;
-            $message .= $error->getAwsErrorCode() . PHP_EOL;
-        } catch (S3Exception | Exception $error) {
-            $message = $error->getMessage();
+        } catch (Exception $error) {
+            $response = new WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'simply_static_deploy'), $error->getMessage()), [
+                'status' => 400,
+            ]);
+            do_action('simply_static_deploy_error', $response);
+            return $response;
         }
-
-        $error = new WP_Error('cannot_sync_to_s3', sprintf( __("Could not sync file to S3: %s", 'simply_static_deploy'), $message), [
-            'status' => 400,
-        ]);
-        do_action('simply_static_deploy_error', $error);
-        return $error;
     }
 
     /**

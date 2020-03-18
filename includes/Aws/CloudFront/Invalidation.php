@@ -2,9 +2,7 @@
 
 use WP_Error;
 use Exception;
-use Aws\Exception\AwsException;
 use Aws\CloudFront\CloudFrontClient;
-use Aws\CloudFront\Exception\CloudFrontException;
 
 class Invalidation {
 
@@ -34,18 +32,12 @@ class Invalidation {
                 ],
             ]);
             return true;
-        } catch (AwsException $error) {
-            $message = $error->getAwsRequestId() . PHP_EOL;
-            $message .= $error->getAwsErrorType() . PHP_EOL;
-            $message .= $error->getAwsErrorCode() . PHP_EOL;
-        } catch (CloudFrontException | Exception $error) {
-            $message = $error->getMessage();
+        } catch (Exception $error) {
+            $response = new WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'simply_static_deploy'), $error->getMessage()), [
+                'status' => 400,
+            ]);
+            do_action('simply_static_deploy_error', $response);
+            return $response;
         }
-
-        $error = new WP_Error('cloudfront_invalidation_error', sprintf( __("Could not invalidate CloudFront distribution: %s", 'simply_static_deploy'), $message), [
-            'status' => 400,
-        ]);
-        do_action('simply_static_deploy_error', $error);
-        return $error;
     }
 }
