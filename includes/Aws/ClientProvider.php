@@ -14,8 +14,11 @@ class ClientProvider {
         $credentials = $config->key && $config->secret
             ? (new CredentialsProvider($config->key, $config->secret))->getCredentials()
             : null;
+
+        // The SDK which creates clients.
         $this->sdk = new Sdk([
             'credentials' => $credentials,
+            'endpoint' => $config->endpoint ?: null,
             'region' => $config->region,
             'version' => 'latest',
             'http' => [
