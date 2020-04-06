@@ -37,6 +37,7 @@
   "require": {
     "php": ">=7.1",
     "aws/aws-sdk-php": "^3.87",
+    "composer/installers": "^1.8",
     "grrr-amsterdam/garp-functional": "^4.0"
   },
   "autoload": {
