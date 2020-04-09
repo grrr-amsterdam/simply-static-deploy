@@ -48,6 +48,19 @@ class Archiver {
      * @return WP_Error|bool
      */
     public function start() {
+        if (!static::has_valid_delivery_method()) {
+            $message = "The configured 'Delivery Method' should be set to 'Local Directory'.";
+            return new WP_Error('simply_static_config_error', $message, [
+                'status' => 405,
+            ]);
+        }
+        if (!static::get_directory()) {
+            $message = "The configured 'Local Directory' cannot be found.";
+            return new WP_Error('simply_static_config_error', $message, [
+                'status' => 405,
+            ]);
+        }
+
         // Increase max execution time for this class, since larger websites can
         // take quite a while for it to be fully scraped and 'archived'.
         ini_set('max_execution_time', apply_filters(static::PHP_FILTER, 600));
@@ -88,7 +101,7 @@ class Archiver {
             if (!$result) {
                 $message = __('Something went wrong in Simply Static: ' . get_class($task), 'simply_static_deploy');
                 return new WP_Error('simply_static_error', $message, [
-                    'status' => 403,
+                    'status' => 500,
                 ]);
             }
         }
@@ -232,6 +245,15 @@ class Archiver {
         if (file_exists($cwd . '/feed/atom/index.xml')) {
             rename($cwd . '/feed/atom/index.xml', $cwd . '/feed/atom/index.html');
         }
+    }
+
+    /**
+     * Check wether the configured delivery method is valid.
+     *
+     * @return bool
+     */
+    public static function has_valid_delivery_method(): bool {
+        return Simply_Static\Options::instance()->get('delivery_method') === 'local';
     }
 
     /**
