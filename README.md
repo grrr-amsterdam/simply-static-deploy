@@ -51,7 +51,17 @@ define('SIMPLY_STATIC_DEPLOY_CONFIG', [
 ]);
 ```
 
-Then configure the Simply Static plugin via the admin interface, and hit `Generate & Deploy` in the `Deploy` tab. 
+Then configure the Simply Static plugin via the admin interface. The most important setting to get right is:
+
+- `Delivery Method`: set to `Local Directory` (files are synced to S3, zip won't work)
+
+Other settings which you should pay attention to:
+
+- `Additional URLs`: add any URL the plugin is unable to find
+- `Additional Files and Directories`: add additional directories (for example front-end assets)
+- `URLs to Exclude`: for example the uploads folder (but only when you're offloading uploads at runtime)
+
+If everything is configured correctly, hit `Generate & Deploy` in the `Deploy` tab.
 
 ## Documentation
 
