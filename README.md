@@ -22,14 +22,22 @@ Install via Composer:
 $ composer require grrr-amsterdam/simply-static-deploy
 ```
 
-This will install it in the plugin directory, assuming you have the right installer path configured in your `composer.json`:
+This will install it in the plugin directory, assuming you have the right installer path configured in your `composer.json`. This has to be done before requiring the package:
 
 ```json
 "extra": {
   "installer-paths": {
-    "web/app/plugins/{$name}/": ["type:wordpress-plugin"]
+    "wp-content/plugins/{$name}/": ["type:wordpress-plugin"]
   }
 }
+```
+
+If you're not using Composer in your project yet, make sure to require the [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading). A good place would be in your `wp-config.php`:
+
+```php
+/** Sets up WordPress vars and included files. */
+require_once ABSPATH . 'wp-settings.php';
+require_once ABSPATH . 'vendor/autoload.php'; # ‹— add this
 ```
 
 ## Usage
@@ -182,3 +190,11 @@ Create a cronjob calling the WordPres WP-Cron. Setting it to _every 5 minutes_ w
 ```cron
 */5 * * * * curl https://example.com/wp/wp-cron.php?doing-cron > /dev/null 2>&1
 ```
+
+## Common issues
+
+```
+Fatal error: Uncaught Error: Class 'Grrr\SimplyStaticDeploy\SimplyStaticDeploy' not found
+```
+
+Check the [installation instructions](#installation), and require the Composer autoloader in your project.
