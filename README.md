@@ -1,6 +1,6 @@
 # Simply Static Deploy
 
-[![Build Status](https://travis-ci.com/grrr-amsterdam/simply-static-deploy.svg?branch=master)](https://travis-ci.com/grrr-amsterdam/simply-static-deploy)
+<!--[![Build Status](https://travis-ci.com/grrr-amsterdam/simply-static-deploy.svg?branch=master)](https://travis-ci.com/grrr-amsterdam/simply-static-deploy)-->
 
 ### Deploy static sites easily to an AWS S3 bucket
 
@@ -14,15 +14,18 @@ Built with ❤️ by [GRRR](https://grrr.tech).
 
 <img width="557" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1607628/71005872-b173a580-20e4-11ea-88e1-bef666f136cb.png">
 
+## Minimum requirements
+
+This plugin requires:
+
+- A minimum PHP version of **7.1**.
+- An installed and activated version of the [Simply Static plugin](https://wordpress.org/plugins/simply-static/).
+
 ## Installation
 
-Install via Composer:
+This plugin needs to be installed using [Composer](https://getcomposer.org/).
 
-```sh
-$ composer require grrr-amsterdam/simply-static-deploy
-```
-
-This will install it in the plugin directory, assuming you have the right installer path configured in your `composer.json`. This has to be done before requiring the package:
+Make sure you have the right installer paths configured in your `composer.json`. This has to be done before requiring the package:
 
 ```json
 "extra": {
@@ -30,6 +33,12 @@ This will install it in the plugin directory, assuming you have the right instal
     "wp-content/plugins/{$name}/": ["type:wordpress-plugin"]
   }
 }
+```
+
+Install via Composer:
+
+```sh
+$ composer require grrr-amsterdam/simply-static-deploy
 ```
 
 If you're not using Composer in your project yet, make sure to require the [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading). A good place would be in your `wp-config.php`:
