@@ -4,13 +4,14 @@ use WP_Error;
 use FileSystemIterator;
 use Garp\Functional as f;
 
-class Syncer {
-
+class Syncer
+{
     const OPTION_TIMESTAMP_KEY = 'simply_static_deploy_synced_at';
 
     private $config;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
 
@@ -19,11 +20,19 @@ class Syncer {
      *
      * @return WP_Error|bool
      */
-    public function sync(string $path) {
+    public function sync(string $path)
+    {
         if (!file_exists($path) || !(new FilesystemIterator($path))->valid()) {
-            return new WP_Error('simply_static_deploy_syncer', __("No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.", 'simply_static_deploy'), [
-                'status' => 400,
-            ]);
+            return new WP_Error(
+                'simply_static_deploy_syncer',
+                __(
+                    "No generated site found on {$path}, please start a full 'Generate & Deploy' sequence.",
+                    'simply_static_deploy'
+                ),
+                [
+                    'status' => 400,
+                ]
+            );
         }
 
         $clientProvider = new Aws\ClientProvider($this->config);
@@ -47,8 +56,8 @@ class Syncer {
      *
      * @return string
      */
-    public static function get_last_time(): string {
+    public static function get_last_time(): string
+    {
         return get_option(self::OPTION_TIMESTAMP_KEY) ?: '';
     }
-
 }

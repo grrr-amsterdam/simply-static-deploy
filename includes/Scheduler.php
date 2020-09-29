@@ -10,23 +10,29 @@ use Garp\Functional as f;
  *
  * @author Koen Schaft <koen@grrr.nl>
  */
-class Scheduler {
-
+class Scheduler
+{
     const SCHEDULE_ACTION = 'simply_static_deploy_schedule';
     const EVENT_BASE = 'simply_static_deploy_event';
 
     private $config;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
 
-    public function register(): void {
+    public function register(): void
+    {
         add_action(static::SCHEDULE_ACTION, [$this, 'schedule'], 10, 3);
     }
 
-    public function schedule(string $time, string $interval): void {
-        $datetime = new DateTime($time, new DateTimeZone(get_option('timezone_string')));
+    public function schedule(string $time, string $interval): void
+    {
+        $datetime = new DateTime(
+            $time,
+            new DateTimeZone(get_option('timezone_string'))
+        );
         $event = $this->generate_event_name($datetime, $interval);
         if (!wp_next_scheduled($event)) {
             wp_schedule_event($datetime->getTimestamp(), $interval, $event);
@@ -35,7 +41,8 @@ class Scheduler {
         add_action($event, [$this, 'deploy']);
     }
 
-    public function deploy(): void {
+    public function deploy(): void
+    {
         $generator = new Generator();
         $generate = $generator->generate();
         if ($generate instanceof WP_Error) {
@@ -54,7 +61,10 @@ class Scheduler {
         }
     }
 
-    private function generate_event_name(DateTime $datetime, string $interval): string {
+    private function generate_event_name(
+        DateTime $datetime,
+        string $interval
+    ): string {
         return f\join('_', [
             static::EVENT_BASE,
             $interval,
@@ -62,5 +72,4 @@ class Scheduler {
             $datetime->format('i'),
         ]);
     }
-
 }

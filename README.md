@@ -4,11 +4,11 @@
 
 ### Deploy static sites easily to an AWS S3 bucket
 
-- Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin for static site generation.
-- Adds deployment to S3-compatible storage (AWS S3, DigitalOcean Spaces, ...).
-- Adds optional CloudFront CDN invalidation step.
-- Steps can be triggered via a simple user interface or programmatically.
-- Customizable using hooks and actions.
+-   Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin for static site generation.
+-   Adds deployment to S3-compatible storage (AWS S3, DigitalOcean Spaces, ...).
+-   Adds optional CloudFront CDN invalidation step.
+-   Steps can be triggered via a simple user interface or programmatically.
+-   Customizable using hooks and actions.
 
 Built with ❤️ by [GRRR](https://grrr.tech).
 
@@ -18,8 +18,8 @@ Built with ❤️ by [GRRR](https://grrr.tech).
 
 This plugin requires:
 
-- A minimum PHP version of **7.1**.
-- An installed and activated version of the [Simply Static plugin](https://wordpress.org/plugins/simply-static/).
+-   A minimum PHP version of **7.1**.
+-   An installed and activated version of the [Simply Static plugin](https://wordpress.org/plugins/simply-static/).
 
 ## Installation
 
@@ -56,13 +56,13 @@ First define `SIMPLY_STATIC_DEPLOY_CONFIG` in your WordPress configuration:
 ```php
 define('SIMPLY_STATIC_DEPLOY_CONFIG', [
     'aws' => [
-        'key'           => '...', # AWS access key
-        'secret'        => '...', # AWS secret key
-        'region'        => '...', # AWS region
-        'bucket'        => '...', # S3 bucket
-        'bucket_acl'    => '...', # S3 bucket ACL (optional, defaults to `public-read`)
-        'distribution'  => '...', # CloudFront distribution ID (optional, step is skipped when empty)
-        'endpoint'      => '...', # For usage with providers other than AWS (optional)
+        'key' => '...', # AWS access key
+        'secret' => '...', # AWS secret key
+        'region' => '...', # AWS region
+        'bucket' => '...', # S3 bucket
+        'bucket_acl' => '...', # S3 bucket ACL (optional, defaults to `public-read`)
+        'distribution' => '...', # CloudFront distribution ID (optional, step is skipped when empty)
+        'endpoint' => '...', # For usage with providers other than AWS (optional)
     ],
     'url' => '...', # Website url (used for displaying url after deploy is finished)
 ]);
@@ -70,13 +70,13 @@ define('SIMPLY_STATIC_DEPLOY_CONFIG', [
 
 Then configure the Simply Static plugin via the admin interface. The most important setting to get right is:
 
-- `Delivery Method`: set to `Local Directory` (files are synced to S3, zip won't work)
+-   `Delivery Method`: set to `Local Directory` (files are synced to S3, zip won't work)
 
 Other settings which you should pay attention to:
 
-- `Additional URLs`: add any URL the plugin is unable to find
-- `Additional Files and Directories`: add additional directories (for example front-end assets)
-- `URLs to Exclude`: for example the uploads folder (but only when you're offloading uploads at runtime)
+-   `Additional URLs`: add any URL the plugin is unable to find
+-   `Additional Files and Directories`: add additional directories (for example front-end assets)
+-   `URLs to Exclude`: for example the uploads folder (but only when you're offloading uploads at runtime)
 
 If everything is configured correctly, hit `Generate & Deploy` in the `Deploy` tab.
 
@@ -84,16 +84,16 @@ If everything is configured correctly, hit `Generate & Deploy` in the `Deploy` t
 
 Available filters to modify settings and data passed to the plugin:
 
-- [Adjust additional files](#adjust-additional-files)
-- [Adjust additional URLs](#adjust-additional-urls)
-- [Adjust PHP max execution time](#adjust-php-max-execution-time)
-- [Enable static directory clearing](#enable-static-directory-clearing)
+-   [Adjust additional files](#adjust-additional-files)
+-   [Adjust additional URLs](#adjust-additional-urls)
+-   [Adjust PHP max execution time](#adjust-php-max-execution-time)
+-   [Enable static directory clearing](#enable-static-directory-clearing)
 
 Available actions to invoke or act upon:
 
-- [Handle errors](#handle-errors)
-- [Modify generated files](#modify-generated-files)
-- [Schedule deploys](#schedule-deploys)
+-   [Handle errors](#handle-errors)
+-   [Modify generated files](#modify-generated-files)
+-   [Schedule deploys](#schedule-deploys)
 
 ### Available filters
 
@@ -133,12 +133,13 @@ add_filter('simply_static_deploy_php_execution_time', function (int $time) {
 });
 ```
 
-Note: although this will increase the `max_execution_time`, it will not increase the execution time of your webserver. 
+Note: although this will increase the `max_execution_time`, it will not increase the execution time of your webserver.
 For Apache, you might have to increase the [TimeOut Directive](http://httpd.apache.org/docs/2.0/mod/core.html#timeout):
 
 ```conf
 TimeOut 600
 ```
+
 #### Enable static directory clearing
 
 Clear the static folder before a new version is generated. Simply Static only allows you to delete the temporary files, but in some cases you might want to start with a clean slate (e.g. items deleted from the CMS, and a redirect being added in its place).
@@ -168,19 +169,21 @@ add_action('simply_static_deploy_error', function (\WP_Error $error) {
 Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
 
 ```php
-add_action('simply_static_deploy_modify_generated_files', function (string $directory) {
+add_action('simply_static_deploy_modify_generated_files', function (
+    string $directory
+) {
     # Modify generated files, like renaming or moving them.
 });
 ```
 
 #### Schedule deploys
 
-Schedule a deploy event. 
+Schedule a deploy event.
 
 Arguments:
 
-- **Time**: should be a simple time string, it is automatically converted to a UNIX timestamp in the configured WordPress timezone.
-- **Interval**: accepted values are `hourly`, `twicedaily` and `daily`. Can be extended via [cron_schedules](https://developer.wordpress.org/reference/hooks/cron_schedules).
+-   **Time**: should be a simple time string, it is automatically converted to a UNIX timestamp in the configured WordPress timezone.
+-   **Interval**: accepted values are `hourly`, `twicedaily` and `daily`. Can be extended via [cron_schedules](https://developer.wordpress.org/reference/hooks/cron_schedules).
 
 ```php
 do_action('simply_static_deploy_schedule', '12:00', 'daily');
@@ -189,12 +192,12 @@ do_action('simply_static_deploy_schedule', '12:00', 'daily');
 Note: it is important that [WP-Cron](https://developer.wordpress.org/plugins/cron/) is called regularly. You could do so by disabling the default WP-Cron mechanism and switch to calling it via a dedicated [cronjob](https://en.wikipedia.org/wiki/Cronjob).
 
 To disable the default WP–Cron (which is normally called when a user visits pages), add the following to your WordPress configuration:
- 
+
 ```php
 define('DISABLE_WP_CRON', true);
 ```
 
-Create a cronjob calling the WordPres WP-Cron. Setting it to _every 5 minutes_ would be a good default. For example via  `crontab -e` on a Linux machine:
+Create a cronjob calling the WordPres WP-Cron. Setting it to _every 5 minutes_ would be a good default. For example via `crontab -e` on a Linux machine:
 
 ```cron
 */5 * * * * curl https://example.com/wp/wp-cron.php?doing-cron > /dev/null 2>&1

@@ -2,8 +2,8 @@
 
 use WP_Error;
 
-class Generator {
-
+class Generator
+{
     const OPTION_TIMESTAMP_KEY = 'simply_static_deploy_generated_at';
 
     /**
@@ -11,11 +11,19 @@ class Generator {
      *
      * @return WP_Error|bool
      */
-    public function generate() {
+    public function generate()
+    {
         if (Archiver::is_in_progress()) {
-            return new WP_Error('simply_static_deploy_generator', __("Bundle generation already in progress. Someone else might've started a deploy without your knowledge.", 'simply_static_deploy'), [
-                'status' => 403,
-            ]);
+            return new WP_Error(
+                'simply_static_deploy_generator',
+                __(
+                    "Bundle generation already in progress. Someone else might've started a deploy without your knowledge.",
+                    'simply_static_deploy'
+                ),
+                [
+                    'status' => 403,
+                ]
+            );
         }
 
         $archive = new Archiver();
@@ -32,8 +40,8 @@ class Generator {
      *
      * @return string
      */
-    public static function get_last_time(): string {
+    public static function get_last_time(): string
+    {
         return get_option(self::OPTION_TIMESTAMP_KEY) ?: '';
     }
-
 }
