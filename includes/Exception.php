@@ -1,5 +1,5 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-class Exception extends \Exception {
-
+class Exception extends \Exception
+{
 }

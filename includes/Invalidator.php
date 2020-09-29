@@ -3,13 +3,14 @@
 use WP_Error;
 use Garp\Functional as f;
 
-class Invalidator {
-
+class Invalidator
+{
     const OPTION_TIMESTAMP_KEY = 'simply_static_deploy_invalidated_at';
 
     private $config;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
 
@@ -18,11 +19,19 @@ class Invalidator {
      *
      * @return WP_Error|bool
      */
-    public function invalidate() {
+    public function invalidate()
+    {
         if (!$this->config->distribution) {
-            $error = new WP_Error('cloudfront_invalidation_error', __("No CloudFront distribution ID is specified.", 'simply_static_deploy'), [
-                'status' => 400,
-            ]);
+            $error = new WP_Error(
+                'cloudfront_invalidation_error',
+                __(
+                    "No CloudFront distribution ID is specified.",
+                    'simply_static_deploy'
+                ),
+                [
+                    'status' => 400,
+                ]
+            );
             do_action('simply_static_deploy_error', $error);
             return $error;
         }
@@ -46,8 +55,8 @@ class Invalidator {
      *
      * @return string
      */
-    public static function get_last_time(): string {
+    public static function get_last_time(): string
+    {
         return get_option(self::OPTION_TIMESTAMP_KEY) ?: '';
     }
-
 }

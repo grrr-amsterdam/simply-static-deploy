@@ -3,8 +3,8 @@
 use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Utils\Renderer;
 
-class Admin {
-
+class Admin
+{
     const SLUG = 'simply-static-deploy';
     const JS_GLOBAL = 'SIMPLY_STATIC_DEPLOY';
 
@@ -14,7 +14,10 @@ class Admin {
     private $config;
 
     public function __construct(
-        Config $config, string $basePath, string $baseUrl, string $version
+        Config $config,
+        string $basePath,
+        string $baseUrl,
+        string $version
     ) {
         $this->config = $config;
         $this->basePath = $basePath;
@@ -22,13 +25,15 @@ class Admin {
         $this->version = $version;
     }
 
-    public function register() {
+    public function register()
+    {
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
         add_action('wp_before_admin_bar_render', [$this, 'admin_bar']);
     }
 
-    public function admin_bar() {
+    public function admin_bar()
+    {
         global $wp_admin_bar;
         $wp_admin_bar->add_node([
             'id' => static::SLUG,
@@ -37,7 +42,8 @@ class Admin {
         ]);
     }
 
-    public function admin_menu() {
+    public function admin_menu()
+    {
         add_menu_page(
             'Deploy Website',
             'Deploy',
@@ -48,9 +54,20 @@ class Admin {
         );
     }
 
-    public function register_assets() {
-        wp_register_style(static::SLUG, $this->get_asset_url('admin.css'), [], $this->version);
-        wp_register_script(static::SLUG, $this->get_asset_url('admin.js'), ['jquery'], $this->version);
+    public function register_assets()
+    {
+        wp_register_style(
+            static::SLUG,
+            $this->get_asset_url('admin.css'),
+            [],
+            $this->version
+        );
+        wp_register_script(
+            static::SLUG,
+            $this->get_asset_url('admin.js'),
+            ['jquery'],
+            $this->version
+        );
         wp_localize_script(static::SLUG, static::JS_GLOBAL, [
             'api' => [
                 'nonce' => wp_create_nonce('wp_rest'),
@@ -61,22 +78,21 @@ class Admin {
         ]);
     }
 
-    public function render_admin() {
+    public function render_admin()
+    {
         wp_enqueue_script(static::SLUG);
         wp_enqueue_style(static::SLUG);
-        $renderer = new Renderer(
-            $this->basePath . 'views/admin-page.php',
-            [
-                'endpoints' => $this->get_endpoints(),
-                'tasks' => $this->get_tasks(),
-                'times' => $this->get_times(),
-                'in_progress' => Archiver::is_in_progress(),
-            ]
-        );
+        $renderer = new Renderer($this->basePath . 'views/admin-page.php', [
+            'endpoints' => $this->get_endpoints(),
+            'tasks' => $this->get_tasks(),
+            'times' => $this->get_times(),
+            'in_progress' => Archiver::is_in_progress(),
+        ]);
         $renderer->render();
     }
 
-    private function get_tasks(): array {
+    private function get_tasks(): array
+    {
         $tasks = ['generate', 'sync'];
         if ($this->config->aws->distribution) {
             $tasks[] = 'invalidate';
@@ -84,42 +100,48 @@ class Admin {
         return $tasks;
     }
 
-    private function get_times(): array {
+    private function get_times(): array
+    {
         $times = [
             'generate' => $this->get_last_time(Generator::get_last_time()),
             'sync' => $this->get_last_time(Syncer::get_last_time()),
         ];
         if ($this->config->aws->distribution) {
-            $times['invalidate'] = $this->get_last_time(Invalidator::get_last_time());
+            $times['invalidate'] = $this->get_last_time(
+                Invalidator::get_last_time()
+            );
         }
         return $times;
     }
 
-    private function get_last_time($timestamp): string {
+    private function get_last_time($timestamp): string
+    {
         $tz = get_option('timezone_string') ?: date_default_timezone_get();
         date_default_timezone_set($tz);
-        return $timestamp
-            ? date_i18n('j F H:i', $timestamp)
-            : '';
+        return $timestamp ? date_i18n('j F H:i', $timestamp) : '';
     }
 
-    private function get_asset_url(string $filename): string {
+    private function get_asset_url(string $filename): string
+    {
         return rtrim($this->baseUrl, '/') . '/assets/' . $filename;
-        $relative_assets_dir = substr($this->basePath, strlen(get_theme_file_path())) . '/assets';
+        $relative_assets_dir =
+            substr($this->basePath, strlen(get_theme_file_path())) . '/assets';
         return get_theme_file_uri($relative_assets_dir . '/' . $filename);
     }
 
-    private function get_icon(string $filename): string {
-        $icon = $this->basePath . 'assets/' .$filename;
-        return 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($icon));
+    private function get_icon(string $filename): string
+    {
+        $icon = $this->basePath . 'assets/' . $filename;
+        return 'data:image/svg+xml;base64,' .
+            base64_encode(file_get_contents($icon));
     }
 
-    private function get_endpoints() {
+    private function get_endpoints()
+    {
         $out = [];
         foreach (Api::ENDPOINT_MAPPER as $endpoint => $callback) {
             $out[$endpoint] = RestRoutes::url($endpoint);
         }
         return $out;
     }
-
 }

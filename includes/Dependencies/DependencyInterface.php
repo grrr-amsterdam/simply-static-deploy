@@ -1,7 +1,7 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
-interface DependencyInterface {
-
+interface DependencyInterface
+{
     /**
      * Check whether this dependency is met.
      *
@@ -13,5 +13,4 @@ interface DependencyInterface {
      * Registers the notifications to communicate the dependency is not met.
      */
     public function register_notifications();
-
 }

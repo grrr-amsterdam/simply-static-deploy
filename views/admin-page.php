@@ -3,7 +3,6 @@
 use Garp\Functional as f;
 
 $invalidate = f\contains('invalidate', $this->tasks);
-
 ?>
 <div class="wrap js-simply-static-deploy">
 
@@ -78,8 +77,7 @@ $invalidate = f\contains('invalidate', $this->tasks);
                 <span class="js-deploy-time">
                     <?= $this->in_progress
                         ? '<span class="is-in-progress">Bundle generation in progress, please wait!</span>'
-                        : '<span>Nothing to report.</span>'
-                    ?>
+                        : '<span>Nothing to report.</span>' ?>
                 </span>
             </div>
         </section>

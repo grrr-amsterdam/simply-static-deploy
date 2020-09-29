@@ -10,8 +10,8 @@ use Garp\Functional as f;
  *
  * @author Koen Schaft <koen@grrr.nl>
  */
-class Archiver {
-
+class Archiver
+{
     const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
     const FILES_FILTER = 'simply_static_deploy_additional_files';
     const PHP_FILTER = 'simply_static_deploy_php_execution_time';
@@ -23,7 +23,8 @@ class Archiver {
     private $files = [];
     private $urls = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->tasks = [
             new Simply_Static\Setup_Task(),
             new Simply_Static\Fetch_Urls_Task(),
@@ -47,9 +48,11 @@ class Archiver {
      *
      * @return WP_Error|bool
      */
-    public function start() {
+    public function start()
+    {
         if (!static::has_valid_delivery_method()) {
-            $message = "The configured 'Delivery Method' should be set to 'Local Directory'.";
+            $message =
+                "The configured 'Delivery Method' should be set to 'Local Directory'.";
             return new WP_Error('simply_static_config_error', $message, [
                 'status' => 405,
             ]);
@@ -92,14 +95,19 @@ class Archiver {
      *
      * @return WP_Error|bool
      */
-    private function run_tasks(array $tasks) {
+    private function run_tasks(array $tasks)
+    {
         foreach ($tasks as $task) {
             $result = $this->perform_task($task);
             if ($result instanceof WP_Error) {
                 return $result;
             }
             if (!$result) {
-                $message = __('Something went wrong in Simply Static: ' . get_class($task), 'simply_static_deploy');
+                $message = __(
+                    'Something went wrong in Simply Static: ' .
+                        get_class($task),
+                    'simply_static_deploy'
+                );
                 return new WP_Error('simply_static_error', $message, [
                     'status' => 500,
                 ]);
@@ -113,7 +121,8 @@ class Archiver {
      *
      * @return Task|bool
      */
-    private function perform_task($task) {
+    private function perform_task($task)
+    {
         $result = $task->perform();
         return $result ?: $this->perform_task($task);
     }
@@ -121,7 +130,8 @@ class Archiver {
     /**
      * Set and store Simply Static start options.
      */
-    private function set_start_options(): void {
+    private function set_start_options(): void
+    {
         $files = has_filter(static::FILES_FILTER)
             ? apply_filters(static::FILES_FILTER, $this->files)
             : $this->resolve_additional_files($this->files);
@@ -133,7 +143,10 @@ class Archiver {
             ->set('archive_status_messages', [])
             ->set('additional_files', Utils::array_to_option_string($files))
             ->set('additional_urls', Utils::array_to_option_string($urls))
-            ->set('archive_start_time', Simply_Static\Util::formatted_datetime())
+            ->set(
+                'archive_start_time',
+                Simply_Static\Util::formatted_datetime()
+            )
             ->set('archive_end_time', '')
             ->save();
     }
@@ -141,9 +154,13 @@ class Archiver {
     /**
      * Set and store Simply Static end options.
      */
-    private function set_end_options(): void {
+    private function set_end_options(): void
+    {
         Simply_Static\Options::instance()
-            ->set('additional_files', Utils::array_to_option_string($this->files))
+            ->set(
+                'additional_files',
+                Utils::array_to_option_string($this->files)
+            )
             ->set('additional_urls', Utils::array_to_option_string($this->urls))
             ->set('archive_end_time', Simply_Static\Util::formatted_datetime())
             ->save();
@@ -153,17 +170,21 @@ class Archiver {
      * Clear the current static site directory, to make sure deleted pages
      * are not deployed again, and potentialy overwriting redirects.
      */
-    private function clear_directory(string $dir): void {
+    private function clear_directory(string $dir): void
+    {
         $clear = apply_filters(static::CLEAR_FILTER, false);
         if (!$clear || !$dir || !file_exists($dir)) {
             return;
         }
         $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            new \RecursiveDirectoryIterator(
+                $dir,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($files as $fileinfo) {
-            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo = $fileinfo->isDir() ? 'rmdir' : 'unlink';
             $todo($fileinfo->getRealPath());
         }
     }
@@ -182,7 +203,8 @@ class Archiver {
      * We're fixing this by temporarily resolving all `additional_files` paths
      * to absolute URLs with resolved symlinks, and restoring them after completion.
      */
-    private function resolve_additional_files(array $files): array {
+    private function resolve_additional_files(array $files): array
+    {
         return f\unique(f\map('realpath', $files));
     }
 
@@ -192,18 +214,22 @@ class Archiver {
      * We'll have to fetch them manually and append them to the `additional_urls`
      * option during the archive tasks.
      */
-    private function enrich_additional_urls(array $urls): array {
-        return f\unique(f\concat(
-            $urls,
-            $this->fetch_password_protected_posts(),
-            $this->fetch_yoast_noindex_posts()
-        ));
+    private function enrich_additional_urls(array $urls): array
+    {
+        return f\unique(
+            f\concat(
+                $urls,
+                $this->fetch_password_protected_posts(),
+                $this->fetch_yoast_noindex_posts()
+            )
+        );
     }
 
     /**
      * Fetch password protected posts.
      */
-    private function fetch_password_protected_posts(): array {
+    private function fetch_password_protected_posts(): array
+    {
         $query = new \WP_Query([
             'post_type' => 'any',
             'has_password' => true,
@@ -215,7 +241,8 @@ class Archiver {
     /**
      * Fetch posts which are set to `noindex` by Yoast SEO.
      */
-    private function fetch_yoast_noindex_posts(): array {
+    private function fetch_yoast_noindex_posts(): array
+    {
         $query = new \WP_Query([
             'post_type' => 'any',
             'meta_key' => '_yoast_wpseo_meta-robots-noindex',
@@ -228,7 +255,8 @@ class Archiver {
     /**
      * Modify generated files since they will be hosted statically.
      */
-    private function modify_generated_files(string $directory): void {
+    private function modify_generated_files(string $directory): void
+    {
         $cwd = rtrim($directory, '/');
 
         // The `sitemap.xml` generated by Yoast redirects to `sitemap_index.xml`.
@@ -243,7 +271,10 @@ class Archiver {
             rename($cwd . '/feed/index.xml', $cwd . '/feed/index.html');
         }
         if (file_exists($cwd . '/feed/atom/index.xml')) {
-            rename($cwd . '/feed/atom/index.xml', $cwd . '/feed/atom/index.html');
+            rename(
+                $cwd . '/feed/atom/index.xml',
+                $cwd . '/feed/atom/index.html'
+            );
         }
     }
 
@@ -252,8 +283,10 @@ class Archiver {
      *
      * @return bool
      */
-    public static function has_valid_delivery_method(): bool {
-        return Simply_Static\Options::instance()->get('delivery_method') === 'local';
+    public static function has_valid_delivery_method(): bool
+    {
+        return Simply_Static\Options::instance()->get('delivery_method') ===
+            'local';
     }
 
     /**
@@ -261,7 +294,8 @@ class Archiver {
      *
      * @return string
      */
-    public static function get_directory(): string {
+    public static function get_directory(): string
+    {
         return Simply_Static\Options::instance()->get('local_dir') ?: '';
     }
 
@@ -271,9 +305,9 @@ class Archiver {
      *
      * @return bool
      */
-    public static function is_in_progress(): bool {
-        return Simply_Static\Options::instance()->get('archive_start_time')
-            && !Simply_Static\Options::instance()->get('archive_end_time');
+    public static function is_in_progress(): bool
+    {
+        return Simply_Static\Options::instance()->get('archive_start_time') &&
+            !Simply_Static\Options::instance()->get('archive_end_time');
     }
-
 }
