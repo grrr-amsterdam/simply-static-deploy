@@ -1,4 +1,6 @@
-<?php namespace Grrr\SimplyStaticDeploy;
+<?php
+
+namespace Grrr\SimplyStaticDeploy;
 
 use WP_Error;
 
@@ -9,9 +11,10 @@ class Generator
     /**
      * Start the Simply Static archive process tasks and return the result.
      *
+     * @param  int $post_id Use this to generate a single page by ID.
      * @return WP_Error|bool
      */
-    public function generate()
+    public function generate(?int $post_id = null)
     {
         if (Archiver::is_in_progress()) {
             return new WP_Error(
@@ -26,7 +29,7 @@ class Generator
             );
         }
 
-        $archive = new Archiver();
+        $archive = new Archiver($post_id);
         $result = $archive->start();
         if (!$result instanceof WP_Error) {
             update_option(self::OPTION_TIMESTAMP_KEY, time());

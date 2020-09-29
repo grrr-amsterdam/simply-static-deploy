@@ -1,4 +1,6 @@
-<?php namespace Grrr\SimplyStaticDeploy;
+<?php
+
+namespace Grrr\SimplyStaticDeploy;
 
 use Garp\Functional as f;
 
@@ -8,6 +10,7 @@ class RestRoutes
 
     const ROUTES = [
         'generate' => 'generate',
+        'generate_single' => 'generate_single',
         'sync' => 'sync',
         'invalidate' => 'invalidate',
     ];
