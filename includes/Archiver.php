@@ -22,11 +22,16 @@ class Archiver
     private $tasks = [];
     private $files = [];
     private $urls = [];
+    private $excludedUrls = [];
 
-    public function __construct()
+    public function __construct(?int $post_id = null)
     {
+        $setupTask = !is_null($post_id)
+            ? new Simply_Static\Setup_Task()
+            : new Tasks\SetupSingleTask($post_id);
+
         $this->tasks = [
-            new Simply_Static\Setup_Task(),
+            $setupTask,
             new Simply_Static\Fetch_Urls_Task(),
             new Simply_Static\Transfer_Files_Locally_Task(),
             new Simply_Static\Wrapup_Task(),
@@ -40,6 +45,9 @@ class Archiver
         );
         $this->urls = Utils::option_string_to_array(
             Simply_Static\Options::instance()->get('additional_urls')
+        );
+        $this->excludedUrls = Utils::option_string_to_array(
+            Simply_Static\Options::instance()->get('urls_to_exclude')
         );
     }
 
@@ -162,6 +170,10 @@ class Archiver
                 Utils::array_to_option_string($this->files)
             )
             ->set('additional_urls', Utils::array_to_option_string($this->urls))
+            ->set(
+                'urls_to_exclude',
+                Utils::array_to_option_string($this->excludedUrls)
+            )
             ->set('archive_end_time', Simply_Static\Util::formatted_datetime())
             ->save();
     }
