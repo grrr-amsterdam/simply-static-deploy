@@ -207,3 +207,7 @@ Fatal error: Uncaught Error: Class 'Grrr\SimplyStaticDeploy\SimplyStaticDeploy' 
 ```
 
 Check the [installation instructions](#installation), and require the Composer autoloader in your project.
+
+
+## TODOS
+[ ] use background process for deployment

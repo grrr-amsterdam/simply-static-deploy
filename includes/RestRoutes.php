@@ -10,6 +10,7 @@ class RestRoutes {
         'generate'   => 'generate',
         'sync'       => 'sync',
         'invalidate' => 'invalidate',
+        'background_deploy' => 'background_deploy',
     ];
 
     public static function get(string $name): string {

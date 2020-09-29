@@ -28,10 +28,14 @@ const Deployer = $ => {
     current: 'In progress... (keep this window open)',
     done: 'Done.',
     failed: 'Failed.',
+    processing: 'Processing in background.',
   };
 
   const $page = $(PAGE_SELECTOR);
   const $deployForm = $page.find(`form[data-type="all"]`);
+
+  const $deployInBackgroundForm = $page.find(`form[data-type="background"]`);
+
   const $taskForms = $page.find(`
     form[data-type="generate"],
     form[data-type="sync"],
@@ -160,6 +164,23 @@ const Deployer = $ => {
     triggerBuild();
   };
 
+  const handleBackgroundDeploySubmit = e => {
+    e.preventDefault();
+    queueTasks(['background_deploy']);
+    performQueuedTasks()
+    updateStatus()
+
+    post(ENDPOINTS['background_deploy'])
+      .then(response => {
+        const template = createTaskStatusTemplate('processing');
+        $statusList.find(`[data-type="background_deploy"]`).html(template);
+      })
+      .catch(error => {
+        showError(error);
+        enableTriggerButtons();
+      });
+  }
+
   const handleTaskSubmit = e => {
     e.preventDefault();
     disableTriggerButtons();
@@ -179,6 +200,8 @@ const Deployer = $ => {
       $deployForm.on('submit', handleDeploySubmit);
       $taskForms.on('submit', handleTaskSubmit);
       $tasksToggle.on('click', handleTasksToggle);
+
+      $deployInBackgroundForm.on('submit', handleBackgroundDeploySubmit);
     },
   };
 };

@@ -13,9 +13,9 @@ $invalidate = f\contains('invalidate', $this->tasks);
     <div class="card">
         <section>
             <h1><?= get_admin_page_title() ?></h1>
-            <?php if ($invalidate): ?>
+            <?php if ($invalidate) : ?>
                 <p>Generate a static version of the website, sync it to the static hosting environment, and invalidate the cache.</p>
-            <?php else: ?>
+            <?php else : ?>
                 <p>Generate a static version of the website and sync it to the static hosting environment.</p>
             <?php endif; ?>
             <div class="wp-clearfix" style="margin-bottom: 15px;">
@@ -24,16 +24,23 @@ $invalidate = f\contains('invalidate', $this->tasks);
                 </form>
                 <button class="button button-large alignleft js-tasks-toggle" aria-controls="simply-static-deploy-tasks" aria-expanded="false">Show tasks</button>
             </div>
-            <hr/>
+
+            <div class="wp-clearfix" style="margin-bottom: 15px;">
+                <form class="alignleft" data-type="background" style="margin-right: 10px;">
+                    <button class="button button-primary button-large js-trigger-button" type="submit">Generate &amp; deploy (in the background)</button>
+                </form>
+            </div>
+
+            <hr />
             <ul class="deploy-status js-status">
                 <li>
                     <strong>1. Generate: </strong>
                     <span data-type="generate">
                         <span class="is-unscheduled">
                             Not running,
-                            <?php if ($this->times['generate']): ?>
+                            <?php if ($this->times['generate']) : ?>
                                 last at <?= $this->times['generate'] ?>.
-                            <?php else: ?>
+                            <?php else : ?>
                                 never ran.
                             <?php endif; ?>
                         </span>
@@ -44,35 +51,43 @@ $invalidate = f\contains('invalidate', $this->tasks);
                     <span data-type="sync">
                         <span class="is-unscheduled">
                             Not running,
-                            <?php if ($this->times['sync']): ?>
+                            <?php if ($this->times['sync']) : ?>
                                 last at <?= $this->times['sync'] ?>.
-                            <?php else: ?>
+                            <?php else : ?>
                                 never ran.
                             <?php endif; ?>
                         </span>
                     </span>
                 </li>
-                <?php if ($invalidate): ?>
-                <li>
-                    <strong>3. Invalidate: </strong>
-                    <span data-type="invalidate">
-                        <span class="is-unscheduled">
-                            Not running,
-                            <?php if ($this->times['invalidate']): ?>
-                                last at <?= $this->times['invalidate'] ?>.
-                            <?php else: ?>
-                                never ran.
-                            <?php endif; ?>
+                <?php if ($invalidate) : ?>
+                    <li>
+                        <strong>3. Invalidate: </strong>
+                        <span data-type="invalidate">
+                            <span class="is-unscheduled">
+                                Not running,
+                                <?php if ($this->times['invalidate']) : ?>
+                                    last at <?= $this->times['invalidate'] ?>.
+                                <?php else : ?>
+                                    never ran.
+                                <?php endif; ?>
+                            </span>
                         </span>
-                    </span>
-                </li>
+                    </li>
                 <?php endif; ?>
+                <li>
+                    <strong>666. Background deploy</strong>
+                    <span data-type="background_deploy">
+                        <span class="is-unscheduled">
+                                Not running.
+                        </span>
+                    </span>
+                </li>
             </ul>
             <div class="deploy-error js-error-container" role="alert" aria-hidden="true">
                 <h4>An error occurred</h4>
                 <p class="js-error-message">...</p>
             </div>
-            <hr/>
+            <hr />
             <div class="deploy-time">
                 <strong>Status: </strong>
                 <span class="js-deploy-time">
@@ -85,29 +100,23 @@ $invalidate = f\contains('invalidate', $this->tasks);
         </section>
 
         <section class="deploy-tasks" id="simply-static-deploy-tasks" aria-hidden="true">
-            <hr/>
-            <?php if ($invalidate): ?>
+            <hr />
+            <?php if ($invalidate) : ?>
                 <p>Individual tasks to generate, sync and invalidate the website. These tasks are normally executed in the given order.</p>
-            <?php else: ?>
+            <?php else : ?>
                 <p>Individual tasks to generate and sync the website. These tasks are normally executed in the given order.</p>
             <?php endif; ?>
 
-            <form action="<?= $this->endpoints['generate'] ?>"
-                method="post"
-                data-type="generate">
+            <form action="<?= $this->endpoints['generate'] ?>" method="post" data-type="generate">
                 <button class="button js-trigger-button" type="submit">Generate site bundle</button>
             </form>
 
-            <form action="<?= $this->endpoints['sync'] ?>"
-                method="post"
-                data-type="sync">
+            <form action="<?= $this->endpoints['sync'] ?>" method="post" data-type="sync">
                 <button class="button js-trigger-button" type="submit">Sync to S3</button>
             </form>
 
-            <?php if ($invalidate): ?>
-                <form action="<?= $this->endpoints['invalidate'] ?>"
-                    method="post"
-                    data-type="invalidate">
+            <?php if ($invalidate) : ?>
+                <form action="<?= $this->endpoints['invalidate'] ?>" method="post" data-type="invalidate">
                     <button class="button js-trigger-button" type="submit">Invalidate CloudFront</button>
                 </form>
             <?php endif; ?>

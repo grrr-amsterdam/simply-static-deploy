@@ -10,6 +10,7 @@ class Api {
         'generate'   => 'generate_bundle',
         'sync'       => 'sync_to_s3',
         'invalidate' => 'invalidate_cloudfront',
+        'background_deploy' => 'background_deploy',
     ];
 
     private $config;
@@ -71,6 +72,15 @@ class Api {
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('CloudFront invalidated.', 200);
+    }
+
+    public function background_deploy(WP_REST_Request $params) {
+
+        // $response = 'Background job added';
+        $response = new WP_Error('Something went wrong', ['status' => 400]);
+        return $response instanceof WP_Error
+            ? $response
+            : new WP_REST_Response('Background job added', 200);
     }
 
 }
