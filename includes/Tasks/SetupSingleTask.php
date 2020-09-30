@@ -2,6 +2,7 @@
 
 namespace Grrr\SimplyStaticDeploy\Tasks;
 
+use Grrr\SimplyStaticDeploy\Utils;
 use Simply_Static\Options;
 use Simply_Static\Page;
 use Simply_Static\Task;
@@ -52,7 +53,9 @@ class SetupSingleTask extends Task
         );
         Options::instance()->set(
             'urls_to_exclude',
-            Utils::array_to_option_string($excludedUrls)
-        );
+            $excludedUrls
+        )->save();
+
+        return true;
     }
 }
