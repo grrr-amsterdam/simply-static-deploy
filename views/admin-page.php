@@ -84,6 +84,9 @@ $invalidate = f\contains('invalidate', $this->tasks);
                 <input type="text" name="id">
                 <button type="submit">Generate single</button>
             </form>
+            <form action="<?= $this->endpoints['simply_static_deploy'] ?>" method="post">
+                <button type="submit">Deploy in background</button>
+            </form>
         </section>
 
         <section class="deploy-tasks" id="simply-static-deploy-tasks" aria-hidden="true">
