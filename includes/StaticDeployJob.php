@@ -7,6 +7,7 @@ use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
 use Grrr\SimplyStaticDeploy\Tasks\RestoreInitialOptionsTask;
 use Grrr\SimplyStaticDeploy\Tasks\StoreInitialOptionsTask;
 use Grrr\SimplyStaticDeploy\Tasks\SyncTask;
+use Simply_Static\Cancel_Task;
 use Simply_Static\Fetch_Urls_Task;
 use Simply_Static\Options;
 use Simply_Static\Plugin;
@@ -35,6 +36,7 @@ class StaticDeployJob extends \WP_Background_Process {
         'restore_initial_options' => RestoreInitialOptionsTask::class,
         'sync' => SyncTask::class,
         'invalidate' => InvalidateTask::class,
+        'cancel' => Cancel_Task::class,
     ];
 
     public function __construct() {
@@ -288,6 +290,8 @@ class StaticDeployJob extends \WP_Background_Process {
             $message = sprintf(__("Error: %s", 'simply-static'), $error_message);
             Util::debug_log($message);
             $this->save_status_message($message, 'error');
+
+            // restore initial options
         }
     }
 }
