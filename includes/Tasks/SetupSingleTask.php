@@ -2,32 +2,37 @@
 
 namespace Grrr\SimplyStaticDeploy\Tasks;
 
-use Grrr\SimplyStaticDeploy\Utils;
-use Simply_Static\Options;
 use Simply_Static\Page;
+use Simply_Static\Plugin;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
-class SetupSingleTask extends Task
-{
+class SetupSingleTask extends Task {
     /**
      * @var string
      */
     protected static $task_name = 'setup_single';
 
-    protected $post_id;
+    public function perform(): bool {
+        $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
+        $this->save_status_message("Setting up for single post with id $post_id");
 
-    public function __construct(int $post_id)
-    {
-        $this->post_id = $post_id;
-        parent::__construct();
-    }
+        // should we create tmp directory of it not exists?
+        $archive_dir = $this->options->get_archive_dir();
 
-    public function perform(): bool
-    {
+        // create temp archive directory
+        if (!file_exists($archive_dir)) {
+            util::debug_log('creating archive directory: ' . $archive_dir);
+            $create_dir = wp_mkdir_p($archive_dir);
+            if ($create_dir === false) {
+                return new \wp_error('cannot_create_archive_dir');
+            }
+        }
+
+
         Page::query()->delete_all();
 
-        $url = get_permalink($this->post_id);
+        $url = get_permalink($post_id);
 
         Util::debug_log('Adding additional URL to queue: ' . $url);
         $static_page = Page::query()->find_or_initialize_by('url', $url);
@@ -42,7 +47,7 @@ class SetupSingleTask extends Task
         // That way we ONLY generate that single URL.
         // @see Simply_Static\Fetch_Urls_Task::find_excludable()
         $excludedUrls = array_merge(
-            Options::instance()->get('urls_to_exclude'),
+            $this->options->get('urls_to_exclude'),
             [
                 [
                     'url' => $url,
@@ -51,7 +56,7 @@ class SetupSingleTask extends Task
                 ],
             ]
         );
-        Options::instance()->set(
+        $this->options->set(
             'urls_to_exclude',
             $excludedUrls
         )->save();

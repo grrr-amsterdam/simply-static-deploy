@@ -60,13 +60,10 @@ class Api {
 
     public function generate_single(WP_REST_Request $request) {
         $post_id = $request->get_param('id');
-        $response = (new Generator())->generate($post_id);
-        return $response instanceof WP_Error
-            ? $response
-            : new WP_REST_Response(
-                sprintf('Single page %d generated.', $post_id),
-                200
-            );
+        Util::delete_debug_log();
+        Util::debug_log("Received request to start static deploy for postId: " . $post_id);
+        $response = $this->staticDeployJob->start($post_id);
+        var_dump($response);
     }
 
     /**
