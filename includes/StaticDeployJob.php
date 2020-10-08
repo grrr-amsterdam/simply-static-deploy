@@ -5,6 +5,7 @@ namespace Grrr\SimplyStaticDeploy;
 use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
 use Grrr\SimplyStaticDeploy\Tasks\RestoreInitialOptionsTask;
+use Grrr\SimplyStaticDeploy\Tasks\SetupSingleTask;
 use Grrr\SimplyStaticDeploy\Tasks\StoreInitialOptionsTask;
 use Grrr\SimplyStaticDeploy\Tasks\SyncTask;
 use Simply_Static\Cancel_Task;
@@ -17,9 +18,9 @@ use Simply_Static\Util;
 use Simply_Static\Wrapup_Task;
 use WP_Error;
 
-use function Garp\Functional\instance;
-
 class StaticDeployJob extends \WP_Background_Process {
+
+    const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
 
     protected $options;
 
@@ -30,6 +31,7 @@ class StaticDeployJob extends \WP_Background_Process {
     protected $task_class_mapping = [
         'store_initial_options' => StoreInitialOptionsTask::class,
         'setup' => Setup_Task::class,
+        'setup_single' => SetupSingleTask::class,
         'fetch_urls' => Fetch_Urls_Task::class,
         'transfer_files_locally' => Transfer_Files_Locally_Task::class,
         'wrapup' => Wrapup_Task::class,
@@ -41,16 +43,8 @@ class StaticDeployJob extends \WP_Background_Process {
 
     public function __construct() {
         $this->options = Options::instance();
-        $this->task_list = [
-            'store_initial_options',
-            'setup',
-            'fetch_urls',
-            'transfer_files_locally',
-            'wrapup',
-            'restore_initial_options',
-            'sync',
-            'invalidate',
-        ];
+
+        $this->task_list = $this->compose_task_list();
 
         if (!$this->is_job_done()) {
             register_shutdown_function(array($this, 'shutdown_handler'));
@@ -63,15 +57,22 @@ class StaticDeployJob extends \WP_Background_Process {
      * Helper method for starting the Archive_Creation_Job
      * @return boolean true if we were able to successfully start generating an archive
      */
-    public function start() {
-
+    public function start(?int $post_id = null) {
         if ($this->is_job_done()) {
             Util::debug_log("Starting a job; no job is presently running");
+            // when we have a post id, we should set that somwhere, since every task does it's own request
+            // with each task request, we compose the task list based on that setting
+            update_option(Plugin::SLUG . '_single_deploy_id', $post_id);
+            $this->task_list = $this->compose_task_list();
             Util::debug_log("Here's our task list: " . implode(', ', $this->task_list));
             global $blog_id;
 
+            $this->task_list = $this->compose_task_list($post_id);
             $first_task = $this->task_list[0];
             $archive_name = join('-', array(Plugin::SLUG, $blog_id, time()));
+
+            // Clear the static directory if needed.
+            $this->clear_directory($this->options->get('local_dir') ?: '');
 
             $this->options
                 ->set('archive_status_messages', array())
@@ -292,6 +293,57 @@ class StaticDeployJob extends \WP_Background_Process {
             $this->save_status_message($message, 'error');
 
             // restore initial options
+        }
+    }
+
+    protected function compose_task_list() {
+        // check if we are working on a single deploy
+        $single_deploy_id = get_option(Plugin::SLUG . '_single_deploy_id');
+        if ($single_deploy_id) {
+            $task_list = [
+                'store_initial_options',
+                'setup_single',
+                'fetch_urls',
+                'transfer_files_locally',
+                'wrapup',
+                'restore_initial_options',
+                'sync',
+                'invalidate',
+            ];
+        } else {
+            $task_list = [
+                'store_initial_options',
+                'setup',
+                'fetch_urls',
+                'transfer_files_locally',
+                'wrapup',
+                'restore_initial_options',
+                'sync',
+                'invalidate',
+            ];
+        }
+        return $task_list;
+    }
+
+    /**
+     * Clear the current static site directory, to make sure deleted pages
+     * are not deployed again, and potentialy overwriting redirects.
+     */
+    private function clear_directory(string $dir): void {
+        $clear = apply_filters(static::CLEAR_FILTER, false);
+        if (!$clear || !$dir || !file_exists($dir)) {
+            return;
+        }
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
+                $dir,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($files as $fileinfo) {
+            $todo = $fileinfo->isDir() ? 'rmdir' : 'unlink';
+            $todo($fileinfo->getRealPath());
         }
     }
 }
