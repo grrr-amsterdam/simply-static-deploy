@@ -81,7 +81,7 @@ $invalidate = f\contains('invalidate', $this->tasks);
                 </span>
             </div>
             <form action="<?= $this->endpoints['generate_single'] ?>" method="post">
-                <input type="text" name="id">
+                <input type="text" name="post_id">
                 <button type="submit">Generate single</button>
             </form>
             <form action="<?= $this->endpoints['simply_static_deploy'] ?>" method="post">

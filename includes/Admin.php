@@ -8,6 +8,8 @@ class Admin
     const SLUG = 'simply-static-deploy';
     const JS_GLOBAL = 'SIMPLY_STATIC_DEPLOY';
 
+    const DEPLOY_FORM_ID = 'ssd-single-deploy-form';
+
     private $basePath;
     private $baseUrl;
     private $version;
@@ -30,6 +32,10 @@ class Admin
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
         add_action('wp_before_admin_bar_render', [$this, 'admin_bar']);
+
+
+        add_action('post_submitbox_misc_actions', [$this, 'post_submitbox_misc_actions']);
+        add_action('admin_footer', [$this, 'render_deploy_single_form']);
     }
 
     public function admin_bar()
@@ -87,6 +93,32 @@ class Admin
             'tasks' => $this->get_tasks(),
             'times' => $this->get_times(),
             'in_progress' => Archiver::is_in_progress(),
+        ]);
+        $renderer->render();
+    }
+
+    public function post_submitbox_misc_actions($post) {
+        $renderer = new Renderer($this->basePath . 'views/post-submit-actions.php', [
+            'form_id' => static::DEPLOY_FORM_ID,
+        ]);
+        $renderer->render();
+    }
+
+    public function render_deploy_single_form() {
+        $screen = get_current_screen();
+        if (!($screen->base === 'post' && $screen->parent_base === 'edit')) {
+            return;
+        }
+
+        $post = get_post();
+        $form = (object) [
+            'id' => static::DEPLOY_FORM_ID,
+            'action' => $this->get_endpoints()['generate_single'],
+            'method' => 'POST',
+        ];
+        $renderer = new Renderer($this->basePath . 'views/deploy-single-form.php', [
+            'form' => $form,
+            'post' => $post,
         ]);
         $renderer->render();
     }

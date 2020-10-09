@@ -59,7 +59,7 @@ class Api {
     }
 
     public function generate_single(WP_REST_Request $request) {
-        $post_id = $request->get_param('id');
+        $post_id = $request->get_param('post_id');
         Util::delete_debug_log();
         Util::debug_log("Received request to start static deploy for postId: " . $post_id);
         $response = $this->staticDeployJob->start($post_id);
