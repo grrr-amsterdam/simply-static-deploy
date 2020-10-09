@@ -13,6 +13,7 @@ class RestRoutes {
         'sync' => 'sync',
         'invalidate' => 'invalidate',
         'simply_static_deploy' => 'simply_static_deploy',
+        'poll_status' => 'poll_status',
     ];
 
     public static function get(string $name): string {

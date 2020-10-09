@@ -14,6 +14,7 @@ class Api {
         'sync' => 'sync_to_s3',
         'invalidate' => 'invalidate_cloudfront',
         'simply_static_deploy' => 'simply_static_deploy',
+        'poll_status' => 'poll_status',
     ];
 
     private $config;
@@ -99,5 +100,10 @@ class Api {
         Util::debug_log("Received request to start generating a static archive");
         $response = $this->staticDeployJob->start();
         var_dump($response);
+    }
+
+    public function poll_status(WP_REST_Request $request) {
+        $status = StaticDeployJob::is_job_done() ? 'ready' : 'busy';
+        return new WP_REST_Response($status, 200);
     }
 }

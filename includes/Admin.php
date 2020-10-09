@@ -102,7 +102,9 @@ class Admin
         $is_job_done = StaticDeployJob::is_job_done();
         $renderer = new Renderer($this->basePath . 'views/post-submit-actions.php', [
             'form_id' => static::DEPLOY_FORM_ID,
-            'is_job_done' => $is_job_done,
+            'status' => $is_job_done ? 'ready' : 'busy',
+            'status_message' => $is_job_done ? 'Ready for deployment' : 'Deployment in progress..',
+            'poll_status_endpoint' => $this->get_endpoints()['poll_status'],
         ]);
         $renderer->render();
     }
