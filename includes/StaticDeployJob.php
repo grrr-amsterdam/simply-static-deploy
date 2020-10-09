@@ -46,7 +46,7 @@ class StaticDeployJob extends \WP_Background_Process {
 
         $this->task_list = $this->compose_task_list();
 
-        if (!$this->is_job_done()) {
+        if (!static::is_job_done()) {
             register_shutdown_function(array($this, 'shutdown_handler'));
         }
 
@@ -58,7 +58,7 @@ class StaticDeployJob extends \WP_Background_Process {
      * @return boolean true if we were able to successfully start generating an archive
      */
     public function start(?int $post_id = null) {
-        if ($this->is_job_done()) {
+        if (static::is_job_done()) {
             Util::debug_log("Starting a job; no job is presently running");
             // when we have a post id, we should set that somwhere, since every task does it's own request
             // with each task request, we compose the task list based on that setting
@@ -181,9 +181,10 @@ class StaticDeployJob extends \WP_Background_Process {
      * Is the job done?
      * @return boolean True if done, false if not
      */
-    public function is_job_done() {
-        $start_time = $this->options->get('archive_start_time');
-        $end_time = $this->options->get('archive_end_time');
+    public static function is_job_done() {
+        $options = Options::instance();
+        $start_time = $options->get('archive_start_time');
+        $end_time = $options->get('archive_end_time');
         // we're done if the start and end time are null (never run) or if
         // the start and end times are both set
         return ($start_time == null && $end_time == null) || ($start_time != null && $end_time != null);

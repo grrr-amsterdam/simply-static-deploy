@@ -6,7 +6,12 @@
     <button 
         type="submit" 
         form="<?= $this->form_id ?>" 
+        <?= $this->is_job_done ?: 'disabled' ?>
         >
         Deploy
     </button>
+    <span
+        >
+        <?= $this->is_job_done ? '' : 'Deployment in progress...' ?>
+    </span>
 </div>

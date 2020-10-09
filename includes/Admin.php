@@ -2,6 +2,7 @@
 
 use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Utils\Renderer;
+use Simply_Static\Options;
 
 class Admin
 {
@@ -98,8 +99,10 @@ class Admin
     }
 
     public function post_submitbox_misc_actions($post) {
+        $is_job_done = StaticDeployJob::is_job_done();
         $renderer = new Renderer($this->basePath . 'views/post-submit-actions.php', [
             'form_id' => static::DEPLOY_FORM_ID,
+            'is_job_done' => $is_job_done,
         ]);
         $renderer->render();
     }
