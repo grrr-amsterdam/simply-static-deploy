@@ -7,5 +7,6 @@
     action="<?= $this->form->action ?>" 
     method="<?= $this->form->method ?>"
     >
+    <?= wp_nonce_field('wp_rest') ?>
     <input type="hidden" name="post_id" value="<?= $this->post->ID ?>" >
 </form>
