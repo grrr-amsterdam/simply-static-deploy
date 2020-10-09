@@ -210,3 +210,15 @@ Fatal error: Uncaught Error: Class 'Grrr\SimplyStaticDeploy\SimplyStaticDeploy' 
 ```
 
 Check the [installation instructions](#installation), and require the Composer autoloader in your project.
+
+# v2.0.0
+
+## Deployment tasks in the background
+
+## User interface
+
+### Add something to the submit box (where the publish button is shown)
+
+Links:
+- https://codex.wordpress.org/Plugin_API/Action_Reference/post_submitbox_misc_actions
+- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
