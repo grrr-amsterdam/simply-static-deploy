@@ -38,8 +38,7 @@ class Api {
                     'methods' => 'POST',
                     'callback' => [$this, $callback],
                     'permission_callback' => function () {
-                        return true;
-                        // return current_user_can('edit_posts');
+                        return current_user_can('edit_posts');
                     },
                 ]
             );
@@ -63,7 +62,9 @@ class Api {
         Util::delete_debug_log();
         Util::debug_log("Received request to start static deploy for postId: " . $post_id);
         $response = $this->staticDeployJob->start($post_id);
-        var_dump($response);
+        return $response instanceof WP_Error
+            ? $response
+            : new WP_REST_Response('Deploying single', 200);
     }
 
     /**
