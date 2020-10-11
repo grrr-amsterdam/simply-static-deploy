@@ -3,6 +3,7 @@
 use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Utils\Renderer;
 use Simply_Static\Options;
+use WP_Post;
 
 class Admin
 {
@@ -99,6 +100,9 @@ class Admin
     }
 
     public function post_submitbox_misc_actions($post) {
+        if (!$this->eligible_for_single_deploy($post)) {
+            return;
+        }
         $is_job_done = StaticDeployJob::is_job_done();
         $renderer = new Renderer($this->basePath . 'views/post-submit-actions.php', [
             'form_id' => static::DEPLOY_FORM_ID,
@@ -116,6 +120,9 @@ class Admin
         }
 
         $post = get_post();
+        if (!$this->eligible_for_single_deploy($post)) {
+            return;
+        };
         $form = (object) [
             'id' => static::DEPLOY_FORM_ID,
             'action' => $this->get_endpoints()['generate_single'],
@@ -126,6 +133,11 @@ class Admin
             'post' => $post,
         ]);
         $renderer->render();
+    }
+
+    public function eligible_for_single_deploy(WP_Post $post) {
+        $post_type_object = get_post_type_object($post->post_type);
+        return $post_type_object->public;
     }
 
     private function get_tasks(): array
@@ -181,4 +193,5 @@ class Admin
         }
         return $out;
     }
+
 }
