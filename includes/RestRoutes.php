@@ -8,10 +8,7 @@ class RestRoutes {
     const NAMESPACE = 'grrr/simply-static-deploy/v1';
 
     const ROUTES = [
-        'generate' => 'generate',
         'generate_single' => 'generate_single',
-        'sync' => 'sync',
-        'invalidate' => 'invalidate',
         'simply_static_deploy' => 'simply_static_deploy',
         'poll_status' => 'poll_status',
     ];
