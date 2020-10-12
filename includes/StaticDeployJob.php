@@ -181,13 +181,18 @@ class StaticDeployJob extends \WP_Background_Process {
      * Is the job done?
      * @return boolean True if done, false if not
      */
-    public static function is_job_done() {
+    public static function is_job_done(): bool {
         $options = Options::instance();
         $start_time = $options->get('archive_start_time');
         $end_time = $options->get('archive_end_time');
         // we're done if the start and end time are null (never run) or if
         // the start and end times are both set
         return ($start_time == null && $end_time == null) || ($start_time != null && $end_time != null);
+    }
+
+    public static function last_end_time() {
+        $options = Options::instance();
+        return $options->get('archive_end_time');
     }
 
     /**
