@@ -2,6 +2,8 @@
 
 namespace Grrr\SimplyStaticDeploy;
 
+use DateTime;
+use DateTimeZone;
 use Simply_Static\Util;
 use WP_Error;
 use WP_REST_Request;
