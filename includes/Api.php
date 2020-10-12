@@ -4,6 +4,7 @@ namespace Grrr\SimplyStaticDeploy;
 
 use DateTime;
 use DateTimeZone;
+use Garp\Functional as f;
 use Simply_Static\Util;
 use WP_Error;
 use WP_REST_Request;
