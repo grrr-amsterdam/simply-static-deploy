@@ -90,11 +90,16 @@ class Admin
     {
         wp_enqueue_script(static::SLUG);
         wp_enqueue_style(static::SLUG);
+
+        $form = (object)[
+            'action' => $this->get_endpoints()['simply_static_deploy'],
+            'method' => 'post',
+        ];
+
         $renderer = new Renderer($this->basePath . 'views/admin-page.php', [
-            'endpoints' => $this->get_endpoints(),
-            'tasks' => $this->get_tasks(),
-            'times' => $this->get_times(),
-            'in_progress' => Archiver::is_in_progress(),
+            'form' => $form,
+            'in_progress' => !StaticDeployJob::is_job_done(),
+            'last_end_time' => StaticDeployJob::last_end_time(),
         ]);
         $renderer->render();
     }
