@@ -298,7 +298,10 @@ class StaticDeployJob extends \WP_Background_Process {
             Util::debug_log($message);
             $this->save_status_message($message, 'error');
 
+            
             // restore initial options
+            $restoreInitialOptionsTask = new RestoreInitialOptionsTask();
+            $restoreInitialOptionsTask->perform();
         }
     }
 
