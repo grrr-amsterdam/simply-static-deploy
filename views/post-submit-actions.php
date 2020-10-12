@@ -81,24 +81,6 @@ const StaticDeploySingle = ($) => {
     const enableSubmitButton = () => $button.prop("disabled", false);
     const disableSubmitButton = () => $button.prop("disabled", true);
 
-    const handleDeploySubmit = (e) => {
-        e.preventDefault();
-        disableSubmitButton();
-        post(
-            $form.prop('action'), 
-            {
-              post_id: formGetValue('post_id'),
-            }
-            )
-            .then( (response) => {
-                updateStatus('busy', 'Deployment in progress...');
-            })
-            .catch((error) => {
-                updateStatus('error', error);
-                enableSubmitButton();
-            })
-    };
-    
     const pollStatus = () => {
         post(POLL_STATUS_ENDPOINT)
             .then((response) => {
@@ -114,10 +96,29 @@ const StaticDeploySingle = ($) => {
             });
     }
 
+    const handleDeploySubmit = (e) => {
+        e.preventDefault();
+        window.setInterval(pollStatus, 2 * 1000);
+        disableSubmitButton();
+        post(
+            $form.prop('action'), 
+            {
+              post_id: formGetValue('post_id'),
+            }
+            )
+            .then( (response) => {
+                updateStatus('busy', 'Deployment in progress...');
+            })
+            .catch((error) => {
+                updateStatus('error', error);
+                enableSubmitButton();
+            })
+    };
+
     return {
         init: () => {
             $form.on('submit', handleDeploySubmit);
-            window.setInterval(pollStatus, 1000);
+            
         }
     };
 }
