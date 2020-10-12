@@ -50,6 +50,5 @@ class SimplyStaticDeploy
             $this->version
         ))->register();
         (new Api($config))->register();
-        (new Scheduler($config))->register();
     }
 }
