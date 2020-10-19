@@ -86,13 +86,10 @@ Available filters to modify settings and data passed to the plugin:
 
 -   [Adjust additional files](#adjust-additional-files)
 -   [Adjust additional URLs](#adjust-additional-urls)
--   [Adjust PHP max execution time](#adjust-php-max-execution-time)
--   [Enable static directory clearing](#enable-static-directory-clearing)
 
 Available actions to invoke or act upon:
 
 -   [Handle errors](#handle-errors)
--   [Modify generated files](#modify-generated-files)
 -   [Schedule deploys](#schedule-deploys)
 
 ### Available filters
@@ -123,37 +120,6 @@ add_filter('simply_static_deploy_additional_urls', function (array $urls) {
 
 Note: during generation of the static site, the `additional_urls` setting is updated. It is restored when finished.
 
-#### Adjust PHP max execution time
-
-Adjust the [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) for the static site generation.
-
-```php
-add_filter('simply_static_deploy_php_execution_time', function (int $time) {
-    return 600;
-});
-```
-
-Note: although this will increase the `max_execution_time`, it will not increase the execution time of your webserver.
-For Apache, you might have to increase the [TimeOut Directive](http://httpd.apache.org/docs/2.0/mod/core.html#timeout):
-
-```conf
-TimeOut 600
-```
-
-#### Enable static directory clearing
-
-Clear the static folder before a new version is generated. Simply Static only allows you to delete the temporary files, but in some cases you might want to start with a clean slate (e.g. items deleted from the CMS, and a redirect being added in its place).
-
-```php
-add_filter('simply_static_deploy_clear_directory', function (bool $value) {
-    return true;
-});
-```
-
-Note: this setting is explicitly set by a filter, since it will completely delete any folder set as the `Local Directory`.
-
-### Available actions
-
 #### Handle errors
 
 Called from the plugin, and receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
@@ -161,18 +127,6 @@ Called from the plugin, and receives a `WP_Error` object explaining the error. Y
 ```php
 add_action('simply_static_deploy_error', function (\WP_Error $error) {
     # Handle the error.
-});
-```
-
-#### Modify generated files
-
-Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
-
-```php
-add_action('simply_static_deploy_modify_generated_files', function (
-    string $directory
-) {
-    # Modify generated files, like renaming or moving them.
 });
 ```
 
@@ -210,16 +164,3 @@ Fatal error: Uncaught Error: Class 'Grrr\SimplyStaticDeploy\SimplyStaticDeploy' 
 ```
 
 Check the [installation instructions](#installation), and require the Composer autoloader in your project.
-
-# v2.0.0
-
-## Deployment tasks in the background
-
-## User interface
-
-### Add something to the submit box (where the publish button is shown)
-
-Links:
-
--   https://codex.wordpress.org/Plugin_API/Action_Reference/post_submitbox_misc_actions
--   https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
