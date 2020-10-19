@@ -11,7 +11,7 @@ The plugin version was bumped from `v0.2.x` to `v1.x.x` to improve updating via 
 ## v2.0.0 (2020-10-19)
 
 From version v2.0.0 each deploy task will be done in the background.
-This means your browser window won't have to be always open while deploying. And all the tasks will seperate requests, so the idle timeout limit of the server won't be reached.
+This means your browser window won't have to stay open while deploying. All the tasks will make separate requests, so the idle timeout limit of the server won't be reached.
 It is now also possible to only deploy a single post. Because of these changes we removed the ability to trigger each task individually.
 
 ### Updating from v1.\*
