@@ -101,6 +101,69 @@ class StaticDeployJob extends \WP_Background_Process
         }
     }
 
+    public function get_current_task()
+    {
+        return $this->current_task;
+    }
+
+    /**
+     * Shutdown handler for fatal error reporting
+     * @return void
+     */
+    public function shutdown_handler()
+    {
+        // Note: this function must be public in order to function properly.
+        $error = error_get_last();
+        // only trigger on actual errors, not warnings or notices
+        if (
+            $error &&
+            in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_USER_ERROR])
+        ) {
+            $this->clear_scheduled_event();
+            $this->unlock_process();
+            $this->cancel_process();
+
+            $end_time = Util::formatted_datetime();
+            $this->options->set('archive_end_time', $end_time)->save();
+
+            $error_message = '(' . $error['type'] . ') ' . $error['message'];
+            $error_message .= ' in <b>' . $error['file'] . '</b>';
+            $error_message .= ' on line <b>' . $error['line'] . '</b>';
+
+            $message = sprintf(
+                __("Error: %s", 'simply-static'),
+                $error_message
+            );
+            Util::debug_log($message);
+            $this->save_status_message($message, 'error');
+
+            // restore initial options
+            $restoreInitialOptionsTask = new RestoreInitialOptionsTask();
+            $restoreInitialOptionsTask->perform();
+        }
+    }
+
+    /**
+     * Is the job done?
+     * @return boolean True if done, false if not
+     */
+    public static function is_job_done(): bool
+    {
+        $options = Options::instance();
+        $start_time = $options->get('archive_start_time');
+        $end_time = $options->get('archive_end_time');
+        // we're done if the start and end time are null (never run) or if
+        // the start and end times are both set
+        return ($start_time == null && $end_time == null) ||
+            ($start_time != null && $end_time != null);
+    }
+
+    public static function last_end_time()
+    {
+        $options = Options::instance();
+        return $options->get('archive_end_time');
+    }
+
     protected function task($task_name)
     {
         $this->set_current_task($task_name);
@@ -190,35 +253,9 @@ class StaticDeployJob extends \WP_Background_Process
         parent::complete();
     }
 
-    public function get_current_task()
-    {
-        return $this->current_task;
-    }
-
     protected function set_current_task($task_name)
     {
         $this->current_task = $task_name;
-    }
-
-    /**
-     * Is the job done?
-     * @return boolean True if done, false if not
-     */
-    public static function is_job_done(): bool
-    {
-        $options = Options::instance();
-        $start_time = $options->get('archive_start_time');
-        $end_time = $options->get('archive_end_time');
-        // we're done if the start and end time are null (never run) or if
-        // the start and end times are both set
-        return ($start_time == null && $end_time == null) ||
-            ($start_time != null && $end_time != null);
-    }
-
-    public static function last_end_time()
-    {
-        $options = Options::instance();
-        return $options->get('archive_end_time');
     }
 
     /**
@@ -310,70 +347,20 @@ class StaticDeployJob extends \WP_Background_Process
         return 'cancel';
     }
 
-    /**
-     * Shutdown handler for fatal error reporting
-     * @return void
-     */
-    public function shutdown_handler()
-    {
-        // Note: this function must be public in order to function properly.
-        $error = error_get_last();
-        // only trigger on actual errors, not warnings or notices
-        if (
-            $error &&
-            in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_USER_ERROR])
-        ) {
-            $this->clear_scheduled_event();
-            $this->unlock_process();
-            $this->cancel_process();
-
-            $end_time = Util::formatted_datetime();
-            $this->options->set('archive_end_time', $end_time)->save();
-
-            $error_message = '(' . $error['type'] . ') ' . $error['message'];
-            $error_message .= ' in <b>' . $error['file'] . '</b>';
-            $error_message .= ' on line <b>' . $error['line'] . '</b>';
-
-            $message = sprintf(
-                __("Error: %s", 'simply-static'),
-                $error_message
-            );
-            Util::debug_log($message);
-            $this->save_status_message($message, 'error');
-
-            // restore initial options
-            $restoreInitialOptionsTask = new RestoreInitialOptionsTask();
-            $restoreInitialOptionsTask->perform();
-        }
-    }
-
     protected function compose_task_list()
     {
         // check if we are working on a single deploy
         $single_deploy_id = get_option(Plugin::SLUG . '_single_deploy_id');
-        if ($single_deploy_id) {
-            $task_list = [
-                'store_initial_options',
-                'setup_single',
-                'fetch_urls',
-                'transfer_files_locally',
-                'wrapup',
-                'restore_initial_options',
-                'sync',
-                'invalidate',
-            ];
-        } else {
-            $task_list = [
-                'store_initial_options',
-                'setup',
-                'fetch_urls',
-                'transfer_files_locally',
-                'wrapup',
-                'restore_initial_options',
-                'sync',
-                'invalidate',
-            ];
-        }
+        $task_list = [
+            'store_initial_options',
+            $single_deploy_id ? 'setup_single' : 'setup',
+            'fetch_urls',
+            'transfer_files_locally',
+            'wrapup',
+            'restore_initial_options',
+            'sync',
+            'invalidate',
+        ];
         return $task_list;
     }
 
