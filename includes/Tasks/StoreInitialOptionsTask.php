@@ -13,12 +13,8 @@ class StoreInitialOptionsTask extends Task
 {
     protected static $task_name = 'store_initial_options';
 
-    // const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
     const FILES_FILTER = 'simply_static_deploy_additional_files';
-    // const PHP_FILTER = 'simply_static_deploy_php_execution_time';
     const URLS_FILTER = 'simply_static_deploy_additional_urls';
-
-    // const MODIFY_ACTION = 'simply_static_deploy_modify_generated_files';
 
     public function perform()
     {
