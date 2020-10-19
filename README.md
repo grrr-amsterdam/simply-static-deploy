@@ -220,5 +220,6 @@ Check the [installation instructions](#installation), and require the Composer a
 ### Add something to the submit box (where the publish button is shown)
 
 Links:
-- https://codex.wordpress.org/Plugin_API/Action_Reference/post_submitbox_misc_actions
-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
+
+-   https://codex.wordpress.org/Plugin_API/Action_Reference/post_submitbox_misc_actions
+-   https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button

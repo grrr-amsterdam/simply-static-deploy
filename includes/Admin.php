@@ -35,8 +35,10 @@ class Admin
         add_action('admin_enqueue_scripts', [$this, 'register_assets']);
         add_action('wp_before_admin_bar_render', [$this, 'admin_bar']);
 
-
-        add_action('post_submitbox_misc_actions', [$this, 'post_submitbox_misc_actions']);
+        add_action('post_submitbox_misc_actions', [
+            $this,
+            'post_submitbox_misc_actions',
+        ]);
         add_action('admin_footer', [$this, 'render_deploy_single_form']);
     }
 
@@ -91,7 +93,7 @@ class Admin
         wp_enqueue_script(static::SLUG);
         wp_enqueue_style(static::SLUG);
 
-        $form = (object)[
+        $form = (object) [
             'action' => $this->get_endpoints()['simply_static_deploy'],
             'method' => 'post',
         ];
@@ -104,21 +106,28 @@ class Admin
         $renderer->render();
     }
 
-    public function post_submitbox_misc_actions($post) {
+    public function post_submitbox_misc_actions($post)
+    {
         if (!$this->eligible_for_single_deploy($post)) {
             return;
         }
         $is_job_done = StaticDeployJob::is_job_done();
-        $renderer = new Renderer($this->basePath . 'views/post-submit-actions.php', [
-            'form_id' => static::DEPLOY_FORM_ID,
-            'status' => $is_job_done ? 'ready' : 'busy',
-            'status_message' => $is_job_done ? 'Ready for deployment' : 'Deployment in progress..',
-            'poll_status_endpoint' => $this->get_endpoints()['poll_status'],
-        ]);
+        $renderer = new Renderer(
+            $this->basePath . 'views/post-submit-actions.php',
+            [
+                'form_id' => static::DEPLOY_FORM_ID,
+                'status' => $is_job_done ? 'ready' : 'busy',
+                'status_message' => $is_job_done
+                    ? 'Ready for deployment'
+                    : 'Deployment in progress..',
+                'poll_status_endpoint' => $this->get_endpoints()['poll_status'],
+            ]
+        );
         $renderer->render();
     }
 
-    public function render_deploy_single_form() {
+    public function render_deploy_single_form()
+    {
         $screen = get_current_screen();
         if (!($screen->base === 'post' && $screen->parent_base === 'edit')) {
             return;
@@ -127,20 +136,24 @@ class Admin
         $post = get_post();
         if (!$this->eligible_for_single_deploy($post)) {
             return;
-        };
+        }
         $form = (object) [
             'id' => static::DEPLOY_FORM_ID,
             'action' => $this->get_endpoints()['generate_single'],
             'method' => 'POST',
         ];
-        $renderer = new Renderer($this->basePath . 'views/deploy-single-form.php', [
-            'form' => $form,
-            'post' => $post,
-        ]);
+        $renderer = new Renderer(
+            $this->basePath . 'views/deploy-single-form.php',
+            [
+                'form' => $form,
+                'post' => $post,
+            ]
+        );
         $renderer->render();
     }
 
-    public function eligible_for_single_deploy(WP_Post $post) {
+    public function eligible_for_single_deploy(WP_Post $post)
+    {
         $post_type_object = get_post_type_object($post->post_type);
         return $post_type_object->public;
     }
@@ -198,5 +211,4 @@ class Admin
         }
         return $out;
     }
-
 }
