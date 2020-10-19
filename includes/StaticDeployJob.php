@@ -168,6 +168,16 @@ class StaticDeployJob extends \WP_Background_Process
         return $options->get('archive_end_time');
     }
 
+    /**
+     * Return the configured output directory for the static site.
+     *
+     * @return string
+     */
+    public static function get_directory(): string
+    {
+        return Options::instance()->get('local_dir') ?: '';
+    }
+
     protected function task($task_name)
     {
         $this->set_current_task($task_name);

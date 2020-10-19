@@ -1,8 +1,6 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Utils\Renderer;
-use Simply_Static\Options;
 use WP_Post;
 
 class Admin
@@ -165,20 +163,6 @@ class Admin
             $tasks[] = 'invalidate';
         }
         return $tasks;
-    }
-
-    private function get_times(): array
-    {
-        $times = [
-            'generate' => $this->get_last_time(Generator::get_last_time()),
-            'sync' => $this->get_last_time(Syncer::get_last_time()),
-        ];
-        if ($this->config->aws->distribution) {
-            $times['invalidate'] = $this->get_last_time(
-                Invalidator::get_last_time()
-            );
-        }
-        return $times;
     }
 
     private function get_last_time($timestamp): string
