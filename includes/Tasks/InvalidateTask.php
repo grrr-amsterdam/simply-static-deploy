@@ -8,12 +8,12 @@ use Grrr\SimplyStaticDeploy\SimplyStaticDeploy;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
-
-class InvalidateTask extends Task {
-
+class InvalidateTask extends Task
+{
     protected static $task_name = 'invalidate';
 
-    public function perform() {
+    public function perform()
+    {
         Util::debug_log('Invalidate the shizzle');
         $this->save_status_message('Invalidating cloudfront');
         $config = new Config(constant(SimplyStaticDeploy::CONFIG_CONST));

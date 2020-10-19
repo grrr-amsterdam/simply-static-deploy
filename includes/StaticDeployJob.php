@@ -18,8 +18,8 @@ use Simply_Static\Util;
 use Simply_Static\Wrapup_Task;
 use WP_Error;
 
-class StaticDeployJob extends \WP_Background_Process {
-
+class StaticDeployJob extends \WP_Background_Process
+{
     const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
 
     protected $options;
@@ -41,13 +41,14 @@ class StaticDeployJob extends \WP_Background_Process {
         'cancel' => Cancel_Task::class,
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->options = Options::instance();
 
         $this->task_list = $this->compose_task_list();
 
         if (!static::is_job_done()) {
-            register_shutdown_function(array($this, 'shutdown_handler'));
+            register_shutdown_function([$this, 'shutdown_handler']);
         }
 
         parent::__construct();
@@ -57,19 +58,22 @@ class StaticDeployJob extends \WP_Background_Process {
      * Helper method for starting the Archive_Creation_Job
      * @return boolean true if we were able to successfully start generating an archive
      */
-    public function start(?int $post_id = null) {
+    public function start(?int $post_id = null)
+    {
         if (static::is_job_done()) {
             Util::debug_log("Starting a job; no job is presently running");
             // When we have a post id, we should set that somewhere, since every task does its own request
             // with each task request, we compose the task list based on that setting.
             update_option(Plugin::SLUG . '_single_deploy_id', $post_id);
             $this->task_list = $this->compose_task_list();
-            Util::debug_log("Here's our task list: " . implode(', ', $this->task_list));
+            Util::debug_log(
+                "Here's our task list: " . implode(', ', $this->task_list)
+            );
             global $blog_id;
 
             $this->task_list = $this->compose_task_list($post_id);
             $first_task = $this->task_list[0];
-            $archive_name = join('-', array(Plugin::SLUG, $blog_id, time()));
+            $archive_name = join('-', [Plugin::SLUG, $blog_id, time()]);
 
             // Clear the static directory if needed.
             $this->clear_directory($this->options->get('local_dir') ?: '');
@@ -89,13 +93,16 @@ class StaticDeployJob extends \WP_Background_Process {
 
             return true;
         } else {
-            Util::debug_log("Not starting; we're already in the middle of a job");
+            Util::debug_log(
+                "Not starting; we're already in the middle of a job"
+            );
             // looks like we're in the middle of creating an archive...
             return false;
         }
     }
 
-    protected function task($task_name) {
+    protected function task($task_name)
+    {
         $this->set_current_task($task_name);
 
         Util::debug_log("Current task: " . $task_name);
@@ -105,7 +112,10 @@ class StaticDeployJob extends \WP_Background_Process {
 
         // this shouldn't ever happen, but just in case...
         if (!class_exists($class_name)) {
-            $this->save_status_message("Class doesn't exist: " . $class_name, 'error');
+            $this->save_status_message(
+                "Class doesn't exist: " . $class_name,
+                'error'
+            );
             return false;
         }
 
@@ -116,7 +126,6 @@ class StaticDeployJob extends \WP_Background_Process {
             Util::debug_log("Performing task: " . $task_name);
             $is_done = $task->perform();
         } catch (\Error $e) {
-
             Util::debug_log("Caught an error");
             return $this->error_occurred($e);
         } catch (\Exception $e) {
@@ -128,11 +137,13 @@ class StaticDeployJob extends \WP_Background_Process {
             // we've hit an error, time to quit
             Util::debug_log("We encountered a WP_Error");
             return $this->error_occurred($is_done);
-        } else if ($is_done === true) {
+        } elseif ($is_done === true) {
             // finished current task, try to find the next one
             $next_task = $this->find_next_task();
             if ($next_task === null) {
-                Util::debug_log("This task is done and there are no more tasks, time to complete the job");
+                Util::debug_log(
+                    "This task is done and there are no more tasks, time to complete the job"
+                );
                 // we're done; returning false to remove item from queue
                 return false;
             } else {
@@ -140,13 +151,20 @@ class StaticDeployJob extends \WP_Background_Process {
                 // start the next task
                 return $next_task;
             }
-        } else { // $is_done === false
-            Util::debug_log("We're not done with the " . $task_name . " task yet");
+        } else {
+            // $is_done === false
+            Util::debug_log(
+                "We're not done with the " . $task_name . " task yet"
+            );
             // returning current task name to continue processing
             return $task_name;
         }
 
-        Util::debug_log("We shouldn't have gotten here; returning false to remove the " . $task_name . " task from the queue");
+        Util::debug_log(
+            "We shouldn't have gotten here; returning false to remove the " .
+                $task_name .
+                " task from the queue"
+        );
         return false; // remove item from queue
     }
 
@@ -154,7 +172,8 @@ class StaticDeployJob extends \WP_Background_Process {
      * This is run at the end of the job, after task() has returned false
      * @return void
      */
-    protected function complete() {
+    protected function complete()
+    {
         Util::debug_log("Completing the job");
         $this->set_current_task('done');
 
@@ -165,15 +184,19 @@ class StaticDeployJob extends \WP_Background_Process {
 
         $this->options->set('archive_end_time', $end_time);
 
-        $this->save_status_message(sprintf(__('Done! Finished in %s', 'simply-static'), $time_string));
+        $this->save_status_message(
+            sprintf(__('Done! Finished in %s', 'simply-static'), $time_string)
+        );
         parent::complete();
     }
 
-    public function get_current_task() {
+    public function get_current_task()
+    {
         return $this->current_task;
     }
 
-    protected function set_current_task($task_name) {
+    protected function set_current_task($task_name)
+    {
         $this->current_task = $task_name;
     }
 
@@ -181,16 +204,19 @@ class StaticDeployJob extends \WP_Background_Process {
      * Is the job done?
      * @return boolean True if done, false if not
      */
-    public static function is_job_done(): bool {
+    public static function is_job_done(): bool
+    {
         $options = Options::instance();
         $start_time = $options->get('archive_start_time');
         $end_time = $options->get('archive_end_time');
         // we're done if the start and end time are null (never run) or if
         // the start and end times are both set
-        return ($start_time == null && $end_time == null) || ($start_time != null && $end_time != null);
+        return ($start_time == null && $end_time == null) ||
+            ($start_time != null && $end_time != null);
     }
 
-    public static function last_end_time() {
+    public static function last_end_time()
+    {
         $options = Options::instance();
         return $options->get('archive_end_time');
     }
@@ -199,7 +225,8 @@ class StaticDeployJob extends \WP_Background_Process {
      * Find the next task on our task list
      * @return string|null       The name of the next task, or null if none
      */
-    protected function find_next_task() {
+    protected function find_next_task()
+    {
         $task_name = $this->get_current_task();
         $index = array_search($task_name, $this->task_list);
         if ($index === false) {
@@ -207,7 +234,7 @@ class StaticDeployJob extends \WP_Background_Process {
         }
 
         $index += 1;
-        if (($index) >= count($this->task_list)) {
+        if ($index >= count($this->task_list)) {
             return null;
         } else {
             return $this->task_list[$index];
@@ -225,19 +252,23 @@ class StaticDeployJob extends \WP_Background_Process {
      * @param  string $key     Unique key for the message
      * @return void
      */
-    protected function save_status_message($message, $key = null) {
+    protected function save_status_message($message, $key = null)
+    {
         $task_name = $key ?: $this->get_current_task();
         $messages = $this->options->get('archive_status_messages');
         Util::debug_log('Status message: [' . $task_name . '] ' . $message);
 
-        $messages = Util::add_archive_status_message($messages, $task_name, $message);
+        $messages = Util::add_archive_status_message(
+            $messages,
+            $task_name,
+            $message
+        );
 
-        $this->options
-            ->set('archive_status_messages', $messages)
-            ->save();
+        $this->options->set('archive_status_messages', $messages)->save();
     }
 
-    protected function resolve_task_class_name(string $task_name) {
+    protected function resolve_task_class_name(string $task_name)
+    {
         return f\prop($task_name, $this->task_class_mapping);
     }
 
@@ -246,10 +277,14 @@ class StaticDeployJob extends \WP_Background_Process {
      * @param  Exception $exception The exception that occurred
      * @return void
      */
-    protected function exception_occurred($exception) {
+    protected function exception_occurred($exception)
+    {
         Util::debug_log("An exception occurred: " . $exception->getMessage());
         Util::debug_log($exception);
-        $message = sprintf(__("An exception occurred: %s", 'simply-static'), $exception->getMessage());
+        $message = sprintf(
+            __("An exception occurred: %s", 'simply-static'),
+            $exception->getMessage()
+        );
         $this->save_status_message($message, 'error');
         return 'cancel';
     }
@@ -259,53 +294,61 @@ class StaticDeployJob extends \WP_Background_Process {
      * @param  WP_Error $wp_error The error that occurred
      * @return void
      */
-    protected function error_occurred($wp_error) {
+    protected function error_occurred($wp_error)
+    {
         $errorMessage = is_a($wp_error, WP_Error::class)
             ? $wp_error->get_error_message()
             : $wp_error->getMessage();
 
         Util::debug_log("An error occurred: " . $errorMessage);
         Util::debug_log($wp_error);
-        $message = sprintf(__("An error occurred: %s", 'simply-static'), $errorMessage);
+        $message = sprintf(
+            __("An error occurred: %s", 'simply-static'),
+            $errorMessage
+        );
         $this->save_status_message($message, 'error');
         return 'cancel';
     }
-
 
     /**
      * Shutdown handler for fatal error reporting
      * @return void
      */
-    public function shutdown_handler() {
+    public function shutdown_handler()
+    {
         // Note: this function must be public in order to function properly.
         $error = error_get_last();
         // only trigger on actual errors, not warnings or notices
-        if ($error && in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_USER_ERROR))) {
+        if (
+            $error &&
+            in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_USER_ERROR])
+        ) {
             $this->clear_scheduled_event();
             $this->unlock_process();
             $this->cancel_process();
 
             $end_time = Util::formatted_datetime();
-            $this->options
-                ->set('archive_end_time', $end_time)
-                ->save();
+            $this->options->set('archive_end_time', $end_time)->save();
 
             $error_message = '(' . $error['type'] . ') ' . $error['message'];
             $error_message .= ' in <b>' . $error['file'] . '</b>';
             $error_message .= ' on line <b>' . $error['line'] . '</b>';
 
-            $message = sprintf(__("Error: %s", 'simply-static'), $error_message);
+            $message = sprintf(
+                __("Error: %s", 'simply-static'),
+                $error_message
+            );
             Util::debug_log($message);
             $this->save_status_message($message, 'error');
 
-            
             // restore initial options
             $restoreInitialOptionsTask = new RestoreInitialOptionsTask();
             $restoreInitialOptionsTask->perform();
         }
     }
 
-    protected function compose_task_list() {
+    protected function compose_task_list()
+    {
         // check if we are working on a single deploy
         $single_deploy_id = get_option(Plugin::SLUG . '_single_deploy_id');
         if ($single_deploy_id) {
@@ -338,7 +381,8 @@ class StaticDeployJob extends \WP_Background_Process {
      * Clear the current static site directory, to make sure deleted pages
      * are not deployed again, and potentialy overwriting redirects.
      */
-    private function clear_directory(string $dir): void {
+    private function clear_directory(string $dir): void
+    {
         $clear = apply_filters(static::CLEAR_FILTER, false);
         if (!$clear || !$dir || !file_exists($dir)) {
             return;
