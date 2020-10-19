@@ -75,7 +75,7 @@ class StaticDeployJob extends \WP_Background_Process {
             $this->clear_directory($this->options->get('local_dir') ?: '');
 
             $this->options
-                ->set('archive_status_messages', array())
+                ->set('archive_status_messages', [])
                 ->set('archive_name', $archive_name)
                 ->set('archive_start_time', Util::formatted_datetime())
                 ->set('archive_end_time', null)
