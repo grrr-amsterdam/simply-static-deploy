@@ -26,7 +26,10 @@
                 </form>
             </div>
             <hr />
-            <span class="js-status"><?= $this->in_progress ? 'Deployment in progress...' : 'Last deployment finished at: ' . $this->last_end_time ?></span>
+            <span class="js-status"><?= $this->in_progress
+                ? 'Deployment in progress...'
+                : 'Last deployment finished at: ' .
+                    $this->last_end_time ?></span>
             <div class="deploy-error js-error-container" role="alert" aria-hidden="true">
                 <h4>An error occurred</h4>
                 <p class="js-error-message">...</p>

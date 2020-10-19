@@ -10,8 +10,8 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
-class Api {
-
+class Api
+{
     const SCHEDULE_ACTION = 'simply_static_deploy_schedule';
     const EVENT_BASE = 'simply_static_deploy_event';
 
@@ -25,17 +25,20 @@ class Api {
 
     protected $staticDeployJob;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config)
+    {
         $this->config = $config;
-        $this->staticDeployJob = new StaticDeployJob;
+        $this->staticDeployJob = new StaticDeployJob();
     }
 
-    public function register() {
+    public function register()
+    {
         add_action('rest_api_init', [$this, 'register_api_endpoints']);
         add_action(static::SCHEDULE_ACTION, [$this, 'schedule'], 10, 3);
     }
 
-    public function register_api_endpoints() {
+    public function register_api_endpoints()
+    {
         foreach (self::ENDPOINT_MAPPER as $endpoint => $callback) {
             register_rest_route(
                 RestRoutes::NAMESPACE,
@@ -82,26 +85,33 @@ class Api {
         ]);
     }
 
-    public function simply_static_deploy(WP_REST_Request $request) {
+    public function simply_static_deploy(WP_REST_Request $request)
+    {
         Util::delete_debug_log();
-        Util::debug_log("Received request to start generating a static archive");
+        Util::debug_log(
+            "Received request to start generating a static archive"
+        );
         $response = $this->staticDeployJob->start();
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('Deployment in progress...', 200);
     }
 
-    public function generate_single(WP_REST_Request $request) {
+    public function generate_single(WP_REST_Request $request)
+    {
         $post_id = $request->get_param('post_id');
         Util::delete_debug_log();
-        Util::debug_log("Received request to start static deploy for postId: " . $post_id);
+        Util::debug_log(
+            "Received request to start static deploy for postId: " . $post_id
+        );
         $response = $this->staticDeployJob->start($post_id);
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('Deploying single', 200);
     }
 
-    public function poll_status(WP_REST_Request $request) {
+    public function poll_status(WP_REST_Request $request)
+    {
         $status = StaticDeployJob::is_job_done() ? 'ready' : 'busy';
         return new WP_REST_Response($status, 200);
     }

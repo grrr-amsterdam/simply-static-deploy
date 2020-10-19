@@ -6,12 +6,12 @@
 const Deployer = ($) => {
   const PAGE_SELECTOR = ".js-simply-static-deploy";
   const STATUS_SELECTOR = ".js-status";
-  const TRIGGER_BUTTONS_SELECTOR = '.js-trigger-button';
+  const TRIGGER_BUTTONS_SELECTOR = ".js-trigger-button";
   const ERROR_CONTAINER_SELECTOR = ".js-error-container";
   const ERROR_MESSAGE_SELECTOR = ".js-error-message";
 
   const $page = $(PAGE_SELECTOR);
-  
+
   const $deployForm = $page.find(`form[data-type="ssd-deploy-form"]`);
   const $triggerButtons = $page.find(TRIGGER_BUTTONS_SELECTOR);
   const $errorContainer = $page.find(ERROR_CONTAINER_SELECTOR);
@@ -28,10 +28,9 @@ const Deployer = ($) => {
   };
 
   const formGetValue = (key) => {
-    return $deployForm.serializeArray()
-      .find(input => input.name === key)
+    return $deployForm.serializeArray().find((input) => input.name === key)
       .value;
-  }
+  };
 
   const post = (action) => {
     return new Promise((resolve, reject) => {
@@ -39,7 +38,7 @@ const Deployer = ($) => {
         method: "POST",
         url: action,
         beforeSend: (xhr) => {
-          xhr.setRequestHeader("X-WP-Nonce", formGetValue('_wpnonce'));
+          xhr.setRequestHeader("X-WP-Nonce", formGetValue("_wpnonce"));
         },
       })
         .done(resolve)
@@ -54,19 +53,19 @@ const Deployer = ($) => {
   };
 
   const updateStatus = (status, message) => {
-      $statusContainer.text(message);
-  }
+    $statusContainer.text(message);
+  };
 
   const handleDeploySubmit = (e) => {
     e.preventDefault();
     disableTriggerButtons();
     hideError();
 
-    post($deployForm.prop('action'))
-      .then(response => {
-        updateStatus('busy', 'Deployment in progress...');
+    post($deployForm.prop("action"))
+      .then((response) => {
+        updateStatus("busy", "Deployment in progress...");
       })
-      .catch(error => {
+      .catch((error) => {
         showError(error);
         enableTriggerButtons();
       });
