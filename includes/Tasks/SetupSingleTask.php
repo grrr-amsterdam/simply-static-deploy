@@ -7,15 +7,19 @@ use Simply_Static\Plugin;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
-class SetupSingleTask extends Task {
+class SetupSingleTask extends Task
+{
     /**
      * @var string
      */
     protected static $task_name = 'setup_single';
 
-    public function perform(): bool {
+    public function perform(): bool
+    {
         $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
-        $this->save_status_message("Setting up for single post with id $post_id");
+        $this->save_status_message(
+            "Setting up for single post with id $post_id"
+        );
 
         // should we create tmp directory of it not exists?
         $archive_dir = $this->options->get_archive_dir();
@@ -28,7 +32,6 @@ class SetupSingleTask extends Task {
                 return new \wp_error('cannot_create_archive_dir');
             }
         }
-
 
         Page::query()->delete_all();
 
@@ -46,20 +49,14 @@ class SetupSingleTask extends Task {
         // do_not_follow = 1
         // That way we ONLY generate that single URL.
         // @see Simply_Static\Fetch_Urls_Task::find_excludable()
-        $excludedUrls = array_merge(
-            $this->options->get('urls_to_exclude'),
+        $excludedUrls = array_merge($this->options->get('urls_to_exclude'), [
             [
-                [
-                    'url' => $url,
-                    'do_not_save' => '0',
-                    'do_not_follow' => '1',
-                ],
-            ]
-        );
-        $this->options->set(
-            'urls_to_exclude',
-            $excludedUrls
-        )->save();
+                'url' => $url,
+                'do_not_save' => '0',
+                'do_not_follow' => '1',
+            ],
+        ]);
+        $this->options->set('urls_to_exclude', $excludedUrls)->save();
 
         return true;
     }

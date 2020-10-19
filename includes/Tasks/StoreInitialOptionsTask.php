@@ -9,8 +9,8 @@ use Simply_Static\Plugin;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
-class StoreInitialOptionsTask extends Task {
-
+class StoreInitialOptionsTask extends Task
+{
     protected static $task_name = 'store_initial_options';
 
     // const CLEAR_FILTER = 'simply_static_deploy_clear_directory';
@@ -20,14 +20,14 @@ class StoreInitialOptionsTask extends Task {
 
     // const MODIFY_ACTION = 'simply_static_deploy_modify_generated_files';
 
-    public function perform() {
+    public function perform()
+    {
         // get initial options
         // store them somewhere in the database
-        $optionsToStore = F\pick([
-            'additional_files',
-            'additional_urls',
-            'urls_to_exclude',
-        ], $this->options->get_as_array());
+        $optionsToStore = F\pick(
+            ['additional_files', 'additional_urls', 'urls_to_exclude'],
+            $this->options->get_as_array()
+        );
 
         $this->save_status_message('Store initial options');
         Util::debug_log('Store initial options');
@@ -41,10 +41,14 @@ class StoreInitialOptionsTask extends Task {
             $this->options->get('additional_urls')
         );
 
-        Util::debug_log(count($initialAdditionalFilesArray) . ' additonal files, initially');
-        Util::debug_log(count($initialAdditionalUrlsArray) . ' additonal urls, initially');
+        Util::debug_log(
+            count($initialAdditionalFilesArray) . ' additonal files, initially'
+        );
+        Util::debug_log(
+            count($initialAdditionalUrlsArray) . ' additonal urls, initially'
+        );
 
-        // Alter options 
+        // Alter options
         $files = has_filter(static::FILES_FILTER)
             ? apply_filters(static::FILES_FILTER, $initialAdditionalFilesArray)
             : $this->resolve_additional_files($initialAdditionalFilesArray);
@@ -77,7 +81,8 @@ class StoreInitialOptionsTask extends Task {
      * We're fixing this by temporarily resolving all `additional_files` paths
      * to absolute URLs with resolved symlinks, and restoring them after completion.
      */
-    private function resolve_additional_files(array $files): array {
+    private function resolve_additional_files(array $files): array
+    {
         return f\unique(f\map('realpath', $files));
     }
 
@@ -87,7 +92,8 @@ class StoreInitialOptionsTask extends Task {
      * We'll have to fetch them manually and append them to the `additional_urls`
      * option during the archive tasks.
      */
-    private function enrich_additional_urls(array $urls): array {
+    private function enrich_additional_urls(array $urls): array
+    {
         return f\unique(
             f\concat(
                 $urls,
@@ -100,7 +106,8 @@ class StoreInitialOptionsTask extends Task {
     /**
      * Fetch password protected posts.
      */
-    private function fetch_password_protected_posts(): array {
+    private function fetch_password_protected_posts(): array
+    {
         $query = new \WP_Query([
             'post_type' => 'any',
             'has_password' => true,
@@ -112,7 +119,8 @@ class StoreInitialOptionsTask extends Task {
     /**
      * Fetch posts which are set to `noindex` by Yoast SEO.
      */
-    private function fetch_yoast_noindex_posts(): array {
+    private function fetch_yoast_noindex_posts(): array
+    {
         $query = new \WP_Query([
             'post_type' => 'any',
             'meta_key' => '_yoast_wpseo_meta-robots-noindex',
