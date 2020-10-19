@@ -135,6 +135,10 @@ class StaticDeployJob extends \WP_Background_Process
                 $error_message
             );
             Util::debug_log($message);
+            do_action(
+                'simply_static_deploy_error',
+                new \WP_Error('simply_static_deploy_error', $message)
+            );
             $this->save_status_message($message, 'error');
 
             // restore initial options
