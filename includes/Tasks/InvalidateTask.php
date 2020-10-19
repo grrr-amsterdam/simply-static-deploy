@@ -14,7 +14,7 @@ class InvalidateTask extends Task
 
     public function perform()
     {
-        Util::debug_log('Invalidate the shizzle');
+        Util::debug_log('Invalidate the Cloudfront distribution.');
         $this->save_status_message('Invalidating cloudfront');
         $config = new Config(constant(SimplyStaticDeploy::CONFIG_CONST));
         $invalidator = new Invalidator($config->aws);
