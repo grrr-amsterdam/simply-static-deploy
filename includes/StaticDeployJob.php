@@ -60,8 +60,8 @@ class StaticDeployJob extends \WP_Background_Process {
     public function start(?int $post_id = null) {
         if (static::is_job_done()) {
             Util::debug_log("Starting a job; no job is presently running");
-            // when we have a post id, we should set that somwhere, since every task does it's own request
-            // with each task request, we compose the task list based on that setting
+            // When we have a post id, we should set that somewhere, since every task does its own request
+            // with each task request, we compose the task list based on that setting.
             update_option(Plugin::SLUG . '_single_deploy_id', $post_id);
             $this->task_list = $this->compose_task_list();
             Util::debug_log("Here's our task list: " . implode(', ', $this->task_list));
