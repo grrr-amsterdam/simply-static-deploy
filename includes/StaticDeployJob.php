@@ -4,6 +4,7 @@ namespace Grrr\SimplyStaticDeploy;
 
 use Garp\Functional as f;
 use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
+use Grrr\SimplyStaticDeploy\Tasks\ModifyGeneratedFilesTask;
 use Grrr\SimplyStaticDeploy\Tasks\RestoreInitialOptionsTask;
 use Grrr\SimplyStaticDeploy\Tasks\SetupSingleTask;
 use Grrr\SimplyStaticDeploy\Tasks\StoreInitialOptionsTask;
@@ -35,6 +36,7 @@ class StaticDeployJob extends \WP_Background_Process
         'fetch_urls' => Fetch_Urls_Task::class,
         'transfer_files_locally' => Transfer_Files_Locally_Task::class,
         'wrapup' => Wrapup_Task::class,
+        'modify_generated_files' => ModifyGeneratedFilesTask::class,
         'restore_initial_options' => RestoreInitialOptionsTask::class,
         'sync' => SyncTask::class,
         'invalidate' => InvalidateTask::class,
@@ -374,6 +376,7 @@ class StaticDeployJob extends \WP_Background_Process
             'fetch_urls',
             'transfer_files_locally',
             'wrapup',
+            'modify_generated_files',
             'restore_initial_options',
             'sync',
             'invalidate',
