@@ -4,6 +4,7 @@ namespace Grrr\SimplyStaticDeploy\Tasks;
 
 use Simply_Static\Page;
 use Simply_Static\Plugin;
+use Simply_Static\Setup_Task;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
@@ -45,9 +46,11 @@ class SetupSingleTask extends Task
         $static_page->found_on_id = 0;
         $static_page->save();
 
+        Setup_Task::add_additional_files_to_db( $this->options->get( 'additional_files' ) );
+
         // We should add the URL to the urls_to_exclude option with
         // do_not_follow = 1
-        // That way we ONLY generate that single URL.
+        // That way we ONLY generate/save that single URL, but not following it
         // @see Simply_Static\Fetch_Urls_Task::find_excludable()
         $excludedUrls = array_merge($this->options->get('urls_to_exclude'), [
             [
@@ -57,7 +60,6 @@ class SetupSingleTask extends Task
             ],
         ]);
         $this->options->set('urls_to_exclude', $excludedUrls)->save();
-
         return true;
     }
 }
