@@ -14,6 +14,20 @@ From version v2.0.0 each deploy task will be done in the background.
 This means your browser window won't have to stay open while deploying. All the tasks will make separate requests, so the idle timeout limit of the server won't be reached.
 It is now also possible to only deploy a single post. Because of these changes we removed the ability to trigger each task individually.
 
+## v2.1.0 (2021-02-05)
+
+With the last major release we removed the `simply_static_deploy_modify_generated_files` action hook,
+but we never really wanted it to leave. But it got new complications because of the single deploy
+feature that got a high priority.
+
+Let's make it work!
+
+[X] Let generated files by modified before deploy
+[X] Single Deploy always with assets
+[ ] Single Deploy button should be hidden until js is loaded
+[ ] Create the possibility to invalidate cloudfront anytime
+[ ] How can we make sure people use the right deploy button
+
 ### Updating from v1.\*
 
 Since major architectual changed have been made, the scheduled event action hook is changed.
