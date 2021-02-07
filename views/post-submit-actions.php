@@ -1,6 +1,9 @@
 <style>
 .ssd-publishbox {
 }
+.ssd-publishbox[aria-hidden="true"] {
+    visibility: hidden;
+}
 .ssd-publishbox__status[data-status="ready"] {
     color: gray;
 }
@@ -13,23 +16,24 @@
     color: red;
 }
 </style>
-<!-- 
-    Note: since this partial will be injected in to the edit post action, 
-    we should tell tell the button it should belong to another form 
+<!--
+    Note: since this partial will be injected in to the edit post action,
+    we should tell tell the button it should belong to another form
 -->
-<div 
+<div
     id="ssd-single-deploy-submit-container"
-    class="misc-pub-section sdd-publishbox" 
+    class="misc-pub-section ssd-publishbox"
+    aria-hidden="true"
     data-poll-status-endpoint="<?= $this->poll_status_endpoint ?>"
     >
-    <button 
-        type="submit" 
-        form="<?= $this->form_id ?>" 
+    <button
+        type="submit"
+        form="<?= $this->form_id ?>"
         <?= $this->status === 'busy' ? 'disabled' : '' ?>
         >
         Deploy
     </button>
-    <span 
+    <span
         class="ssd-publishbox__status"
         data-status="<?= $this->status ?>"
         >
@@ -40,10 +44,11 @@
 <script>
 const StaticDeploySingle = ($) => {
     const $container = $('#ssd-single-deploy-submit-container');
+    $container.attr('aria-hidden', false);
     const $button = $container.find('button[type=submit]');
     const $form = $($button.prop('form'));
     const $statusElement = $container.find('.ssd-publishbox__status');
-    
+
     const POLL_STATUS_ENDPOINT = $container.data('poll-status-endpoint');
 
     const formGetValue = (key) => {
@@ -101,7 +106,7 @@ const StaticDeploySingle = ($) => {
         window.setInterval(pollStatus, 2 * 1000);
         disableSubmitButton();
         post(
-            $form.prop('action'), 
+            $form.prop('action'),
             {
               post_id: formGetValue('post_id'),
             }
@@ -118,7 +123,7 @@ const StaticDeploySingle = ($) => {
     return {
         init: () => {
             $form.on('submit', handleDeploySubmit);
-            
+
         }
     };
 }

@@ -24,7 +24,8 @@ Let's make it work!
 
 [X] Let generated files by modified before deploy
 [X] Single Deploy always with assets
-[ ] Single Deploy button should be hidden until js is loaded
+[X] Single Deploy button should be hidden until js is loaded
+[ ] Show progress
 [ ] Create the possibility to invalidate cloudfront anytime
 [ ] How can we make sure people use the right deploy button
 
