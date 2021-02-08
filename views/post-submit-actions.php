@@ -50,6 +50,7 @@ const StaticDeploySingle = ($) => {
     const $statusElement = $container.find('.ssd-publishbox__status');
 
     const POLL_STATUS_ENDPOINT = $container.data('poll-status-endpoint');
+    let pollStatusInterval;
 
     const formGetValue = (key) => {
         return $form.serializeArray()
@@ -97,14 +98,15 @@ const StaticDeploySingle = ($) => {
                 }
             })
             .catch((error) => {
+                window.clearInterval(pollStatusInterval);
                 updateStatus('error', error);
             });
     }
 
     const handleDeploySubmit = (e) => {
         e.preventDefault();
-        window.setInterval(pollStatus, 2 * 1000);
         disableSubmitButton();
+        updateStatus('busy', 'Deployment in progress...');
         post(
             $form.prop('action'),
             {
@@ -112,9 +114,10 @@ const StaticDeploySingle = ($) => {
             }
             )
             .then( (response) => {
-                updateStatus('busy', 'Deployment in progress...');
+                pollStatusInterval = window.setInterval(pollStatus, 2 * 1000);
             })
             .catch((error) => {
+                window.clearInterval(pollStatusInterval);
                 updateStatus('error', error);
                 enableSubmitButton();
             })
