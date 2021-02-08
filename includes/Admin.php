@@ -84,12 +84,14 @@ class Admin
             'tasks' => $this->get_tasks(),
             'website' => trim($this->config->url, '/') . '/',
         ]);
+
+        // Use style on every admin page so we can overwrite the css of Simply Static
+        wp_enqueue_style(static::SLUG);
     }
 
     public function render_admin()
     {
         wp_enqueue_script(static::SLUG);
-        wp_enqueue_style(static::SLUG);
 
         $deployForm = (object) [
             'action' => $this->get_endpoints()['simply_static_deploy'],
