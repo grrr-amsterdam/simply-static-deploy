@@ -65,3 +65,10 @@
 .deploy-tasks form > strong {
     min-width: 20px;
 }
+
+/**
+ * Hide 'Generate' button from Simply Static plugin
+ */
+#sistContainer .actions {
+    display: none !important;
+}
