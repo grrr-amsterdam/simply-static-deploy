@@ -5,6 +5,7 @@ namespace Grrr\SimplyStaticDeploy;
 use DateTime;
 use DateTimeZone;
 use Garp\Functional as f;
+use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
 use Simply_Static\Util;
 use WP_Error;
 use WP_REST_Request;
@@ -19,6 +20,7 @@ class Api
         'generate_single' => 'generate_single',
         'simply_static_deploy' => 'simply_static_deploy',
         'poll_status' => 'poll_status',
+        'invalidate_cloudfront' => 'invalidate_cloudfront',
     ];
 
     private $config;
@@ -114,5 +116,14 @@ class Api
     {
         $status = StaticDeployJob::is_job_done() ? 'ready' : 'busy';
         return new WP_REST_Response($status, 200);
+    }
+
+    public function invalidate_cloudfront(WP_Rest_Request $request)
+    {
+        $invalidateTask = new InvalidateTask();
+        $response = $invalidateTask->perform();
+        return $response instanceof WP_Error
+            ? $response
+            : new WP_REST_Response('Cloudfront invalidation request sent', 200);
     }
 }

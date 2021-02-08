@@ -13,6 +13,8 @@ const Deployer = ($) => {
   const $page = $(PAGE_SELECTOR);
 
   const $deployForm = $page.find(`form[data-type="ssd-deploy-form"]`);
+  const $invalidateForm = $page.find(`form[data-type="ssd-invalidate-form"]`);
+
   const $triggerButtons = $page.find(TRIGGER_BUTTONS_SELECTOR);
   const $errorContainer = $page.find(ERROR_CONTAINER_SELECTOR);
   const $errorMessage = $page.find(ERROR_MESSAGE_SELECTOR);
@@ -71,9 +73,25 @@ const Deployer = ($) => {
       });
   };
 
+  const handleInvalidateSubmit = (e) => {
+    e.preventDefault();
+    disableTriggerButtons();
+    hideError();
+
+    post($invalidateForm.prop("action"))
+      .then((response) => {
+        updateStatus("busy", response);
+      })
+      .catch((error) => {
+        showError(error);
+        enableTriggerButtons();
+      });
+  };
+
   return {
     init() {
       $deployForm.on("submit", handleDeploySubmit);
+      $invalidateForm.on("submit", handleInvalidateSubmit);
     },
   };
 };

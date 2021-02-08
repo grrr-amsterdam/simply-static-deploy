@@ -8,23 +8,40 @@
             <h1><?= get_admin_page_title() ?></h1>
             <p>Generate a static version of the website, sync it to the static hosting environment, and invalidate the cache.</p>
             <div class="wp-clearfix" style="margin-bottom: 15px;">
-                <form 
-                    class="alignleft" 
+                <form
+                    class="alignleft"
                     data-type="ssd-deploy-form"
-                    action="<?= $this->form->action ?>" 
-                    method="<?= $this->form->method ?>" 
+                    action="<?= $this->forms['deploy']->action ?>"
+                    method="<?= $this->forms['deploy']->method ?>"
                     style="margin-right: 10px;"
                     >
                     <?= wp_nonce_field('wp_rest') ?>
-                    <button 
-                        class="button button-primary button-large js-trigger-button" 
+                    <button
+                        class="button button-primary button-large js-trigger-button"
                         type="submit"
                         <?= $this->in_progress ? 'disabled' : '' ?>
                         >
                         Generate &amp; deploy
                     </button>
                 </form>
-            </div>
+                <div class="wp-clearfix" style="margin-bottom: 15px;">
+                    <form
+                        class="alignleft"
+                        data-type="ssd-invalidate-form"
+                        action="<?= $this->forms['invalidate']->action ?>"
+                        method="<?= $this->forms['invalidate']->method ?>"
+                        style="margin-right: 10px;"
+                        >
+                        <?= wp_nonce_field('wp_rest') ?>
+                        <button
+                            class="button button-secondary button-large js-trigger-button"
+                            type="submit"
+                            <?= $this->in_progress ? 'disabled' : '' ?>
+                            >
+                            Invalidate CloudFront
+                        </button>
+                    </form>
+                </div>
             <hr />
             <span class="js-status"><?= $this->in_progress
                 ? 'Deployment in progress...'
