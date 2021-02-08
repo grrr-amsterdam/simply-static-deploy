@@ -12,6 +12,7 @@ class RestRoutes
         'generate_single' => 'generate_single',
         'simply_static_deploy' => 'simply_static_deploy',
         'poll_status' => 'poll_status',
+        'invalidate_cloudfront' => 'invalidate_cloudfront',
     ];
 
     public static function get(string $name): string

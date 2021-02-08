@@ -91,13 +91,20 @@ class Admin
         wp_enqueue_script(static::SLUG);
         wp_enqueue_style(static::SLUG);
 
-        $form = (object) [
+        $deployForm = (object) [
             'action' => $this->get_endpoints()['simply_static_deploy'],
+            'method' => 'post',
+        ];
+        $invalidateForm = (object) [
+            'action' => $this->get_endpoints()['invalidate_cloudfront'],
             'method' => 'post',
         ];
 
         $renderer = new Renderer($this->basePath . 'views/admin-page.php', [
-            'form' => $form,
+            'forms' => [
+                'deploy' => $deployForm,
+                'invalidate' => $invalidateForm,
+            ],
             'in_progress' => !StaticDeployJob::is_job_done(),
             'last_end_time' => StaticDeployJob::last_end_time(),
         ]);
