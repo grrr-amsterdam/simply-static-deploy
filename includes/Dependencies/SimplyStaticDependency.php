@@ -1,12 +1,12 @@
 <?php namespace Grrr\SimplyStaticDeploy\Dependencies;
 
-use Simply_Static;
-
 class SimplyStaticDependency implements DependencyInterface
 {
     public function is_met(): bool
     {
-        return class_exists(Simply_Static\Plugin::class);
+        // https://waclawjacek.com/check-wordpress-plugin-dependencies/
+        $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
+        return in_array('simply-static/simply-static.php', $activePlugins);
     }
 
     public function register_notifications()
