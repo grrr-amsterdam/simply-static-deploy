@@ -20,7 +20,7 @@ class SimplyStaticDeploy
 
     public function init()
     {
-        add_action('plugins_loaded', [$this, 'plugins_loaded']);
+        add_action('init', [$this, 'plugins_loaded']);
     }
 
     public function plugins_loaded()
