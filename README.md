@@ -8,11 +8,18 @@
 -   Adds deployment to S3-compatible storage (AWS S3, DigitalOcean Spaces, ...).
 -   Adds optional CloudFront CDN invalidation step.
 -   Steps can be triggered via a simple user interface or programmatically.
+-   Ability to generate and deploy a single page
 -   Customizable using hooks and actions.
 
 Built with ❤️ by [GRRR](https://grrr.tech).
 
-<img width="557" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1607628/71005872-b173a580-20e4-11ea-88e1-bef666f136cb.png">
+#### Generate and deploy user interface
+
+<img width="557" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1799286/107524304-e9c22700-6bb5-11eb-8df1-1ded03b16df0.png">
+
+#### Single page/post deploy user interface
+
+<img width="557" alt="Screenshot of plugin interface for deploying a single page" src="https://user-images.githubusercontent.com/1799286/107524595-3d347500-6bb6-11eb-944b-25eb7b46cd03.png">
 
 ## Minimum requirements
 
@@ -127,6 +134,18 @@ Called from the plugin, and receives a `WP_Error` object explaining the error. Y
 ```php
 add_action('simply_static_deploy_error', function (\WP_Error $error) {
     # Handle the error.
+});
+```
+
+#### Modify generated files
+
+Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
+
+```php
+add_action('simply_static_deploy_modify_generated_files', function (
+    string $directory
+) {
+    # Modify generated files, like renaming or moving them.
 });
 ```
 
