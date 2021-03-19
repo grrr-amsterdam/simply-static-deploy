@@ -52,8 +52,8 @@ If you're not using Composer in your project yet, make sure to require the [Comp
 
 ```php
 /** Sets up WordPress vars and included files. */
-require_once ABSPATH . 'wp-settings.php';
 require_once ABSPATH . 'vendor/autoload.php'; # ‹— add this
+require_once ABSPATH . 'wp-settings.php';
 ```
 
 ## Usage
