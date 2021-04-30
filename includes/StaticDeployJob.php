@@ -49,9 +49,6 @@ class StaticDeployJob extends \WP_Background_Process
 
         $this->task_list = $this->compose_task_list();
 
-        // Set GMT offset to Wordpress CMS Setting
-        date_default_timezone_set(get_option('timezone_string'));
-
         if (!static::is_job_done()) {
             register_shutdown_function([$this, 'shutdown_handler']);
         }
