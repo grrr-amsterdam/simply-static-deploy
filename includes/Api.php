@@ -58,10 +58,7 @@ class Api
 
     public function schedule(string $time, string $interval): void
     {
-        $datetime = new DateTime(
-            $time,
-            new DateTimeZone(get_option('timezone_string'))
-        );
+        $datetime = new DateTime($time);
         $event = $this->generate_event_name($datetime, $interval);
         if (!wp_next_scheduled($event)) {
             wp_schedule_event($datetime->getTimestamp(), $interval, $event);
