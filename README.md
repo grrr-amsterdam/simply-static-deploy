@@ -156,7 +156,24 @@ add_action('simply_static_deploy_modify_generated_files', function (
 
 #### Schedule deploys
 
-Schedule a deploy event.
+You can schedule a deploy by adding using the following filter
+
+add_filter('simply_static_deploy_schedules', $callback);
+
+The callback function accepts an array of one or multiple schedule settings. You can alter this array by adding deploy schedules like:
+
+```
+add_filter('simply_static_deploy_schedules, function(array $schedules) {
+    $schedules[] = [
+        'time' => '23:00',
+        'interval' => 'daily'
+    ];
+    return $schedules;
+});
+```
+
+
+Schedule a deploy event (deprecated)
 
 Arguments:
 
