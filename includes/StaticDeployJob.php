@@ -263,6 +263,8 @@ class StaticDeployJob extends \WP_Background_Process
 
         $this->options->set('archive_end_time', $end_time);
 
+        do_action('simply_static_deploy_complete', $this->options);
+
         $this->save_status_message(
             sprintf(__('Done! Finished in %s', 'simply-static'), $time_string)
         );
