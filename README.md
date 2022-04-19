@@ -104,7 +104,7 @@ Available actions to invoke or act upon:
 -   [Handle errors](#handle-errors)
 -   [Schedule deploys](#schedule-deploys)
 
-### Available filters
+### Available filters and actions
 
 #### Adjust additional files
 
@@ -143,6 +143,15 @@ Called from the plugin, and receives a `WP_Error` object explaining the error. Y
 ```php
 add_action('simply_static_deploy_error', function (\WP_Error $error) {
     # Handle the error.
+});
+```
+
+#### Completed static deploy job
+This will be triggered after al deploy tasks are finished. The first and only argument you will get
+in the callback function is the Simply Static options instance.
+```
+add_action('simply_static_deploy_complete' , function (\Simply_Static\Options $options) {
+    // Finished static deploy job.
 });
 ```
 
