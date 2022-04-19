@@ -3,10 +3,11 @@
 namespace Grrr\SimplyStaticDeploy\Tasks;
 
 use Simply_Static\Page;
-use Simply_Static\Plugin;
-use Simply_Static\Setup_Task;
 use Simply_Static\Task;
 use Simply_Static\Util;
+use Simply_Static\Plugin;
+use Simply_Static\Setup_Task;
+use Grrr\SimplyStaticDeploy\Utils;
 
 class SetupSingleTask extends Task
 {
@@ -27,7 +28,7 @@ class SetupSingleTask extends Task
 
         // create temp archive directory
         if (!file_exists($archive_dir)) {
-            util::debug_log('creating archive directory: ' . $archive_dir);
+            Util::debug_log('creating archive directory: ' . $archive_dir);
             $create_dir = wp_mkdir_p($archive_dir);
             if ($create_dir === false) {
                 return new \wp_error('cannot_create_archive_dir');
@@ -46,7 +47,18 @@ class SetupSingleTask extends Task
         $static_page->found_on_id = 0;
         $static_page->save();
 
-        Setup_Task::add_additional_files_to_db( $this->options->get( 'additional_files' ) );
+        $additional_files = apply_filters(
+            'simply_static_deploy_single_additional_files',
+            [],
+            $this->options
+        );
+        Util::debug_log('Adding ' . count($additional_files) . ' additional files via filter');
+        Util::debug_log($additional_files);
+
+        // The add_additional_files_to_db method accepts a list in the form of an textarea string
+        // with new lines.
+        $additional_files = Utils::array_to_option_string($additional_files);
+        Setup_Task::add_additional_files_to_db($additional_files);
 
         // We should add the URL to the urls_to_exclude option with
         // do_not_follow = 1
