@@ -121,7 +121,7 @@ Note: during generation of the static site, the `additional_files` setting is up
 
 #### Add additional files for Single deploy
 
-When doing a single deploy only the given page/post will be generated, including the files given in the Simply Static 'Additional files' setting. You can change these additional files for single deploys via the `simply_static_deploy_single_additional_files` filter. It takes two arguments the first one is an array of filenames, the second one is the Simply Static Options instance.
+When doing a single deploy only the given page/post will be generated, including the files given in the Simply Static 'Additional files' setting. You can change these additional files for single deploys via the `simply_static_deploy_single_additional_files` filter. It takes two arguments: the first one is an array of filenames, the second one is the Simply Static Options instance.
 
 #### Adjust additional URLs
 
@@ -147,7 +147,8 @@ add_action('simply_static_deploy_error', function (\WP_Error $error) {
 ```
 
 #### Completed static deploy job
-This will be triggered after al deploy tasks are finished. The first and only argument you will get
+
+This will be triggered after all deploy tasks are finished. The first and only argument you will get
 in the callback function is the Simply Static options instance.
 ```
 add_action('simply_static_deploy_complete' , function (\Simply_Static\Options $options) {
