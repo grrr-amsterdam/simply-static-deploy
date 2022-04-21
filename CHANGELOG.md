@@ -2,6 +2,22 @@
 
 This changelog only lists notable changes. Check individual releases (tags) and their commits to see unlisted changes.
 
+## v2.1.3
+
+- Added a filter: `simply_static_deploy_single_additional_files`
+- Added a action hook: `simply_static_deploy_complete`
+
+Check the README for more information about these new hooks.
+
+
+## v2.1.2
+
+We do not use timezone settings to schedule deploys anymore, just UCT time.
+
+## v2.1.1
+
+Update to README
+
 ## v2.1.0 (2021-02-05)
 
 -   Return of the `simply_static_deploy_modify_generated_files` action hook.
