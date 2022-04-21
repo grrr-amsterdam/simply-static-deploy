@@ -2,12 +2,12 @@
 
 namespace Grrr\SimplyStaticDeploy\Tasks;
 
+use Grrr\SimplyStaticDeploy\Utils;
 use Simply_Static\Page;
-use Simply_Static\Task;
-use Simply_Static\Util;
 use Simply_Static\Plugin;
 use Simply_Static\Setup_Task;
-use Grrr\SimplyStaticDeploy\Utils;
+use Simply_Static\Task;
+use Simply_Static\Util;
 
 class SetupSingleTask extends Task
 {
