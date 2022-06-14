@@ -1,10 +1,10 @@
-<!-- 
+<!--
     Submit button is placed outside the form container,
     check views/post-submit-actions.php
 -->
-<form 
+<form
     id="<?= $this->form->id ?>"
-    action="<?= $this->form->action ?>" 
+    action="<?= $this->form->action ?>"
     method="<?= $this->form->method ?>"
     >
     <?= wp_nonce_field('wp_rest') ?>

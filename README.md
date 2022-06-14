@@ -123,6 +123,10 @@ Note: during generation of the static site, the `additional_files` setting is up
 
 When doing a single deploy only the given page/post will be generated, including the files given in the Simply Static 'Additional files' setting. You can change these additional files for single deploys via the `simply_static_deploy_single_additional_files` filter. It takes two arguments: the first one is an array of filenames, the second one is the Simply Static Options instance.
 
+#### Single recursive deploy
+
+A single post/page deploy can be done recursively by checking the recursive option (see checkbox in single page/post deploy user interface). When 'recursive' has been checked all pages/posts beneath the current page/post will be fetched as well based on the current post url.
+
 #### Adjust additional URLs
 
 Modify entries from the 'Additional URLs' option. This can be useful to add pages that can't be found by Simply Static (not in the sitemap, are excluded by a password, have `noindex`, etc...). An array of unmodified URLs from the options is passed as an argument.

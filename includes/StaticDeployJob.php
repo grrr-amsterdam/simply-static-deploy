@@ -3,6 +3,7 @@
 namespace Grrr\SimplyStaticDeploy;
 
 use Garp\Functional as f;
+use Grrr\SimplyStaticDeploy\Tasks\FetchUrlsRecursiveTask;
 use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
 use Grrr\SimplyStaticDeploy\Tasks\ModifyGeneratedFilesTask;
 use Grrr\SimplyStaticDeploy\Tasks\RestoreInitialOptionsTask;
@@ -34,6 +35,7 @@ class StaticDeployJob extends \WP_Background_Process
         'setup' => Setup_Task::class,
         'setup_single' => SetupSingleTask::class,
         'fetch_urls' => Fetch_Urls_Task::class,
+        'fetch_urls_recursive' => FetchUrlsRecursiveTask::class,
         'transfer_files_locally' => Transfer_Files_Locally_Task::class,
         'wrapup' => Wrapup_Task::class,
         'modify_generated_files' => ModifyGeneratedFilesTask::class,
@@ -60,20 +62,21 @@ class StaticDeployJob extends \WP_Background_Process
      * Helper method for starting the Archive_Creation_Job
      * @return boolean true if we were able to successfully start generating an archive
      */
-    public function start(?int $post_id = null)
+    public function start(?int $post_id = null, ?bool $recursive = false)
     {
         if (static::is_job_done()) {
             Util::debug_log("Starting a job; no job is presently running");
             // When we have a post id, we should set that somewhere, since every task does its own request
             // with each task request, we compose the task list based on that setting.
             update_option(Plugin::SLUG . '_single_deploy_id', $post_id);
+            update_option(Plugin::SLUG . '_single_deploy_recursive', $recursive);
             $this->task_list = $this->compose_task_list();
             Util::debug_log(
                 "Here's our task list: " . implode(', ', $this->task_list)
             );
             global $blog_id;
 
-            $this->task_list = $this->compose_task_list($post_id);
+            $this->task_list = $this->compose_task_list();
             $first_task = $this->task_list[0];
             $archive_name = join('-', [Plugin::SLUG, $blog_id, time()]);
 
@@ -369,10 +372,11 @@ class StaticDeployJob extends \WP_Background_Process
     {
         // check if we are working on a single deploy
         $single_deploy_id = get_option(Plugin::SLUG . '_single_deploy_id');
+        $single_deploy_recursive = get_option(Plugin::SLUG . '_single_deploy_recursive');
         $task_list = [
             'store_initial_options',
             $single_deploy_id ? 'setup_single' : 'setup',
-            'fetch_urls',
+            $single_deploy_recursive ? 'fetch_urls_recursive' : 'fetch_urls',
             'transfer_files_locally',
             'wrapup',
             'modify_generated_files',
