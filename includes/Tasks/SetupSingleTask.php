@@ -19,6 +19,7 @@ class SetupSingleTask extends Task
     public function perform(): bool
     {
         $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
+        $recursive = get_option(Plugin::SLUG . '_single_deploy_recursive');
         $this->save_status_message(
             "Setting up for single post with id $post_id"
         );
@@ -68,7 +69,7 @@ class SetupSingleTask extends Task
             [
                 'url' => $url,
                 'do_not_save' => '0',
-                'do_not_follow' => '1',
+                'do_not_follow' => $recursive ? '0' : '1',
             ],
         ]);
         $this->options->set('urls_to_exclude', $excludedUrls)->save();

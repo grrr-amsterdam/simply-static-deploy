@@ -15,6 +15,10 @@
 .ssd-publishbox__status[data-status="error"] {
     color: red;
 }
+
+.ssd-publishbox__recursive {
+    padding: 8px 10px;
+}
 </style>
 <!--
     Note: since this partial will be injected in to the edit post action,
@@ -39,6 +43,11 @@
         >
         <?= $this->status_message ?>
     </span>
+    <div class="ssd-publishbox__recursive">
+        <input type="checkbox" name="recursive" form="<?= $this->form_id ?>">
+        Recursive deploy
+        </input>
+    </div>
 </div>
 
 <script>
@@ -53,9 +62,12 @@ const StaticDeploySingle = ($) => {
     let pollStatusInterval;
 
     const formGetValue = (key) => {
-        return $form.serializeArray()
-            .find(input => input.name === key)
-            .value;
+        $element = $form.serializeArray()
+            .find(input => input.name === key);
+        if ($element) {
+            return $element.value
+        }
+        return null;
     }
 
     const updateStatus = (status, message) => {
@@ -110,7 +122,8 @@ const StaticDeploySingle = ($) => {
         post(
             $form.prop('action'),
             {
-              post_id: formGetValue('post_id'),
+                post_id: formGetValue('post_id'),
+                recursive: (formGetValue('recursive') ? 1 : 0)
             }
             )
             .then( (response) => {

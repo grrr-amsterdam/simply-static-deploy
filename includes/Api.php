@@ -99,11 +99,16 @@ class Api
     public function generate_single(WP_REST_Request $request)
     {
         $post_id = $request->get_param('post_id');
+        $recursive = (bool)$request->get_param('recursive');
+
         Util::delete_debug_log();
-        Util::debug_log(
-            "Received request to start static deploy for postId: " . $post_id
+        Util::debug_log(sprintf('Received request to start %s deploy for postId: %s.',
+                $recursive ? 'recursive static' : 'static',
+                $post_id
+            )
         );
-        $response = $this->staticDeployJob->start($post_id);
+
+        $response = $this->staticDeployJob->start($post_id, $recursive);
         return $response instanceof WP_Error
             ? $response
             : new WP_REST_Response('Deploying single', 200);
