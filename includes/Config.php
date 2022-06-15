@@ -1,7 +1,5 @@
 <?php namespace Grrr\SimplyStaticDeploy;
 
-use Garp\Functional as f;
-
 class Config
 {
     private $data;
