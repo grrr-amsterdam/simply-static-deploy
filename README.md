@@ -20,11 +20,11 @@
 
 #### Generate and deploy user interface
 
-<img width="557" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1799286/107524304-e9c22700-6bb5-11eb-8df1-1ded03b16df0.png">
+<img width="568" alt="Screenshot of Simply Static Deploy plugin interface for WordPress" src="https://user-images.githubusercontent.com/1799286/107524304-e9c22700-6bb5-11eb-8df1-1ded03b16df0.png">
 
 #### Single page/post deploy user interface
 
-<img width="557" alt="Screenshot of plugin interface for deploying a single page" src="https://user-images.githubusercontent.com/1799286/107524595-3d347500-6bb6-11eb-944b-25eb7b46cd03.png">
+<img width="292" alt="Screenshot of plugin interface for deploying a single page" src="https://user-images.githubusercontent.com/884784/177352714-9b42b8b2-33dc-4f99-adf1-572cc9cf6ebb.png">
 
 ## Minimum requirements
 
