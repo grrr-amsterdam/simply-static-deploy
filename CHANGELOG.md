@@ -2,13 +2,17 @@
 
 This changelog only lists notable changes. Check individual releases (tags) and their commits to see unlisted changes.
 
+## v2.2.0
+
+- Implemented single recursive deploy functionality, see the README for details.
+- Added a delete hook: When you delete a page, this page will be automatically deleted from S3 as well.
+
 ## v2.1.3
 
 - Added a filter: `simply_static_deploy_single_additional_files`
 - Added an action hook: `simply_static_deploy_complete`
 
 Check the README for more information about these new hooks.
-
 
 ## v2.1.2
 
