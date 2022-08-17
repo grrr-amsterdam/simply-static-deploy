@@ -2,6 +2,10 @@
 
 This changelog only lists notable changes. Check individual releases (tags) and their commits to see unlisted changes.
 
+## v2.2.1
+
+- PHP 8 compatible
+
 ## v2.2.0
 
 - Implemented single recursive deploy functionality, see the README for details.
