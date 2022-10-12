@@ -125,7 +125,7 @@ When doing a single deploy only the given page/post will be generated, including
 
 #### Single recursive deploy
 
-A single post/page deploy can be done recursively by checking the recursive option (see checkbox in single page/post deploy user interface). When 'recursive' has been checked all pages/posts beneath the current page/post will be fetched as well based on the current post url.
+A single post/page deploy can be done recursively by checking the recursive option (see checkbox in single page/post deploy user interface). When 'recursive' has been checked all pages/posts beneath the current page/post will be fetched as well based on the current post url. Please note: The recursive option will ignore and the simply static "URLs to Exclude" setting!
 
 #### Adjust additional URLs
 

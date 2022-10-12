@@ -68,7 +68,7 @@ class SetupSingleTask extends Task
         $excludedUrls = array_merge($this->options->get('urls_to_exclude'), [
             [
                 'url' => $url,
-                'do_not_save' => '0',
+                'do_not_save' => $recursive ? '0' : '1',
                 'do_not_follow' => $recursive ? '0' : '1',
             ],
         ]);
