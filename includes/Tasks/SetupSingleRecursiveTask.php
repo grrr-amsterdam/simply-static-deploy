@@ -2,25 +2,23 @@
 
 namespace Grrr\SimplyStaticDeploy\Tasks;
 
-use Grrr\SimplyStaticDeploy\Utils;
 use Simply_Static\Page;
 use Simply_Static\Plugin;
-use Simply_Static\Setup_Task;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
-class SetupSingleTask extends Task
+class SetupSingleRecursiveTask extends Task
 {
     /**
      * @var string
      */
-    protected static $task_name = 'setup_single';
+    protected static $task_name = 'setup_single_recursive';
 
     public function perform(): bool
     {
         $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
         $this->save_status_message(
-            "Setting up for single post with id $post_id"
+            "Setting up for single recursive post with id $post_id"
         );
 
         // should we create tmp directory of it not exists?
@@ -47,31 +45,13 @@ class SetupSingleTask extends Task
         $static_page->found_on_id = 0;
         $static_page->save();
 
-        $additional_files = apply_filters(
-            'simply_static_deploy_single_additional_files',
-            Utils::option_string_to_array($this->options->get('additional_files')),
-            $this->options
-        );
-        Util::debug_log('Adding ' . count($additional_files) . ' additional files via filter');
-        Util::debug_log($additional_files);
-
-        // The add_additional_files_to_db method accepts a list in the form of a textarea string
-        // with new lines.
-        $additional_files = Utils::array_to_option_string($additional_files);
-        Setup_Task::add_additional_files_to_db($additional_files);
-
-        // We should add the URL to the urls_to_exclude option with
-        // do_not_follow = 1
-        // That way we ONLY generate/save that single URL, but not following it
-        // @see Simply_Static\Fetch_Urls_Task::find_excludable()
-        $excludedUrls = array_merge($this->options->get('urls_to_exclude'), [
-            [
-                'url' => $url,
-                'do_not_save' => '0',
-                'do_not_follow' => '1',
-            ],
-        ]);
+        $excludedUrls = $this->options->get('urls_to_exclude');
+        // Remove this url from excluded array
+        $excludedUrls = array_filter($excludedUrls, function($excludedUrl) use ($url) {
+            return $excludedUrl['url'] !== $url;
+        });
         $this->options->set('urls_to_exclude', $excludedUrls)->save();
+
         return true;
     }
 }

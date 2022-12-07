@@ -7,6 +7,7 @@ use Grrr\SimplyStaticDeploy\Tasks\FetchUrlsRecursiveTask;
 use Grrr\SimplyStaticDeploy\Tasks\InvalidateTask;
 use Grrr\SimplyStaticDeploy\Tasks\ModifyGeneratedFilesTask;
 use Grrr\SimplyStaticDeploy\Tasks\RestoreInitialOptionsTask;
+use Grrr\SimplyStaticDeploy\Tasks\SetupSingleRecursiveTask;
 use Grrr\SimplyStaticDeploy\Tasks\SetupSingleTask;
 use Grrr\SimplyStaticDeploy\Tasks\StoreInitialOptionsTask;
 use Grrr\SimplyStaticDeploy\Tasks\SyncTask;
@@ -34,6 +35,7 @@ class StaticDeployJob extends \WP_Background_Process
         'store_initial_options' => StoreInitialOptionsTask::class,
         'setup' => Setup_Task::class,
         'setup_single' => SetupSingleTask::class,
+        'setup_single_recursive' => SetupSingleRecursiveTask::class,
         'fetch_urls' => Fetch_Urls_Task::class,
         'fetch_urls_recursive' => FetchUrlsRecursiveTask::class,
         'transfer_files_locally' => Transfer_Files_Locally_Task::class,
@@ -370,13 +372,14 @@ class StaticDeployJob extends \WP_Background_Process
 
     protected function compose_task_list()
     {
-        // check if we are working on a single deploy
+        // Check if we are working on a single deploy
         $single_deploy_id = get_option(Plugin::SLUG . '_single_deploy_id');
-        $single_deploy_recursive = get_option(Plugin::SLUG . '_single_deploy_recursive');
+        // If we are working on a single deploy, check if it is a recursive single deploy
+        $single_deploy_recursive = isset($single_deploy_id) && get_option(Plugin::SLUG . '_single_deploy_recursive');
         $task_list = [
             'store_initial_options',
             $single_deploy_id ? 'setup_single' : 'setup',
-            $single_deploy_recursive ? 'fetch_urls_recursive' : 'fetch_urls',
+            'fetch_urls',
             'transfer_files_locally',
             'wrapup',
             'modify_generated_files',
@@ -384,6 +387,24 @@ class StaticDeployJob extends \WP_Background_Process
             'sync',
             'invalidate',
         ];
+
+        // Note: when doing a recursive deploy, do a single deploy first, so that assets will be fetched aswell
+        if ($single_deploy_recursive) {
+            $task_list = [
+                'store_initial_options',
+                'setup_single',
+                'fetch_urls',
+                'setup_single_recursive',
+                'fetch_urls_recursive',
+                'transfer_files_locally',
+                'wrapup',
+                'modify_generated_files',
+                'restore_initial_options',
+                'sync',
+                'invalidate',
+            ];
+        }
+
         return $task_list;
     }
 
