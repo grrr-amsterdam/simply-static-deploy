@@ -65,9 +65,18 @@ class FetchUrlsRecursiveTask extends Fetch_Urls_Task
         Util::debug_log("Total pages: " . $total_pages . '; Pages remaining: ' . $pages_remaining);
 
         while ($static_page = array_shift($static_pages)) {
-            Util::debug_log("URL: " . $static_page->url);
+            // Custom code block
+            $url = $static_page->url;
+            Util::debug_log("URL: " . $url);
 
-            $excludable = $this->find_excludable($static_page);
+            $excludable = apply_filters(
+                'simply_static_deploy_recursive_excludable',
+                $this->find_excludable($static_page),
+                $url,
+                $post_url
+            );
+            // End of custom code block
+
             if ($excludable !== false) {
                 $save_file = $excludable['do_not_save'] !== '1';
                 $follow_urls = $excludable['do_not_follow'] !== '1';
@@ -93,7 +102,6 @@ class FetchUrlsRecursiveTask extends Fetch_Urls_Task
              *  Custom code block
              *  Note: also replaced unnecessary else clause from if statement above.
              */
-            $url = $static_page->url;
             // Windows support.
             if (strpos( $url, '\\' ) !== false || strpos( $url, '\\' ) !== false) {
                 $url = str_replace( '\\', '/', $url );
