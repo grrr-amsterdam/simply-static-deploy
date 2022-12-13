@@ -394,6 +394,7 @@ class StaticDeployJob extends \WP_Background_Process
                 'store_initial_options',
                 'setup_single',
                 'fetch_urls',
+                'transfer_files_locally',
                 'setup_single_recursive',
                 'fetch_urls_recursive',
                 'transfer_files_locally',
