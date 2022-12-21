@@ -108,9 +108,10 @@ A single post or page deploy can also be done recursively by checking the recurs
 
 Available filters to modify settings and data passed to the plugin:
 
--   [Adjust additional files](#adjust-additional-files)
--   [Adjust additional files for Single deploy](#adjust-additional-files-for-single-deploy)
--   [Adjust additional URLs](#adjust-additional-urls)
+- [Adjust additional files](#adjust-additional-files)
+- [Adjust additional files for Single deploy](#adjust-additional-files-for-single-deploy)
+- [Adjust additional URLs](#adjust-additional-urls)
+- [Recursive excludable]()
 
 Available actions to invoke or act upon:
 
@@ -150,6 +151,19 @@ add_filter('simply_static_deploy_additional_urls', function (array $urls) {
 ```
 
 Note: during generation of the static site, the `additional_urls` setting is updated. It is restored when finished.
+
+#### Modify Recursive excludable
+
+This filter adds the option to customize the excludable url setting. This can be useful when for instance you want to ignore exclusions when an url contains the recursive parent url.
+
+```php
+add_filter(
+    'simply_static_deploy_recursive_excludable', function($excludable, string $staticPageUrl, string $recursiveUrl) {
+        # Modify excludable url logic, for example ignore excludeable url setting when current page contains the recursiveUrl
+        return $excludable;
+    }
+);
+```
 
 #### Actions
 
