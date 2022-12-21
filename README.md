@@ -8,7 +8,7 @@
 -   Adds deployment to S3-compatible storage (AWS S3, DigitalOcean Spaces, ...).
 -   Adds optional CloudFront CDN invalidation step.
 -   Steps can be triggered via a simple user interface or programmatically.
--   Ability to generate and deploy a single page
+-   Ability to generate and deploy a single page including recursive option
 -   Customizable using hooks and actions.
 
 ### Developed with ❤️ by [GRRR](https://grrr.nl)
@@ -94,19 +94,34 @@ If everything is configured correctly, hit `Generate & Deploy` in the `Deploy` t
 
 ## Documentation
 
+### Features
+
+#### Single post deploy
+
+Pages/posts come with single deploy button, so that a single page can be generated and deployed, see single page/post deploy user interface.
+
+#### Single recursive deploy
+
+A single post or page deploy can also be done recursively by checking the recursive option, see checkbox in single page/post deploy user interface. When 'recursive' has been checked all pages/posts that containt the url of the current page/post will be generated and deployed as well.
+
+### Available filters and actions
+
 Available filters to modify settings and data passed to the plugin:
 
 -   [Adjust additional files](#adjust-additional-files)
+-   [Adjust additional files for Single deploy](#adjust-additional-files-for-single-deploy)
 -   [Adjust additional URLs](#adjust-additional-urls)
 
 Available actions to invoke or act upon:
 
--   [Handle errors](#handle-errors)
--   [Schedule deploys](#schedule-deploys)
+- [Handle errors](#handle-errors)
+- [Completed static deploy job](#completed-static-deploy-job)
+- [Modify generated files](#modify-generated-files)
+- [Schedule deploys](#schedule-deploys)
 
-### Available filters and actions
+#### Filters
 
-#### Adjust additional files
+##### Adjust additional files
 
 Modify entries from the 'Additional Files and Directories' option. By default all paths are temporarily resolved to absolute paths via [realpath](https://www.php.net/manual/en/function.realpath.php), to ensure symbolic links are resolved. An array of unmodified files from the options is passed as an argument.
 
@@ -119,13 +134,9 @@ add_filter('simply_static_deploy_additional_files', function (array $files) {
 
 Note: during generation of the static site, the `additional_files` setting is updated. It is restored when finished.
 
-#### Add additional files for Single deploy
+##### Adjust additional files for Single deploy
 
 When doing a single deploy only the given page/post will be generated, including the files given in the Simply Static 'Additional files' setting. You can change these additional files for single deploys via the `simply_static_deploy_single_additional_files` filter. It takes two arguments: the first one is an array of filenames, the second one is the Simply Static Options instance.
-
-#### Single recursive deploy
-
-A single post/page deploy can be done recursively by checking the recursive option (see checkbox in single page/post deploy user interface). When 'recursive' has been checked all pages/posts beneath the current page/post will be fetched as well based on the current post url.
 
 #### Adjust additional URLs
 
@@ -140,7 +151,9 @@ add_filter('simply_static_deploy_additional_urls', function (array $urls) {
 
 Note: during generation of the static site, the `additional_urls` setting is updated. It is restored when finished.
 
-#### Handle errors
+#### Actions
+
+##### Handle errors
 
 Called from the plugin, and receives a `WP_Error` object explaining the error. You can decide how to handle the error, for instance by logging it with a service of choice.
 
@@ -150,7 +163,7 @@ add_action('simply_static_deploy_error', function (\WP_Error $error) {
 });
 ```
 
-#### Completed static deploy job
+##### Completed static deploy job
 
 This will be triggered after all deploy tasks are finished. The first and only argument you will get
 in the callback function is the Simply Static options instance.
@@ -160,7 +173,7 @@ add_action('simply_static_deploy_complete' , function (\Simply_Static\Options $o
 });
 ```
 
-#### Modify generated files
+##### Modify generated files
 
 Called when Simply Static is done generating the static site. This allows you to modify the generated files before they're being deployed. The static site directory is passed as an argument.
 
@@ -172,7 +185,7 @@ add_action('simply_static_deploy_modify_generated_files', function (
 });
 ```
 
-#### Schedule deploys
+##### Schedule deploys
 
 Schedule a deploy event.
 
@@ -199,7 +212,7 @@ Create a cronjob calling the WordPres WP-Cron. Setting it to _every 5 minutes_ w
 */5 * * * * curl https://example.com/wp/wp-cron.php?doing-cron > /dev/null 2>&1
 ```
 
-## Common issues
+### Common issues
 
 ```
 Fatal error: Uncaught Error: Class 'Grrr\SimplyStaticDeploy\SimplyStaticDeploy' not found
