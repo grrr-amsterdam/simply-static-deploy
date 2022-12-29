@@ -147,20 +147,6 @@ class SimplyStaticDeploy
             'Key' => $s3Key,
         ]);
 
-        // Invalidate cloudfront.
-        if ($config->aws->distribution) {
-            $invalidationPaths = [
-                rtrim($relativePermalink, '/'),
-                $relativePermalink,
-                $relativePermalink . 'index.html',
-            ];
-            $invalidation = new Invalidation(
-                $clientProvider->getCloudFrontClient(),
-                $config->aws->distribution
-            );
-
-            $invalidation->invalidate($invalidationPaths);
-        }
     }
 
     /**
