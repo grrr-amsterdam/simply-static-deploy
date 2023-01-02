@@ -2,6 +2,12 @@
 
 This changelog only lists notable changes. Check individual releases (tags) and their commits to see unlisted changes.
 
+## v2.2.2
+
+- Remove Cloudfront invalidation for deleted objects
+- Do not hide generate button from simply static plugin
+- Add safety precaution for deleting object feature
+
 ## v2.2.1
 
 - PHP 8 compatible
