@@ -142,6 +142,13 @@ class SimplyStaticDeploy
 
         // Remove the object.
         $s3Key = ltrim($relativePermalink, '/') . 'index.html';
+
+        // Safety precaution: Never remove the homepage
+        // @TODO: Check why this happened one time. It should not be possible.
+        if ($s3Key === 'index.html') {
+            return;
+        }
+
         $s3client->deleteObject([
             'Bucket' => $config->aws->bucket,
             'Key' => $s3Key,
