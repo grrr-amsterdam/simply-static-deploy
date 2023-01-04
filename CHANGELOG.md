@@ -2,6 +2,11 @@
 
 This changelog only lists notable changes. Check individual releases (tags) and their commits to see unlisted changes.
 
+## v2.3.0
+
+- Add simply_static_deploy_recursive_excludable filter
+- Update readme.md
+
 ## v2.2.2
 
 - Remove Cloudfront invalidation for deleted objects
