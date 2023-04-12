@@ -32,7 +32,7 @@ class FetchUrlsRecursiveTask extends Fetch_Urls_Task
      */
     public function perform()
     {
-        $batch_size = apply_filters('simply_static_fetch_urls_batch_size', 10);
+        $batch_size = apply_filters('simply_static_fetch_urls_batch_size', 50);
         // Custom code block
         $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
         $post_url = get_permalink($post_id);
@@ -96,6 +96,12 @@ class FetchUrlsRecursiveTask extends Fetch_Urls_Task
                 $static_page->set_status_message(__("Do not save or follow", 'simply-static'));
                 $static_page->save();
                 continue;
+            } else {
+                $success = Url_Fetcher::instance()->fetch( $static_page );
+            }
+
+            if ( ! $success ) {
+                continue;
             }
 
             /**
@@ -123,6 +129,15 @@ class FetchUrlsRecursiveTask extends Fetch_Urls_Task
                 continue;
             }
             // End of custom code block
+
+            // Not found? It's maybe a redirection page. Let's try it without our param.
+            if ( $static_page->http_status_code === 404 ) {
+                $success = Url_Fetcher::instance()->fetch( $static_page, false );
+
+                if ( ! $success ) {
+                    continue;
+                }
+            }
 
             // If we get a 30x redirect...
             if (in_array($static_page->http_status_code, array(301, 302, 303, 307, 308))) {
