@@ -152,7 +152,6 @@ class SimplyStaticDeploy
             return;
         }
 
-        var_dump('BB');
         $s3client->deleteObject([
             'Bucket' => $config->aws->bucket,
             'Key' => $s3Key,
