@@ -89,10 +89,7 @@ class SimplyStaticDeploy
             return;
         }
 
-        $publicPostTypes = get_post_types(['public' => true]);
-        $postTypesToObserve = f\omit(['attachment'], $publicPostTypes);
-
-        if (!in_array($post->post_type, $postTypesToObserve)) {
+        if (!$this->is_post_applicable($post)) {
             return;
         }
 
@@ -106,9 +103,15 @@ class SimplyStaticDeploy
         WP_Post $post_after,
         WP_Post $post_before
     ) {
-        if ($post_after->post_name !== $post_before->post_name) {
-            $this->remove_static_page($post_before);
+        if ($post_after->post_name === $post_before->post_name) {
+            return;
         }
+
+        if (!$this->is_post_applicable($post_after)) {
+            return;
+        }
+
+        $this->remove_static_page($post_before);
     }
 
     /**
@@ -149,6 +152,7 @@ class SimplyStaticDeploy
             return;
         }
 
+        var_dump('BB');
         $s3client->deleteObject([
             'Bucket' => $config->aws->bucket,
             'Key' => $s3Key,
@@ -184,5 +188,13 @@ class SimplyStaticDeploy
             $samplePermalink[1], // The post name
             $samplePermalink[0] // https://example.com/updates/%postname%/
         );
+    }
+
+    private function is_post_applicable(\WP_Post $post): bool
+    {
+        $publicPostTypes = get_post_types(['public' => true]);
+        $postTypesToObserve = f\omit(['attachment'], $publicPostTypes);
+
+        return in_array($post->post_type, $postTypesToObserve);
     }
 }
