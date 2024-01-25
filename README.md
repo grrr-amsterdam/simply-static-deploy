@@ -2,6 +2,19 @@
 
 <!--[![Build Status](https://travis-ci.com/grrr-amsterdam/simply-static-deploy.svg?branch=master)](https://travis-ci.com/grrr-amsterdam/simply-static-deploy)-->
 
+### This repository is archived
+
+❗️ GRRR no longer maintains this plugin.
+
+We recommend using the Pro plan of the [Simply Static](https://simplystatic.com/) plugin. When we started this plugin, it fixed the lack of a deployment feature in Simply Static. Since then, the plugin has been updated, and the Pro plan offers exactly what we were missing.  
+GRRR has contributed code and features to the Simply Static plugin, and we're happy to see it grow.  
+We suggest taking a look, it's well worth the investment.
+
+Thanks to everyone who has taken an interest in this plugin!  
+If you've enjoyed using this plugin or were inspired by it in any way, maybe you'd like to follow our blog, where we write about our work and the things we learn along the way: [grrr.tech](https://grrr.tech/).
+
+---
+
 ### Deploy static sites easily to an AWS S3 bucket
 
 -   Utilizes the excellent [Simply Static](https://wordpress.org/plugins/simply-static/) plugin for static site generation.
@@ -13,10 +26,10 @@
 
 ### Developed with ❤️ by [GRRR](https://grrr.nl)
 
-- GRRR is a [B Corp](https://grrr.nl/en/b-corp/)
-- GRRR has a [tech blog](https://grrr.tech/)
-- GRRR is [hiring](https://grrr.nl/en/jobs/)
-- [@GRRRTech](https://twitter.com/grrrtech) tweets
+-   GRRR is a [B Corp](https://grrr.nl/en/b-corp/)
+-   GRRR has a [tech blog](https://grrr.tech/)
+-   GRRR is [hiring](https://grrr.nl/en/jobs/)
+-   [@GRRRTech](https://twitter.com/grrrtech) tweets
 
 #### Generate and deploy user interface
 
@@ -108,17 +121,17 @@ A single post or page deploy can also be done recursively by checking the recurs
 
 Available filters to modify settings and data passed to the plugin:
 
-- [Adjust additional files](#adjust-additional-files)
-- [Adjust additional files for Single deploy](#adjust-additional-files-for-single-deploy)
-- [Adjust additional URLs](#adjust-additional-urls)
-- [Recursive excludable]()
+-   [Adjust additional files](#adjust-additional-files)
+-   [Adjust additional files for Single deploy](#adjust-additional-files-for-single-deploy)
+-   [Adjust additional URLs](#adjust-additional-urls)
+-   [Recursive excludable]()
 
 Available actions to invoke or act upon:
 
-- [Handle errors](#handle-errors)
-- [Completed static deploy job](#completed-static-deploy-job)
-- [Modify generated files](#modify-generated-files)
-- [Schedule deploys](#schedule-deploys)
+-   [Handle errors](#handle-errors)
+-   [Completed static deploy job](#completed-static-deploy-job)
+-   [Modify generated files](#modify-generated-files)
+-   [Schedule deploys](#schedule-deploys)
 
 #### Filters
 
@@ -157,12 +170,14 @@ Note: during generation of the static site, the `additional_urls` setting is upd
 This filter adds the option to customize the excludable url setting. This can be useful when for instance you want to ignore exclusions when an url contains the recursive parent url.
 
 ```php
-add_filter(
-    'simply_static_deploy_recursive_excludable', function($excludable, string $staticPageUrl, string $recursiveUrl) {
-        # Modify excludable url logic, for example ignore excludeable url setting when current page contains the recursiveUrl
-        return $excludable;
-    }
-);
+add_filter('simply_static_deploy_recursive_excludable', function (
+    $excludable,
+    string $staticPageUrl,
+    string $recursiveUrl
+) {
+    # Modify excludable url logic, for example ignore excludeable url setting when current page contains the recursiveUrl
+    return $excludable;
+});
 ```
 
 #### Actions
@@ -181,6 +196,7 @@ add_action('simply_static_deploy_error', function (\WP_Error $error) {
 
 This will be triggered after all deploy tasks are finished. The first and only argument you will get
 in the callback function is the Simply Static options instance.
+
 ```
 add_action('simply_static_deploy_complete' , function (\Simply_Static\Options $options) {
     // Finished static deploy job.
