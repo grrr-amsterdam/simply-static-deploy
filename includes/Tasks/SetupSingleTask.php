@@ -9,6 +9,11 @@ use Simply_Static\Setup_Task;
 use Simply_Static\Task;
 use Simply_Static\Util;
 
+/**
+ * SetupSingleTask
+ *
+ * Based on: Simply_Static\Setup_Task (class-ss-setup-task.php)
+ */
 class SetupSingleTask extends Task
 {
     /**
@@ -20,9 +25,7 @@ class SetupSingleTask extends Task
     {
         $post_id = get_option(Plugin::SLUG . '_single_deploy_id');
         $recursive = get_option(Plugin::SLUG . '_single_deploy_recursive');
-        $this->save_status_message(
-            "Setting up for single post with id $post_id"
-        );
+        $this->save_status_message("Setting up for single post with id $post_id");
 
         // should we create tmp directory of it not exists?
         $archive_dir = $this->options->get_archive_dir();
